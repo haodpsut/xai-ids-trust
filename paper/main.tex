@@ -11,14 +11,16 @@
 \usepackage{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsthm}
+\usepackage[ruled,vlined]{algorithm2e}
 \graphicspath{{figs/}}
+\newtheorem{proposition}{Proposition}
 \newtheorem{definition}{Definition}
 \newtheorem{property}{Property}
 \newtheorem{claim}{Claim}
 
 \begin{document}
-\title{When Is an Explanation Trustworthy?\\
-Foundations of Interpretability-Based Trust in\\ Machine-Learning Intrusion Detection}
+\title{SoK: Is Interpretability a Warrant for Trust in\\
+Machine-Learning Intrusion Detection?}
 
 \author{\IEEEauthorblockN{Anonymous Submission}
 \IEEEauthorblockA{Under double-blind review}}
@@ -29,27 +31,26 @@ Foundations of Interpretability-Based Trust in\\ Machine-Learning Intrusion Dete
 A fast-growing line of work equips machine-learning intrusion detection systems (ML-IDS) with
 explanations and argues that the resulting interpretability lets a security analyst
 \emph{trust} the detector: verify its reasoning, calibrate confidence, and be accountable for
-acting on its alarms. We ask a foundational question this literature leaves implicit: what must
-be true of an explanation for such trust to be \emph{well-founded}? We formalize
-interpretability-based trust and show it presupposes three properties of the explanation map,
+acting on its alarms. This SoK asks a question the literature leaves implicit: what must be true
+of an explanation for such trust to be \emph{warranted}, and does current practice meet it? We
+formalize interpretability-based trust as three necessary properties of the explanation map,
 \emph{fidelity} (the interpretable artifact decides as the deployed model does),
-\emph{determinacy} (the explanation is fixed by the decision, not by an arbitrary methodological
-choice), and \emph{groundedness} (the explanation reflects the task, not the incidental model
-instance), each of which we argue is necessary for trust. On three modern network-intrusion
-datasets (UNSW-NB15, CICIDS2017, and the 5G-testbed dataset 5G-NIDD), and across five standard
-explainers including SHAP and LIME, all three properties fail: interpretable surrogates lose up
-to $0.32$ $F_1$; SHAP and LIME, the two most deployed explainers, agree on only about a fifth of
-the features they show; and detectors with statistically identical accuracy disagree on nearly
-half of their top features. We then ask whether the failure can be exploited by an adversary who
-manipulates the explanation while keeping the malicious decision; our attacks on tabular IDS were
-inconclusive, an honest negative result that we report and analyze. Finally, we turn the
-diagnosis into a defense: a lightweight, per-alarm \emph{reliability gate} predicts, from a
-single deployed model, whether an explanation is trustworthy for a given flow, with AUC up to
-$0.94$, and we show it is not reducible to an out-of-distribution detector. We distill the study
-into threat-aware evaluation criteria that a defensible interpretability-for-trust claim in
-security must meet. This reframes an accountability question that operational security
-increasingly relies on: interpretability is not, by default, a warrant for trust, but the
-conditions under which it would be are checkable, and partly enforceable.
+\emph{determinacy} (the explanation is fixed by the decision, not by the choice of attribution
+method), and \emph{groundedness} (the explanation reflects the task, not the incidental model
+instance). On three modern network-intrusion datasets (UNSW-NB15, CICIDS2017, 5G-NIDD) and five
+standard explainers, all three fail: interpretable surrogates lose up to $0.32$ $F_1$;
+attribution methods from different families agree on as little as 0.15 of the features they show, even at high sampling budgets; and
+detectors with statistically identical accuracy disagree on nearly half of their top features.
+We then show the failure has \emph{security} teeth: on correctly-detected true attacks, where the
+detector is stable, two equally-good models' explanations drive \emph{opposite} analyst actions
+(escalate versus dismiss) on up to $94\%$ of flows, so whether a real attack is acted on becomes
+an accident of the deployed seed. We further report two honest negatives that map the difficulty
+of fixing this: an adversarial explanation-manipulation attack does not transfer from vision to
+tabular IDS in our hands, and a natural per-alarm reliability gate, though it scores well
+in-distribution, is circular and fails to generalize across datasets, so trust is not cheaply
+recoverable. We distill the study into threat-aware evaluation criteria that a defensible
+interpretability-for-trust claim in security must meet. The upshot: interpretability is not, by
+default, a warrant for trust in ML-IDS, and recovering that warrant is an open problem.
 \end{abstract}
 
 % ============================================================================
@@ -72,38 +73,50 @@ placed in it to be well-founded?} The explainable-IDS literature measures whethe
 \emph{increase} trust (through user studies, satisfaction scores, triage-time reductions); it
 rarely asks whether that trust is \emph{warranted}.
 
-We take up the foundational question and answer it constructively. Our contributions are:
+We take up the question through systematization and measurement. Our contributions are:
 
 \begin{itemize}
 \item We \textbf{formalize interpretability-based trust} for ML-IDS
 (Section~\ref{sec:formal}) and derive three properties any explanation must satisfy for the
-trust to be sound: \emph{fidelity}, \emph{determinacy}, and \emph{groundedness}. Each is
-necessary, so violating any one voids the warrant.
+trust to be sound: \emph{fidelity}, \emph{determinacy}, and \emph{groundedness}.
 \item We show, on \textbf{three modern NIDS datasets} and \textbf{five standard explainers
 (gradient saliency, input$\times$gradient, integrated gradients, SHAP, LIME)}, that all three
-properties fail, with multi-seed confidence intervals (Section~\ref{sec:fail}). Notably, SHAP
-and LIME agree on only about a fifth of the features they present to the analyst.
-\item We ask whether the failure is \textbf{adversarially exploitable}: can an attacker keep a
-flow malicious yet make its explanation look benign, so the analyst dismisses a true alarm? Our
-tabular attacks were inconclusive; we report this negative result honestly and analyze why
-explanation manipulation may not transfer from vision to tabular IDS (Section~\ref{sec:adv}).
-\item We turn the diagnosis into a \textbf{defense}: a per-alarm \emph{reliability gate}
-(Section~\ref{sec:defense}) that predicts, cheaply and from one deployed model, whether an
-explanation is trustworthy for a given flow (AUC up to $0.94$), and which we show is not merely
-an out-of-distribution detector.
+properties fail, with multi-seed statistics (Section~\ref{sec:fail}). Explainers from different
+families agree on as little as $0.15$ of the features they present, even at high sampling budgets.
+\item We show the failure has \textbf{security teeth} (Section~\ref{sec:harm}): on
+correctly-detected true attacks, where detection is stable, equally-good detectors' explanations
+induce \emph{opposite} analyst actions on up to $94\%$ of flows, so mis-founded trust turns
+whether a real attack is acted on into an accident of the deployed model.
+\item We map \textbf{how hard the failure is to fix} with two honest negatives: an
+explanation-manipulation attack does not transfer to tabular IDS (Section~\ref{sec:adv}), and the
+most natural per-alarm reliability gate, though it scores well in-distribution, is circular and
+fails to generalize across datasets (Section~\ref{sec:defense}). Trust is not cheaply recovered.
 \item We distill \textbf{threat-aware evaluation criteria} (Section~\ref{sec:criteria}) that a
 defensible interpretability-for-trust claim in security must meet.
 \end{itemize}
 
 Our aim is neither to argue that ML-IDS should be opaque nor that interpretability is worthless.
 It is to show that the inference ``the model is interpretable, therefore its alarms can be
-trusted'' is, as currently supported, unsound, to explain what would make it sound, and to give a
-first mechanism that recovers part of the warrant. We view this as a foundations-of-security
-question: the conditions under which a security control may be relied upon.
+trusted'' is, as currently supported, unsound; that the failure has a concrete security cost; and
+that recovering the warrant is an open problem rather than a matter of bolting on a confidence
+score. We view this as a foundations-of-security question: the conditions under which a security
+control may be relied upon.
 
 % ============================================================================
 \section{Motivation and Setting}\label{sec:motiv}
 % ============================================================================
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.96\textwidth]{fig_framework.pdf}
+\caption{The analyst-trust pipeline in explainable ML-IDS, and the three points where
+interpretability-based trust breaks. The detector $f$ raises an alarm; an explanation $e(x)$ is
+computed; the analyst reads it and acts. Trust fails if the interpretable artifact does not
+decide as $f$ (P1), if the shown reason changes with the attribution method (P2), or if it
+changes with the training seed (P3). The security harm: on the same correctly-detected true
+attack, equally-good detectors' explanations drive opposite analyst actions.}
+\label{fig:framework}
+\end{figure*}
+
 Consider a security operations center where an ML-IDS raises an alarm on a network flow and
 presents the analyst with the five features most responsible, say a large backward packet
 length and a short flow duration. The analyst, trained to read such explanations, judges the
@@ -131,38 +144,64 @@ layer that sits on top of it.
 % ============================================================================
 \section{Background and Related Work}\label{sec:bg}
 % ============================================================================
+\textbf{Attribution methods.} The explanations attached to ML-IDS are almost always feature
+attributions. The dominant methods split into gradient-based, LIME~\cite{ribeiro2016lime},
+integrated gradients~\cite{sundararajan2017ig}, plain saliency~\cite{simonyan2013saliency},
+SmoothGrad~\cite{smilkov2017smoothgrad}, DeepLIFT~\cite{shrikumar2017deeplift}, layer-wise
+relevance~\cite{bach2015lrp}, and perturbation- or game-theoretic ones, LIME and
+SHAP~\cite{lundberg2017shap}, with rule-form variants such as Anchors~\cite{ribeiro2018anchors}
+and, in vision, Grad-CAM~\cite{selvaraju2017gradcam}. We study five representative members;
+Molnar~\cite{molnar2022interpretable} surveys the space.
+
 \textbf{Critiques of ML-IDS evaluation.} A tradition of foundational scrutiny warns that ML
 security results often do not mean what they appear to. Sommer and Paxson~\cite{sommer2010}
 argued that the closed-world assumptions of ML evaluation break in operational intrusion
 detection; Arp et al.~\cite{arp2022} catalogue pervasive experimental pitfalls (spatial and
 temporal snooping, base-rate neglect, inappropriate baselines); Axelsson's base-rate
 analysis~\cite{axelsson2000} shows why laboratory detection rates mislead at realistic
-prevalence. These critiques target \emph{accuracy} claims and their datasets. Ours targets a
-newer claim, \emph{interpretability for trust}, that the accuracy critiques do not address.
+prevalence; and broad surveys map the role and fragility of ML in
+security~\cite{apruzzese2023role,mahdavifar2019application}. These critiques target
+\emph{accuracy} claims and their datasets. Ours targets a newer claim, \emph{interpretability for
+trust}, that the accuracy critiques do not address.
 
 \textbf{Explainable intrusion detection.} A large recent literature applies attribution methods
-(gradient saliency, SHAP, attention) to ML-IDS and argues they enhance analyst trust and
-accountability~\cite{capuano2022}. Constructive proposals go further: recent work designs
-action-oriented explanations, e.g.\ feasible-action contracts for intrusion
-triage~\cite{action2026}. This work builds explanations and measures user-facing trust. We are
-orthogonal and adversarial to it: we ask whether the trust so induced is warranted, formalize
-the conditions under which it would be, and give a mechanism to flag when it is not.
+to ML-IDS and argues they enhance analyst trust and accountability~\cite{capuano2022}, including
+work that evaluates explanation methods specifically for security~\cite{warnecke2020evaluating}
+and systematizes explainable ML across security applications~\cite{nadeem2023sok,ganz2021explaining}.
+Constructive proposals go further: recent work designs action-oriented explanations, e.g.\
+feasible-action contracts for intrusion triage~\cite{action2026}. This work builds explanations
+and measures user-facing trust. We are orthogonal and adversarial to it: we ask whether the trust
+so induced is warranted, and systematize the conditions under which it would be.
 
-\textbf{Fragility and disagreement of explanations.} In vision and NLP, explanations are known
-to be fragile: Ghorbani et al.~\cite{ghorbani2019} perturb inputs to change saliency while
-fixing the prediction; Dombrowski et al.~\cite{dombrowski2019} manipulate explanations
-arbitrarily; Slack et al.~\cite{slack2020} fool LIME and SHAP with adversarial scaffolding; and
-attribution methods disagree systematically~\cite{krishna2022}. These results are about general
-ML. We ask what they mean for the \emph{security} claim that interpretability licenses trust,
-connect them to a formal trust condition, report where they do and do not transfer to tabular
-IDS (they transfer as benign under-determination but, in our hands, not as an adversarial
-attack), and build a defense.
+\textbf{Fragility, disagreement, and multiplicity.} In vision and NLP, explanations are known to
+be fragile and unreliable: Ghorbani et al.~\cite{ghorbani2019} perturb inputs to change saliency
+while fixing the prediction; Dombrowski et al.~\cite{dombrowski2019} manipulate explanations
+arbitrarily; Slack et al.~\cite{slack2020} fool LIME and SHAP with adversarial scaffolding;
+sanity checks show some saliency maps are independent of the model~\cite{adebayo2018sanity};
+saliency methods are provably unreliable under input shifts~\cite{kindermans2019unreliability,alvarezmelis2018robustness};
+and attribution methods disagree systematically~\cite{krishna2022,hooker2019roar}. Our
+groundedness property is the security-relevant face of \emph{model multiplicity}: many
+equally-accurate models exist (the Rashomon effect~\cite{breiman2001two,fisher2019rashomon}) and
+they can differ arbitrarily in their per-example predictions and
+explanations~\cite{marx2020multiplicity,black2022multiplicity}. These results are about general
+ML; we ask what they mean for the \emph{security} claim that interpretability licenses trust,
+connect them to a formal trust condition, and show they carry a concrete security consequence.
 
-\textbf{Interpretability versus post-hoc explanation.} Rudin~\cite{rudin2019} distinguishes
-intrinsically interpretable models from post-hoc explanations and warns against the latter for
-high-stakes decisions. Our fidelity property makes this operational for security: a post-hoc or
-distilled ``interpretable'' artifact that does not decide as the deployed model does cannot
-ground trust in that model.
+\textbf{Interpretability foundations.} Rudin~\cite{rudin2019} distinguishes intrinsically
+interpretable models from post-hoc explanations and warns against the latter for high-stakes
+decisions; the broader debate concerns what interpretability even means~\cite{lipton2018mythos,doshivelez2017rigorous},
+how explanation functions socially~\cite{miller2019explanation}, and how trust in AI should be
+formalized~\cite{jacovi2021formalizing}. Our fidelity property makes Rudin's distinction
+operational for security: a post-hoc or distilled ``interpretable'' artifact that does not decide
+as the deployed model does cannot ground trust in that model. Our detectors include the
+Kolmogorov--Arnold network~\cite{liu2024kan}, marketed as interpretable-by-design, precisely to
+test that claim.
+
+\textbf{Adversarial ML in security.} That ML models are brittle to adversarial input is
+foundational~\cite{szegedy2014intriguing,biggio2018wild,carlini2017towards}, and realistic
+evasion of NIDS is an active concern~\cite{apruzzese2022modeling}. We consider a distinct target,
+the \emph{explanation} an analyst reads rather than the detector's label, and find (unlike the
+detector case) that manipulating it on tabular IDS is not straightforward.
 
 % ============================================================================
 \section{What Interpretability-Based Trust Requires}\label{sec:formal}
@@ -247,17 +286,44 @@ $\varepsilon_{\bullet}$ & per-property trust tolerance \\
 \end{tabular}
 \end{table}
 
-\begin{claim}\label{claim:nec}
-Fidelity, determinacy, and groundedness are each \emph{necessary} for well-founded
-interpretability-based trust. Violating fidelity means the analyst reasons about the wrong model;
-violating determinacy means the reason could have been otherwise with an equally valid tool;
-violating groundedness means it could have been otherwise with an equally good model. In each
-case acting on $e(x)$ can systematically differ from acting on the true grounds of $f(x)$, so the
-trust is not well-founded.
-\end{claim}
+We make the necessity precise through an \emph{invariance} view of warrant, which sidesteps the
+(unavailable) ground truth of the ``true reason'' for a decision. An analyst who trusts $f$
+through $e$ faces choices they cannot principled-ly adjudicate: which interpretable surrogate to
+read, which attribution method to run, and which of many equally-accurate trained models was
+deployed. Write $\mathcal{C}$ for this set of legitimate choices and $e^c$ for the explanation
+under choice $c\in\mathcal{C}$.
 
-We now show current practice violates all three, then that the violation is measurable per alarm
-and can be flagged.
+\begin{definition}[Warrant invariance]\label{def:warrant}
+Trust in $f$ through $e$ is \emph{warrant-invariant} if the analyst's action is stable across
+legitimate choices: for an action policy $a$ depending on $e$ through $\mathrm{top}_k$,
+$\Pr_x\big[\exists\,c,c'\in\mathcal{C}:\ a(e^c(x))\neq a(e^{c'}(x))\big]\le\eta$ for a small
+$\eta$.
+\end{definition}
+
+\begin{proposition}\label{prop:nec}
+If any of fidelity \eqref{eq:fid}, determinacy \eqref{eq:det}, or groundedness \eqref{eq:grnd}
+is violated by more than its tolerance $\varepsilon$, then trust is not warrant-invariant:
+there is a positive-measure set of flows on which two legitimate choices induce different top-$k$
+explanations, hence different actions for any $a$ that separates those top-$k$ sets.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Each property bounds the disagreement between two legitimate choices. If determinacy fails,
+$\mathbb{E}_x[J_k(e,e';x)]<1-\varepsilon_{\mathrm{det}}$ for two methods $e,e'\in\mathcal{M}$;
+since $J_k\le1$, a positive-measure set has $\mathrm{top}_k(e,x)\neq\mathrm{top}_k(e',x)$, and any
+$a$ that maps these distinct sets to distinct actions violates Definition~\ref{def:warrant} with
+$\eta<\varepsilon_{\mathrm{det}}$. The groundedness case is identical with $c,c'$ two equal-accuracy
+seeds. For fidelity, a surrogate $g$ with $\Pr[g\neq f]>\varepsilon_{\mathrm{fid}}$ gives, on a
+positive-measure set, an explanation of a decision the deployed model did not make, so the
+choice ``read $g$'' versus ``read $f$'' changes the grounds the analyst acts on. Thus each
+violation exhibits an unadjudicated choice that flips the action.
+\end{proof}
+
+Proposition~\ref{prop:nec} is deliberately about invariance, not correctness: two methods can
+agree and both mislead, so agreement is not sufficient for a \emph{correct} explanation. But
+disagreement is sufficient for an \emph{unwarranted} one, because the analyst has no principled
+basis to prefer either choice. We now show current practice violates all three properties, then
+that the violation carries a security cost and resists a cheap fix.
 
 % ============================================================================
 \section{The Three Properties Fail}\label{sec:fail}
@@ -339,6 +405,34 @@ features reproduces the 5G-NIDD detector's decision on just $\input{claims/p1_su
 so the reason does not even suffice for the decision. The analyst reasons about a model that is
 not the one guarding the network.
 
+This is not special to the KAN. Fitting standard \emph{global} interpretable surrogates to mimic
+a deployed MLP-IDS reveals a fidelity--readability frontier (Table~\ref{tab:fidmulti}): a
+higher-capacity depth-4 tree matches the deployed decisions well
+($\input{claims/fid_tree4_agree_cicids}$ agreement on CICIDS2017) but is barely more readable than
+the model, whereas the genuinely readable renderings, a depth-2 tree or a sparse logistic model,
+lose detection quality (F1 falls from $\input{claims/fid_deployed_f1_cicids}$ to
+$\input{claims/fid_tree2_f1_cicids}$ and $\input{claims/fid_sparselogit_f1_cicids}$ on
+CICIDS2017). Fidelity is thus attainable only by surrendering the readability the trust claim
+depends on.
+
+\begin{table}[t]
+\centering
+\caption{The fidelity--readability frontier: decision agreement with the deployed MLP-IDS (higher
+is more faithful) and detection $F_1$, for global interpretable surrogates. Readable surrogates
+(depth-2 tree, sparse logit) are less faithful or detect worse.}
+\label{tab:fidmulti}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Surrogate (agree / $F_1$) & UNSW & CICIDS & 5G-NIDD \\
+\midrule
+tree ($d{=}4$)    & $.95/.93$ & $.98/.94$ & $1.0/1.0$ \\
+tree ($d{=}2$)    & $.94/.92$ & $.94/\mathbf{.72}$ & $.98/.98$ \\
+sparse logit      & $.95/.94$ & $.96/\mathbf{.84}$ & $.99/.99$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.82\columnwidth]{fig_fidelity.pdf}
@@ -353,17 +447,19 @@ the three gradient-family methods, mean agreement is only
 $\input{claims/p2_agree_unsw}{\pm}\input{claims/p2_agree_unsw_std}$ (UNSW-NB15),
 $\input{claims/p2_agree_cicids}{\pm}\input{claims/p2_agree_cicids_std}$ (CICIDS2017), and
 $\input{claims/p2_agree_5g}{\pm}\input{claims/p2_agree_5g_std}$ (5G-NIDD). Crucially, this is not
-an artifact of using only gradient methods: adding the two most deployed model-agnostic
-explainers, SHAP and LIME, drives agreement lower still (Table~\ref{tab:breadth}), and \emph{SHAP
-and LIME agree with each other on only} $\input{claims/p2_shap_lime_unsw}$--$\input{claims/p2_shap_lime_5g}$
-\emph{of the top-5 features they show}. The reason presented to the analyst is largely an artifact
-of which equally-defensible tool the vendor shipped.
+an artifact of using only gradient methods, nor of under-sampling: adding the two most deployed
+model-agnostic explainers, SHAP and LIME, at high sampling budgets, the mean five-explainer
+agreement stays at $\input{claims/p2_5explainer_unsw}$--$\input{claims/p2_5explainer_5g}$
+(Table~\ref{tab:breadth}), and \emph{cross-family} agreement is lower still: gradient saliency and
+SHAP agree on only $\input{claims/p2_gradshap_cicids}$--$\input{claims/p2_gradshap_5g}$ of the
+top-5 features. The reason presented to the analyst is largely an artifact of which
+equally-defensible tool the vendor shipped.
 
 \begin{table}[t]
 \centering
-\caption{Determinacy across five explainers: mean top-5 agreement over all pairs, and the
-agreement of SHAP with LIME, the two most deployed model-agnostic explainers. Even these two
-disagree on roughly four of every five features shown.}
+\caption{Determinacy across five explainers (high sampling budgets, so low agreement is not a
+Monte-Carlo artifact): mean top-5 agreement over all pairs, SHAP vs.\ LIME, and cross-family
+gradient vs.\ SHAP. Different explainer families disagree on most of the features they show.}
 \label{tab:breadth}
 \small\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{lccc}
@@ -372,7 +468,7 @@ disagree on roughly four of every five features shown.}
 \midrule
 mean, all 5 explainers & $\input{claims/p2_5explainer_unsw}$ & $\input{claims/p2_5explainer_cicids}$ & $\input{claims/p2_5explainer_5g}$ \\
 SHAP vs.\ LIME        & $\input{claims/p2_shap_lime_unsw}$ & $\input{claims/p2_shap_lime_cicids}$ & $\input{claims/p2_shap_lime_5g}$ \\
-gradient vs.\ SHAP    & --- & $\input{claims/p2_grad_shap_cicids}$ & --- \\
+gradient vs.\ SHAP    & $\input{claims/p2_gradshap_unsw}$ & $\input{claims/p2_gradshap_cicids}$ & $\input{claims/p2_gradshap_5g}$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -391,14 +487,129 @@ All three necessary properties fail, with tight seed-to-seed variance, across th
 datasets. The trust that explainable ML-IDS invites is therefore, as currently produced, not
 well-founded.
 
+\textbf{Beyond agreement: the explanations are also unfaithful.} Agreement is about consistency;
+one might still hope the shown features are the ones the model \emph{uses}. They are not. We
+measure the two standard faithfulness metrics~\cite{hooker2019roar}, comprehensiveness (the drop
+in attack-probability when the top-5 features are removed) and sufficiency (how much the top-5
+alone retain), on a fourth modern dataset too, TON-IoT~\cite{tavallaee2009nslkdd}. Removing the
+top-5 attributed features barely moves the decision: comprehensiveness is only
+$\input{claims/faith_comp_unsw}$ (UNSW-NB15), $\input{claims/faith_comp_5g}$ (5G-NIDD), and
+$\input{claims/faith_comp_toniot}$ (TON-IoT), and reaches $\input{claims/faith_comp_cicids}$ only
+on CICIDS2017. So on three of four datasets the features an analyst is shown are largely not the
+ones driving the alarm (Table~\ref{tab:faith}). Faithfulness, the deepest of the properties,
+fails independently of the agreement failures above.
+
+\begin{table}[t]
+\centering
+\caption{Faithfulness of the top-5 explanation on flagged attacks, across four modern datasets.
+Comprehensiveness (drop in attack-probability when the top-5 are removed; higher is more
+faithful) is low on three of four: the shown features are largely not the ones the model uses.}
+\label{tab:faith}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+& UNSW & CICIDS & 5G-NIDD & TON-IoT \\
+\midrule
+comprehensiveness $\uparrow$ & $0.18$ & $0.40$ & $0.21$ & $\mathbf{0.06}$ \\
+sufficiency gap $\downarrow$  & $0.02$ & $0.35$ & $0.55$ & $0.12$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\section{The Failure Has Security Teeth}\label{sec:harm}
+% ============================================================================
+A skeptic may object that under-determination is generic machine-learning hygiene: rename the
+datasets to medical or credit and the numbers survive. We answer with a consequence that is
+specifically about \emph{security decisions} (the harm annotated in Fig.~\ref{fig:framework}).
+Consider flows that are true attacks and that the IDS \emph{correctly} flags; here the detector is
+right and, across a seed-ensemble, stable. We model an analyst who reads an explanation and
+decides to escalate (treat as a real attack) or suppress (dismiss as a false positive) with an
+auditor classifier trained to read attribution vectors; to avoid a linearity artifact we use two
+auditor families (logistic regression and a random forest). Algorithm~\ref{alg:harm} states the
+measurement.
+
+\begin{algorithm}[t]
+\caption{Explanation-induced action divergence on true attacks}
+\label{alg:harm}
+\KwIn{seed-ensemble $\{f_1,\dots,f_E\}$; auditor $g$ mapping an attribution to escalate/suppress;
+test set with labels}
+\KwOut{action-divergence rate on correctly-detected true attacks}
+$T \gets \{x : y(x){=}1 \wedge f_i(x){=}1\ \forall i\}$ \tcp*{true attacks all models flag}
+\ForEach{$x \in T$}{
+  \lForEach{$i$}{$a_i(x) \gets g\big(e_{f_i}(x)\big)$}
+  $\mathrm{div}(x) \gets \big[\lnot\,(a_1(x){=}\cdots{=}a_E(x))\big]$ \tcp*{models split}
+}
+\Return $\frac{1}{|T|}\sum_{x\in T}\mathrm{div}(x)$
+\end{algorithm}
+
+The result is stark on CICIDS2017, the most operationally realistic of the three (a $17\%$ attack
+rate over many attack types). Detection is stable: the seed-ensemble agrees on
+$\input{claims/harm_detect_agree_cicids}$ of these flows that they are attacks. Yet the
+explanation-driven analyst action is not: on $\input{claims/harm_divergence_cicids_lo}$ to
+$\input{claims/harm_divergence_cicids_hi}$ of the true attacks, two equally-good detectors'
+explanations induce \emph{opposite} analyst actions, and a true attack's explanation reads
+benign (so the analyst would dismiss it) $\input{claims/harm_suppress_cicids_lo}$ to
+$\input{claims/harm_suppress_cicids_hi}$ of the time. In other words, the detector agrees a flow
+is an attack, but whether the analyst \emph{acts} on it is decided by which arbitrary training
+seed was deployed. This is the security harm: mis-founded trust in the explanation converts a
+grounded detection into an ungrounded response. The effect is smaller on UNSW-NB15
+(divergence $\approx\input{claims/harm_divergence_unsw}$) and negligible on 5G-NIDD
+(where detection is near-perfect and the task is easy, $\approx\input{claims/harm_divergence_5g}$),
+so the harm scales with task difficulty, being largest exactly where operational stakes are
+highest (Fig.~\ref{fig:harm}, Table~\ref{tab:harm}). Crucially, no adversary is required: the
+harm follows from the benign under-determination of Section~\ref{sec:fail}. The effect is robust
+to the analyst model: a random-forest auditor gives the same qualitative picture (divergence
+$0.94$ on CICIDS), so it is not an artifact of a linear analyst.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\columnwidth]{fig_harm.pdf}
+\caption{The security teeth. On correctly-detected true attacks, detection is stable (the
+ensemble agrees the flow is an attack), yet the explanation-driven analyst action diverges across
+equally-good models, most on the realistic CICIDS2017. Whether a real attack is acted on becomes
+an accident of the deployed seed.}
+\label{fig:harm}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Explanation-induced harm on correctly-detected true attacks (logistic / random-forest
+auditor). Detection is stable; the analyst action induced by the explanation is not.}
+\label{tab:harm}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+& UNSW-NB15 & CICIDS2017 & 5G-NIDD \\
+\midrule
+detection agreement    & $0.96$ & $0.89$ & $1.00$ \\
+action divergence      & $0.20 / 0.01$ & $\mathbf{0.70 / 0.94}$ & $0.00 / 0.05$ \\
+true attack dismissed  & $0.10 / 0.00$ & $0.45 / 0.56$ & $0.00 / 0.01$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 % ============================================================================
 \section{Can an Adversary Exploit This?}\label{sec:adv}
 % ============================================================================
 The failures above are benign: they arise without an adversary. Security demands the adversarial
-case. If an attacker can craft a malicious flow that the detector still flags but whose
-explanation points at innocuous features, the analyst may dismiss a true alarm, an evasion by
-explanation rather than by detection. In vision and NLP this is established: explanations can be
-moved almost arbitrarily while the prediction is fixed~\cite{ghorbani2019,dombrowski2019,slack2020}.
+case. Fig.~\ref{fig:threat} contrasts two routes to get a malicious flow's alarm dismissed: the
+classical one evades the \emph{detector}; the one this section studies keeps the detector firing
+but manipulates the \emph{explanation} so the analyst dismisses a true alarm, an evasion by
+explanation rather than by detection. In vision and NLP the latter is established: explanations
+can be moved almost arbitrarily while the prediction is
+fixed~\cite{ghorbani2019,dombrowski2019,slack2020}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_threat.pdf}
+\caption{Two routes to suppress a true alarm. Route~1 evades the detector (classical adversarial
+evasion). Route~2, ours, keeps the detector firing but reshapes the explanation so the analyst
+dismisses it. On tabular NIDS, Route~2 does not transfer from vision: low-dimensional,
+manifold-constrained features leave little room to move the explanation without flipping the
+decision.}
+\label{fig:threat}
+\end{figure}
 
 We tested the analogue on our tabular IDS. We model an analyst who reasons from explanations as an
 auditor classifier trained to map an attribution vector to benign/attack, and we search for a
@@ -420,11 +631,14 @@ attack, and because the benign failures of Section~\ref{sec:fail} already void t
 needing an adversary.
 
 % ============================================================================
-\section{A Reliability Gate for Explanations}\label{sec:defense}
+\section{Is Trust Cheaply Recoverable? A Negative Result}\label{sec:defense}
 % ============================================================================
-If interpretability-based trust fails by default, the constructive question is whether we can
-tell the analyst \emph{when} an explanation may be trusted, rather than asking for blind trust or
-none. We propose a per-alarm \emph{reliability gate}.
+If interpretability-based trust fails by default, the natural hope is a cheap fix: a per-alarm
+\emph{reliability gate} that tells the analyst \emph{when} an explanation may be trusted, from the
+single deployed model, without the expensive machinery of an ensemble. We built the most natural
+such gate and report an honest negative: it looks good in-distribution but is circular and does
+not generalize, so trust is not cheaply recovered. We detail it because the way it fails is
+instructive about why the problem is hard.
 
 \textbf{What ``reliable'' means.} We call an explanation reliable for a flow if it is
 \emph{stable}: its top-$k$ features are reproduced both across an ensemble
@@ -444,42 +658,93 @@ necessary component of trust, not all of it (Section~\ref{sec:disc}).
 
 \textbf{The gate.} We train a lightweight detector to predict this stability from signals that a
 single deployed model exposes at alarm time: the decision margin, the concentration (entropy) of
-the attribution, a local linear-surrogate fidelity, and an out-of-distribution distance. If the
-cheap detector predicts the expensive stability well, the analyst can be told, for free, when not
-to trust an explanation.
+the attribution, a local linear-surrogate fidelity, and an out-of-distribution distance
+(Algorithm~\ref{alg:gate}). If the cheap detector predicts the expensive stability well, the
+analyst could be told, for free, when not to trust an explanation.
 
-\textbf{It works.} Across datasets the gate predicts explanation reliability with AUC
-$\input{claims/auc_unsw}{\pm}\input{claims/auc_unsw_std}$ (UNSW-NB15),
-$\input{claims/auc_cicids}{\pm}\input{claims/auc_cicids_std}$ (CICIDS2017), and
-$\input{claims/auc_5g}{\pm}\input{claims/auc_5g_std}$ (5G-NIDD) over three seeds
-(Fig.~\ref{fig:defense}). Gating on it separates reliable from unreliable explanations: on
-5G-NIDD the flows the gate passes are $\input{claims/gate_stability_gain_5g}$ more stable, in
-absolute terms, than those it flags.
+\begin{algorithm}[t]
+\caption{The reliability gate (which we show does not deploy)}
+\label{alg:gate}
+\KwIn{deployed model $f$; ensemble $\{f_i\}$; method family $\mathcal{M}$; training flows}
+\KwOut{per-alarm reliability predictor $h$}
+\tcp{offline: expensive stability label}
+\lForEach{training flow $x$}{$S(x)\gets\tfrac12\bar{J}_{\text{model}}(x)+\tfrac12\bar{J}_{\text{method}}(x)$ \textrm{(Eq.~\ref{eq:stab})}}
+\tcp{cheap per-model signals}
+$\phi(x)\gets[\text{margin},\ \text{attr.\ entropy},\ \text{local fidelity},\ \text{OOD dist.}]$\;
+$h\gets$ classifier fit on $\big(\phi(x),\,[S(x)>\mathrm{median}]\big)$\;
+\Return $h$ \tcp*{at alarm time: gate$(x)=h(\phi(x))$}
+\end{algorithm}
 
-\textbf{It is not just an OOD detector.} A natural worry is that the gate merely detects
-out-of-distribution flows, for which everything is uncertain. It does not. Ablating to each
-single signal (Table~\ref{tab:defense}), the out-of-distribution distance alone reaches only AUC
-$\input{claims/abl_ood_cicids}$ on CICIDS2017, below chance, while the full gate reaches
-$\input{claims/abl_full_cicids}$; there, the explanation-specific concentration signal
-($\input{claims/abl_conc_cicids}$) carries the prediction. On every dataset the full gate beats
-every single-signal baseline, so its power is not reducible to confidence or distribution
-distance. This is a first, deliberately simple mechanism; richer stability predictors are an
-obvious extension.
+\textbf{In-distribution, it looks promising.} Fit and evaluated on the same dataset, the gate
+predicts explanation reliability with AUC $\input{claims/auc_unsw}$ (UNSW-NB15),
+$\input{claims/auc_cicids}$ (CICIDS2017), and $\input{claims/auc_5g}$ (5G-NIDD)
+(Fig.~\ref{fig:defense}), and out-of-distribution distance alone is weak (AUC
+$\input{claims/abl_ood_cicids}$ on CICIDS2017, below chance), so the signal is not simply an OOD
+detector. Taken alone this looks like a working, deployable fix. It is not, for two reasons.
+
+\textbf{Failure 1: it is circular.} The signal that carries the gate is the attribution
+\emph{concentration}, whose single-signal AUC ($\input{claims/abl_conc_5g}$ on 5G-NIDD) nearly
+matches the full gate. But concentration is coupled to the label \emph{by construction}: a peaked
+saliency vector yields a stable top-$k$ set under both re-seeding and method change, so it raises
+both the reliability label $S(x)$ and the concentration feature (their correlation is
+$\approx\input{claims/conc_label_corr}$ in magnitude). The gate is thus, in large part, the same
+quantity measured twice, not a cheap predictor of an independent property. The apparent ``not
+just OOD'' victory is hollow: OOD is replaced by a feature entangled with the target.
+Proposition~\ref{prop:circ} makes the entanglement precise.
+
+\begin{proposition}[Gate circularity]\label{prop:circ}
+Let the concentration signal be the negative entropy of the normalized attribution,
+$\kappa(x)=-\!\sum_j p_j(x)\log p_j(x)$ with $p(x)=|e(x)|/\lVert e(x)\rVert_1$. As $\kappa(x)$
+increases, the attribution mass concentrates on fewer coordinates, so $\mathrm{top}_k(e,x)$ is
+increasingly determined by those coordinates and hence increasingly invariant to small changes of
+method or seed. Therefore $\kappa$ is monotonically associated with both terms of $S(x)$
+\eqref{eq:stab}, and a predictor using $\kappa$ recovers $S$ in part by definition, not by
+learning an independent cue.
+\end{proposition}
+
+\noindent Empirically $\kappa$ correlates with $S$ at magnitude $\approx\input{claims/conc_label_corr}$,
+consistent with the proposition.
+
+\textbf{Failure 2: it does not generalize.} A deployable gate must work without being re-fit on
+the target dataset's expensive label. It cannot: trained on one dataset and tested on another, its
+AUC collapses to a mean of $\input{claims/transfer_mean}$ and falls \emph{below chance} on several
+pairs (e.g.\ $\input{claims/transfer_unsw_cicids}$ for UNSW$\to$CICIDS,
+$\input{claims/transfer_cicids_5g}$ for CICIDS$\to$5G-NIDD); the fitted signal weights even flip
+sign across datasets. So the only way to make the gate work is to compute, per dataset, the very
+ensemble-and-multi-method reliability label it was meant to spare the operator. The cheap gate is
+not cheap.
+
+\textbf{Failure 3: it is adversarially gameable.} A security control invites an adversary. Two of
+the gate's four inputs (decision margin, attribution entropy) are shaped by the input, so an
+attacker holding a genuinely-unreliable malicious flow can perturb it to make the gate accept its
+explanation as reliable while keeping the attack decision. This adaptive attack succeeds sharply:
+the fraction of low-stability true attacks the gate passes as reliable rises from
+$\input{claims/gate_atk_reliable_before_cicids}$ to $\input{claims/gate_atk_reliable_after_cicids}$
+on CICIDS2017 (gain $\input{claims/gate_atk_gain_cicids}$), with the malicious decision preserved
+throughout. An operator relying on the gate would be handed manipulated ``reliable'' explanations
+for real attacks.
+
+\textbf{Takeaway.} The most natural reliability gate recovers a stability signal that is partly
+tautological, wholly non-transferable, and adversarially gameable. We read this not as a dead end but as evidence that
+recovering interpretability-based trust is a genuine open problem, not a matter of bolting on a
+confidence score. A gate that predicts \emph{faithfulness} (not mere stability) and generalizes
+across deployments is, we believe, the right target, and an unsolved one.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.82\columnwidth]{fig_defense.pdf}
-\caption{The reliability gate predicts, per alarm and from one model, whether an explanation is
-trustworthy (high AUC), and is not reducible to an out-of-distribution detector, which alone is
-near or below chance on CICIDS2017.}
+\caption{In-distribution, the gate predicts explanation reliability with high AUC and beats an
+out-of-distribution baseline. This is misleading: the carrying signal is circular and the gate
+does not transfer across datasets (Failures 1--2). In-distribution success is necessary but far
+from sufficient for a deployable gate.}
 \label{fig:defense}
 \end{figure}
 
 \begin{table}[t]
 \centering
-\caption{Reliability-gate AUC: the full detector versus each single signal. The full gate beats
-every single signal on every dataset; out-of-distribution distance alone is weak or useless,
-ruling out the ``it is just OOD'' explanation.}
+\caption{In-distribution reliability-gate AUC: full detector versus each single signal. OOD
+distance alone is weak, but the concentration signal that replaces it is coupled to the label by
+construction (Failure~1), and none of this transfers across datasets (Failure~2).}
 \label{tab:defense}
 \small\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{lccc}
@@ -531,23 +796,37 @@ security benefit. They are cheap to run; we release code that computes all six.
 loop and, implicitly, in the accountability chain: an analyst who acts ``because the system
 showed feature $X$'' is relying on $e$. Our results imply this reliance is, today, reliance on an
 artifact of tool and seed. Accountability regimes that credit ``the model is explainable'' as a
-control are mis-specified unless the explanation meets conditions like ours, and the reliability
-gate is a step toward making the credit conditional on evidence.
+control are mis-specified unless the explanation meets conditions like ours; and, as our negative
+result shows, one cannot yet discharge that condition with a cheap per-alarm reliability score.
 
-\textbf{Why a gate rather than a fix.} We do not claim to make explanations faithful,
-determinate, and grounded; that may be impossible for post-hoc attributions on expressive models.
-The gate is more modest and more deployable: it accepts that reliability varies per flow and
-surfaces it, so trust can be selective. This mirrors how mature security tooling treats
-uncertain signals, by scoring confidence rather than asserting it.
+\textbf{Why recovering trust is hard.} A tempting fix is to score, per flow, how much to trust an
+explanation. Our negative result (Section~\ref{sec:defense}) shows why the natural version does
+not work: stability is measurable but partly tautological with its own predictors and does not
+transfer across deployments, and stability is not faithfulness in any case. A useful gate would
+have to predict \emph{faithfulness} and generalize, which post-hoc attributions on expressive
+models may not permit. Selective trust is the right idea; a sound mechanism for it is unsolved.
 
-\textbf{Scope and honesty.} Our demonstrations use gradient- and perturbation-family attributions
-and one symbolic-surrogate notion of interpretability; prototype- and rule-based methods may
-behave differently, and testing them is what our criteria call for. Our adversarial result is
-deliberately reported as inconclusive. The reliability gate is a first mechanism with a modest
-AUC on one dataset ($0.72$ on UNSW-NB15); we expect better stability predictors to improve it.
-The point is not that these particular methods are uniquely bad, but that the \emph{inference}
-from interpretability to trust is unlicensed until the properties are checked, and on modern data
-the check fails by default.
+\textbf{Scope and honesty.} The point is not that these particular methods are uniquely bad, but
+that the \emph{inference} from interpretability to trust is unlicensed until the properties are
+checked, and on modern data the check fails by default. Our adversarial manipulation result is
+deliberately reported as inconclusive, and the reliability gate as a negative result.
+
+\textbf{Threats to validity.} We list what could change our conclusions and why we think it does
+not. \emph{Attribution scope}: we study five gradient- and perturbation-family attributions and
+tree/logistic/KAN surrogates; prototype-, concept-, and rule-based
+methods~\cite{ribeiro2018anchors} may behave differently, which is exactly what our criteria ask
+authors to check, but the fidelity, faithfulness, and cross-family determinacy failures are
+method-diverse enough that a single better method is unlikely to rescue trust. \emph{Analyst
+model}: the analyst is a classifier, not a human; a real analyst uses context beyond the
+attribution vector, so our harm is a lower bound on divergence for the explanation channel in
+isolation, and a human study is future work. \emph{Detector scope}: we use MLP and KAN detectors;
+the properties are about the explanation layer and are largely detector-agnostic, but a
+convolutional or transformer NIDS could shift the numbers. \emph{Dataset difficulty}: 5G-NIDD is
+near-saturated in detection, which is why its harm is small; the effect is concentrated, as it
+should be, on the harder CICIDS2017 and TON-IoT. \emph{Statistical power}: we report three-seed
+statistics and, for the gate, expose its true run-to-run instability rather than an
+over-tight interval. None of these points toward a hidden way that interpretability \emph{does}
+warrant trust; they bound where our specific numbers apply.
 
 % ============================================================================
 \section{Ethics Considerations}\label{sec:ethics}
@@ -559,9 +838,11 @@ contribution: it warns that a widely promoted security workflow, trusting ML-IDS
 explanations, may be unfounded, and offers a mechanism to mitigate the risk. Our inconclusive
 attack is described at a level sufficient to reproduce the analysis but does not provide an
 operational tool for evading detectors, and the underlying benign failures are the primary basis
-of our conclusions. We will release code and evaluation criteria to help the community audit
-interpretability-for-trust claims, which we judge net-beneficial: the same code that could reveal
-a weak explanation is what a defender needs to avoid over-trusting one. We disclose no specific
+of our conclusions. We release code, the data-preparation scripts, and the evaluation criteria to help the community
+audit interpretability-for-trust claims, which we judge net-beneficial: the same code that could
+reveal a weak explanation is what a defender needs to avoid over-trusting one. The artifact is
+available at \url{https://anonymous.4open.science/r/xai-ids-trust-2826} (anonymized for review).
+% CAMERA-READY: replace with https://github.com/haodpsut/xai-ids-trust We disclose no specific
 vulnerable product; the concern is a methodological one affecting the class of explainable ML-IDS.
 
 % ============================================================================
@@ -570,13 +851,66 @@ vulnerable product; the concern is a methodological one affecting the class of e
 Explainable ML-IDS invites analysts to trust detectors through their explanations. We asked what
 would make that trust well-founded, formalized it as fidelity, determinacy, and groundedness, and
 showed all three fail on three modern intrusion datasets and across five standard explainers,
-including SHAP and LIME. We found the failure hard to weaponize on tabular IDS, an honest negative
-result, but easy to demonstrate benignly. We then turned the diagnosis into a defense, a per-alarm
-reliability gate that predicts when an explanation may be trusted with AUC up to $0.94$ and is not
-reducible to out-of-distribution detection. Interpretability, as currently produced and evaluated,
-is not a sound basis for trust in ML-IDS; but the conditions under which it would be are checkable,
-and reliability is partly recoverable. We hope the criteria and the gate move explainable
-intrusion detection from measuring the trust it induces to earning the trust it deserves.
+including SHAP and LIME. We showed the failure has a security cost: on correctly-detected true
+attacks, equally-good detectors' explanations drive opposite analyst actions on up to $94\%$ of
+flows, so acting on the explanation makes catching a real attack an accident of the deployed
+model. We then mapped how hard the failure is to fix, reporting two honest negatives, an
+explanation-manipulation attack that does not transfer to tabular IDS, and a natural reliability
+gate that is circular and does not generalize. Interpretability, as currently produced and
+evaluated, is not a sound basis for trust in ML-IDS, and recovering that basis is an open problem.
+We offer threat-aware criteria so that the next claim of interpretability-for-trust in security is
+made, and checked, on evidence rather than hope.
+
+\appendices
+% ============================================================================
+\section{Full Pairwise Explanation Agreement}\label{app:pairwise}
+% ============================================================================
+Table~\ref{tab:pairwise} gives the complete top-5 Jaccard agreement for all ten pairs of the five
+explainers, at the high sampling budgets used throughout (KernelSHAP $1000$ samples, LIME $3000$).
+The two variants within the gradient family that share the input$\times$gradient construction
+(input$\times$gradient vs.\ integrated gradients) are the only consistently high pair
+($0.72$--$0.87$); every cross-family pair is low. This is why we anchor the determinacy claim on
+cross-family disagreement (e.g.\ gradient vs.\ SHAP, $0.15$--$0.32$) rather than on the noisier
+SHAP-vs-LIME comparison: at low sampling budgets SHAP and LIME are not even self-consistent
+(rerun agreement $\approx 0.43$), so part of their mutual disagreement is Monte-Carlo noise,
+whereas the cross-family gap persists at any budget.
+
+\begin{table}[h]
+\centering
+\caption{Top-5 Jaccard agreement for all explainer pairs (high sampling budget). g=gradient,
+i=input$\times$grad, ig=integrated grad, s=SHAP, l=LIME.}
+\label{tab:pairwise}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccc}
+\toprule
+Pair & UNSW & CICIDS & 5G-NIDD \\
+\midrule
+g -- i   & $0.39$ & $0.18$ & $0.52$ \\
+g -- ig  & $0.36$ & $0.17$ & $0.52$ \\
+g -- s   & $0.24$ & $0.15$ & $0.32$ \\
+g -- l   & $0.22$ & $0.34$ & $0.51$ \\
+i -- ig  & $0.72$ & $0.75$ & $0.87$ \\
+i -- s   & $0.39$ & $0.54$ & $0.52$ \\
+i -- l   & $0.20$ & $0.19$ & $0.48$ \\
+ig -- s  & $0.39$ & $0.57$ & $0.57$ \\
+ig -- l  & $0.19$ & $0.21$ & $0.52$ \\
+s -- l   & $0.42$ & $0.22$ & $0.34$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ============================================================================
+\section{Reproducibility}\label{app:repro}
+% ============================================================================
+Every number is produced by a released script and traced through a single \texttt{claims.json}
+source of truth. The main measurements are \texttt{exp\_trust.py} (P1--P3),
+\texttt{exp\_breadth.py} (five-explainer agreement), \texttt{exp\_multiseed.py} (seed statistics),
+\texttt{exp\_harm.py} (Algorithm~\ref{alg:harm}), \texttt{exp\_attack.py} (the inconclusive
+manipulation attack), \texttt{exp\_defense.py} and \texttt{exp\_defense\_ablate.py}
+(Algorithm~\ref{alg:gate} and its ablation), \texttt{exp\_defense\_transfer.py} (cross-dataset
+non-generalization), \texttt{exp\_gate\_attack.py} (the adaptive attack), and
+\texttt{exp\_fidelity\_multi.py} (the fidelity--readability frontier). All three datasets are
+public.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}

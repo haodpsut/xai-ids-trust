@@ -1,0 +1,42 @@
+% Framework flow: the analyst-trust pipeline in explainable ML-IDS and the three points where
+% interpretability-based trust breaks (P1/P2/P3), plus the security harm. House style, single-col.
+\documentclass[tikz,border=3pt]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{positioning,shapes.geometric,arrows.meta,fit,backgrounds,calc}
+\def\cardW{30mm}
+\input{palette.tex}
+\begin{document}
+\begin{tikzpicture}[font=\sffamily\footnotesize,>={Stealth[length=2mm]},node distance=6mm]
+% main pipeline (left -> right)
+\node[card] (flow) {network flow $x$};
+\node[card,right=8mm of flow] (det) {detector $f$\\\scriptsize alarm $f(x){=}1$};
+\node[card,right=8mm of det] (expl) {explanation $e(x)$\\\scriptsize top-$k$ features};
+\node[dec,right=9mm of expl] (analyst) {analyst reads $e$};
+\node[card,right=9mm of analyst,draw=warm] (act) {action:\\escalate / suppress};
+
+\foreach \n in {flow,det,expl}{\ruleStage{\n}}
+\ruleOut{act}
+\stepchip{det}{1}\stepchip{expl}{2}\stepchip{analyst}{3}
+
+\draw[data] (flow)--(det);
+\draw[data] (det)--(expl);
+\draw[data] (expl)--(analyst);
+\draw[data] (analyst)--(act);
+
+% failure annotations (below), each pointing at where trust breaks
+\node[amod,draw=warm,below=10mm of det,text width=26mm] (p1)
+  {\scriptsize\textbf{P1 fidelity}\\interpretable $g\!\neq\!f$};
+\node[amod,draw=warm,below=10mm of expl,text width=26mm] (p2)
+  {\scriptsize\textbf{P2 determinacy}\\$e\!\neq\!e'$ (method)};
+\node[amod,draw=warm,below=10mm of analyst,text width=26mm] (p3)
+  {\scriptsize\textbf{P3 groundedness}\\$e_{f_1}\!\neq\!e_{f_2}$ (seed)};
+\draw[active,dashed] (p1)--(det);
+\draw[active,dashed] (p2)--(expl);
+\draw[active,dashed] (p3)--(analyst);
+
+% harm badge on the output
+\node[below=10mm of act,text width=30mm,align=center,font=\scriptsize,text=warm] (harm)
+  {\textbf{Harm:} same true attack,\\opposite action per seed};
+\draw[active,dashed] (harm)--(act);
+\end{tikzpicture}
+\end{document}

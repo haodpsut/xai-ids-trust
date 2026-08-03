@@ -42,8 +42,8 @@ def fig_trust():
     ax.text(2.32, 1.01, "trust needs 1.0", fontsize=7, color=ap.GRAY, ha="right", va="bottom")
     ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=7)
     ax.set_ylabel("agreement / retention"); ax.set_ylim(0, 1.12)
-    ax.legend(fontsize=7, ncol=3, loc="lower center", columnspacing=1.0, handlelength=1.3)
-    fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_trust"))
+    ax.legend(fontsize=7, ncol=3, loc="lower center", bbox_to_anchor=(0.5, 1.02), columnspacing=1.0, handlelength=1.3, frameon=False)
+    fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_trust"))
 
 
 def fig_fidelity():
@@ -64,8 +64,8 @@ def fig_fidelity():
                     arrowprops=dict(arrowstyle="->", color=ap.GRAY, lw=0.7))
     ax.set_xticks(x); ax.set_xticklabels(ds)
     ax.set_ylabel("detection $F_1$"); ax.set_ylim(0, 1.08)
-    ax.legend(fontsize=7, loc="lower left")
-    fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_fidelity"))
+    ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
+    fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_fidelity"))
 
 
 def fig_defense():
@@ -87,11 +87,34 @@ def fig_defense():
     ax.text(2.35, 0.505, "chance", fontsize=7, color=ap.WARM, ha="right", va="bottom")
     ax.set_xticks(x); ax.set_xticklabels(ds)
     ax.set_ylabel("reliability-detection AUC"); ax.set_ylim(0.4, 1.0)
-    ax.legend(fontsize=7, loc="upper left")
-    fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_defense"))
+    ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
+    fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_defense"))
+
+
+def fig_harm():
+    """The security teeth: detection is stable (all models agree it's an attack), but the
+    explanation-driven analyst action diverges, most on CICIDS. Uses the logistic auditor."""
+    import os as _os
+    with open(_os.path.join(HERE, "results", "harm.csv")) as f:
+        rows = [r for r in csv.DictReader(f) if r["auditor"] == "logistic"]
+    d = {r["dataset"]: r for r in rows}
+    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    detect = [float(d[k]["detection_agreement"]) for k in ds]
+    diverge = [float(d[k]["action_divergence"]) for k in ds]
+    x = np.arange(len(ds)); w = 0.36
+    fig, ax = plt.subplots(figsize=(3.5, 2.5))
+    ax.bar(x - w / 2, detect, w, facecolor="white", edgecolor=ap.INK, linewidth=1.0,
+           hatch="///", label="detection agreement")
+    ax.bar(x + w / 2, diverge, w, facecolor="white", edgecolor=ap.WARM, linewidth=1.0,
+           hatch="...", label="action divergence")
+    ax.set_xticks(x); ax.set_xticklabels(ds)
+    ax.set_ylabel("fraction of true attacks"); ax.set_ylim(0, 1.12)
+    ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
+    fig.tight_layout(rect=[0, 0, 1, 0.93]); ap.save(fig, os.path.join(FIG, "fig_harm"))
 
 
 if __name__ == "__main__":
     fig_trust(); print("fig_trust ok")
     fig_fidelity(); print("fig_fidelity ok")
     fig_defense(); print("fig_defense ok")
+    fig_harm(); print("fig_harm ok")

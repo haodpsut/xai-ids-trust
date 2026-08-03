@@ -1,0 +1,4 @@
+dataset,still_attack,reliable_before,reliable_after,attack_gain
+UNSW,1.0,0.713,0.985,0.272
+CICIDS,1.0,0.013,1.0,0.988
+5G-NIDD,1.0,0.175,1.0,0.825

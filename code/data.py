@@ -43,7 +43,14 @@ def load(name, seed=0):
         drop = {"Label", "Attack Type", "Attack Tool", "Unnamed: 0"}
         feats = [c for c in df.columns if c not in drop]
         return _prep(df, "Label", ["Benign"], feats, seed)
+    if name == "TON-IoT":
+        df = pd.read_csv(f"{BASE}/toniot/train_test_network.csv", low_memory=False)
+        # drop identifiers (IP/port leak host identity, not behavior) and labels
+        drop = {"label", "type", "src_ip", "dst_ip", "src_port", "dst_port", "ts"}
+        feats = [c for c in df.columns if c not in drop]
+        return _prep(df, "label", [0], feats, seed)
     raise ValueError(name)
 
 
 DATASETS = ["UNSW", "CICIDS", "5G-NIDD"]
+DATASETS4 = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT"]

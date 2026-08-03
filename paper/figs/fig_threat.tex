@@ -1,0 +1,39 @@
+% Threat model: two routes to get a malicious flow's alarm dismissed. Route 1 (classic) evades
+% the DETECTOR; Route 2 (this paper) keeps the detector firing but manipulates the EXPLANATION so
+% the analyst dismisses it. On tabular NIDS, Route 2 does not transfer (our honest negative).
+\documentclass[tikz,border=3pt]{standalone}
+\usepackage{amsmath}
+\usetikzlibrary{positioning,shapes.geometric,arrows.meta,fit,backgrounds,calc}
+\def\cardW{34mm}
+\input{palette.tex}
+\begin{document}
+\begin{tikzpicture}[font=\sffamily\footnotesize,>={Stealth[length=2mm]},node distance=7mm]
+\node[card] (mal) {malicious flow\\\scriptsize attacker-controlled};
+
+% Route 1: evade detector (known)
+\node[card,above right=5mm and 16mm of mal] (evd) {perturb to evade\\detector $f$};
+\node[dec,right=10mm of evd] (d1) {$f(x'){=}0$?};
+\node[card,right=9mm of d1,draw=warm] (out1) {alarm suppressed\\\scriptsize (evasion by detection)};
+
+% Route 2: evade analyst via explanation (ours)
+\node[card,below right=5mm and 16mm of mal] (eva) {keep $f(x){=}1$,\\reshape $e(x)$};
+\node[dec,right=10mm of eva] (d2) {$e$ looks benign?};
+\node[card,right=9mm of d2,draw=warm] (out2) {analyst dismisses\\\scriptsize (evasion by explanation)};
+
+\ruleStage{evd}\ruleTrack{eva}\ruleOut{out1}\ruleOut{out2}
+\stepchip{evd}{1}\stepchip{eva}{2}
+
+\draw[data] (mal.north) to[out=60,in=180] (evd.west);
+\draw[data] (evd)--(d1);
+\draw[data] (d1)-- node[above,font=\scriptsize,fill=white,inner sep=1pt]{yes} (out1);
+\draw[active] (mal.south) to[out=-60,in=180] (eva.west);
+\draw[active] (eva)--(d2);
+\draw[active] (d2)-- node[above,font=\scriptsize,fill=white,inner sep=1pt]{yes} (out2);
+
+% annotation: route 2 blocked on tabular
+\node[amod,draw=warm,below=7mm of d2,text width=52mm,align=center] (block)
+  {\scriptsize\textbf{On tabular NIDS this route does not transfer}\\
+   low-dim, manifold-constrained features: reshaping $e$\\ without flipping $f$ is hard (our negative result)};
+\draw[active,dashed] (block)--(d2);
+\end{tikzpicture}
+\end{document}

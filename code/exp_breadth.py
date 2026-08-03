@@ -35,7 +35,7 @@ def proba_fn(model):
 def shap_topk(model, Xbg, Xm):
     f = proba_fn(model)
     expl = shap.KernelExplainer(f, shap.kmeans(Xbg, 15))
-    sv = expl.shap_values(Xm, nsamples=100, silent=True)
+    sv = expl.shap_values(Xm, nsamples=1000, silent=True)
     sv = sv[1] if isinstance(sv, list) else sv[..., 1]           # attack-class attributions
     return topk_features(np.asarray(sv), TOPK)
 
@@ -47,7 +47,7 @@ def lime_topk(model, Xtr, Xm, feats):
                               mode="classification")
     out = np.zeros((len(Xm), TOPK), int)
     for r in range(len(Xm)):
-        e = ex.explain_instance(Xm[r], f, num_features=TOPK, labels=(1,), num_samples=300)
+        e = ex.explain_instance(Xm[r], f, num_features=TOPK, labels=(1,), num_samples=3000)
         out[r] = [idx for idx, _ in e.local_exp[1][:TOPK]]
     return out
 
