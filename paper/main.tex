@@ -26,6 +26,17 @@ Machine-Learning Intrusion Detection?}
 \author{\IEEEauthorblockN{Anonymous Submission}
 \IEEEauthorblockA{Under double-blind review}}
 
+
+\IEEEoverridecommandlockouts
+\makeatletter\def\@IEEEpubidpullup{6.5\baselineskip}\makeatother
+\IEEEpubid{\parbox{\columnwidth}{
+Network and Distributed System Security (NDSS) Symposium 2027\\
+22--26 March 2027, Seoul, Republic of Korea\\
+ISBN 978-1-970672-09-1\\
+https://dx.doi.org/10.14722/ndss.2027.23xxxx\\
+www.ndss-symposium.org
+}\hspace{\columnsep}\makebox[\columnwidth]{}}
+
 \maketitle
 
 \begin{abstract}
@@ -48,7 +59,7 @@ detector is stable, two equally-good models' explanations drive \emph{opposite} 
 an accident of the deployed seed. We further report two honest negatives that map the difficulty
 of fixing this: an adversarial explanation-manipulation attack does not transfer from vision to
 tabular IDS in our hands, and a natural per-alarm reliability gate, though it scores well
-in-distribution, is circular and fails to generalize across datasets, so trust is not cheaply
+in-distribution, is circular, fails to generalize across datasets, and is adversarially gameable, so trust is not cheaply
 recoverable. We distill the study into threat-aware evaluation criteria that a defensible
 interpretability-for-trust claim in security must meet. The upshot: interpretability is not, by
 default, a warrant for trust in ML-IDS, and recovering that warrant is an open problem.
@@ -90,8 +101,7 @@ induce \emph{opposite} analyst actions on up to $94\%$ of flows, so mis-founded 
 whether a real attack is acted on into an accident of the deployed model.
 \item We map \textbf{how hard the failure is to fix} with two honest negatives: an
 explanation-manipulation attack does not transfer to tabular IDS (Section~\ref{sec:adv}), and the
-most natural per-alarm reliability gate, though it scores well in-distribution, is circular and
-fails to generalize across datasets (Section~\ref{sec:defense}). Trust is not cheaply recovered.
+most natural per-alarm reliability gate, though it scores well in-distribution, is circular, non-transferable, and gameable, andfails to generalize across datasets (Section~\ref{sec:defense}). Trust is not cheaply recovered.
 \item We distill \textbf{threat-aware evaluation criteria} (Section~\ref{sec:criteria}) that a
 defensible interpretability-for-trust claim in security must meet.
 \end{itemize}
@@ -397,7 +407,7 @@ CICIDS2017~\cite{cicids2017,engelen2021} & 2017 & $52$ & $0.17$ \\
 \begin{table*}[t]
 \centering
 \caption{Each necessary property of interpretability-based trust, on three modern NIDS datasets,
-over three seeds (mean$\pm$std). Every quantity is an agreement or retention that must be
+over three seeds (P1, P2) and four seeds (P3), mean$\pm$std. Every quantity is an agreement or retention that must be
 $\approx 1.0$ for trust to be well-founded; all fall short.}
 \label{tab:main}
 \small
@@ -536,7 +546,7 @@ explanation to the model's actual behavior rather than to another explanation. O
 shown features are the ones the model \emph{uses}. They are not. We
 measure the two standard faithfulness metrics~\cite{hooker2019roar}, comprehensiveness (the drop
 in attack-probability when the top-5 features are removed) and sufficiency (how much the top-5
-alone retain), on a fourth modern dataset too, TON-IoT~\cite{tavallaee2009nslkdd}. Removing the
+alone retain), on a fourth modern dataset too, TON-IoT~\cite{toniot2020}. Removing the
 top-5 attributed features barely moves the decision: comprehensiveness is only
 $\input{claims/faith_comp_unsw}$ (UNSW-NB15), $\input{claims/faith_comp_5g}$ (5G-NIDD), and
 $\input{claims/faith_comp_toniot}$ (TON-IoT), and reaches $\input{claims/faith_comp_cicids}$ only
@@ -664,7 +674,7 @@ worst outcomes.
 
 \textbf{The blind spot concentrates on serious threats.} Resolving the harm by attack type on the
 multiclass datasets (Fig.~\ref{fig:harmtype}) shows it is not uniform: divergence is near-total on
-scanning ($\input{claims/hbt_ton_scanning}$ on TON-IoT), backdoor
+scanning ($>\!0.99$ on TON-IoT), backdoor
 ($\input{claims/hbt_ton_backdoor}$), ransomware ($\input{claims/hbt_ton_ransomware}$), and DoS,
 but small on injection ($\input{claims/hbt_ton_injection}$) and XSS. So whether the analyst acts
 is most seed-dependent exactly for reconnaissance, backdoor, and ransomware, the threats where a
@@ -812,7 +822,7 @@ Proposition~\ref{prop:circ} makes the entanglement precise.
 
 \begin{proposition}[Gate circularity]\label{prop:circ}
 Let the concentration signal be the negative entropy of the normalized attribution,
-$\kappa(x)=-\!\sum_j p_j(x)\log p_j(x)$ with $p(x)=|e(x)|/\lVert e(x)\rVert_1$. As $\kappa(x)$
+$\kappa(x)=\sum_j p_j(x)\log p_j(x)$ with $p(x)=|e(x)|/\lVert e(x)\rVert_1$ (so $\kappa=-H$, high when peaked). As $\kappa(x)$
 increases, the attribution mass concentrates on fewer coordinates, so $\mathrm{top}_k(e,x)$ is
 increasingly determined by those coordinates and hence increasingly invariant to small changes of
 method or seed. Therefore $\kappa$ is monotonically associated with both terms of $S(x)$
@@ -995,23 +1005,6 @@ over-tight interval. None of these points toward a hidden way that interpretabil
 warrant trust; they bound where our specific numbers apply.
 
 % ============================================================================
-\section{Ethics Considerations}\label{sec:ethics}
-% ============================================================================
-This work studies public network-intrusion datasets (UNSW-NB15, CICIDS2017, 5G-NIDD) and
-introduces no new data collection or human-subjects experiment; the analyst in our study is
-modeled by a classifier, not a person, so no IRB approval was required. The paper is a defensive
-contribution: it warns that a widely promoted security workflow, trusting ML-IDS through
-explanations, may be unfounded, and offers a mechanism to mitigate the risk. Our inconclusive
-attack is described at a level sufficient to reproduce the analysis but does not provide an
-operational tool for evading detectors, and the underlying benign failures are the primary basis
-of our conclusions. We release code, the data-preparation scripts, and the evaluation criteria to help the community
-audit interpretability-for-trust claims, which we judge net-beneficial: the same code that could
-reveal a weak explanation is what a defender needs to avoid over-trusting one. The artifact is
-available at \url{https://anonymous.4open.science/r/xai-ids-trust-2826} (anonymized for review).
-% CAMERA-READY: replace with https://github.com/haodpsut/xai-ids-trust We disclose no specific
-vulnerable product; the concern is a methodological one affecting the class of explainable ML-IDS.
-
-% ============================================================================
 \section{Conclusion}\label{sec:concl}
 % ============================================================================
 Explainable ML-IDS invites analysts to trust detectors through their explanations. We asked what
@@ -1022,7 +1015,7 @@ attacks, equally-good detectors' explanations drive opposite analyst actions on 
 flows, so acting on the explanation makes catching a real attack an accident of the deployed
 model. We then mapped how hard the failure is to fix, reporting two honest negatives, an
 explanation-manipulation attack that does not transfer to tabular IDS, and a natural reliability
-gate that is circular and does not generalize. Interpretability, as currently produced and
+gate that is circular, non-transferable, and adversarially gameable. Interpretability, as currently produced and
 evaluated, is not a sound basis for trust in ML-IDS, and recovering that basis is an open problem.
 We offer threat-aware criteria so that the next claim of interpretability-for-trust in security is
 made, and checked, on evidence rather than hope.
@@ -1077,6 +1070,23 @@ manipulation attack), \texttt{exp\_defense.py} and \texttt{exp\_defense\_ablate.
 non-generalization), \texttt{exp\_gate\_attack.py} (the adaptive attack), and
 \texttt{exp\_fidelity\_multi.py} (the fidelity-readability frontier). All three datasets are
 public.
+
+% ============================================================================
+\section{Ethics Considerations}\label{sec:ethics}
+% ============================================================================
+This work studies public network-intrusion datasets (UNSW-NB15, CICIDS2017, 5G-NIDD) and
+introduces no new data collection or human-subjects experiment; the analyst in our study is
+modeled by a classifier, not a person, so no IRB approval was required. The paper is a defensive
+contribution: it warns that a widely promoted security workflow, trusting ML-IDS through
+explanations, may be unfounded, and offers a mechanism to mitigate the risk. Our inconclusive
+attack is described at a level sufficient to reproduce the analysis but does not provide an
+operational tool for evading detectors, and the underlying benign failures are the primary basis
+of our conclusions. We release code, the data-preparation scripts, and the evaluation criteria to help the community
+audit interpretability-for-trust claims, which we judge net-beneficial: the same code that could
+reveal a weak explanation is what a defender needs to avoid over-trusting one. The artifact is
+available at \url{https://anonymous.4open.science/r/xai-ids-trust-2826} (anonymized for review).
+% CAMERA-READY: replace with https://github.com/haodpsut/xai-ids-trust We disclose no specific
+vulnerable product; the concern is a methodological one affecting the class of explainable ML-IDS.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
