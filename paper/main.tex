@@ -485,8 +485,12 @@ handed one detector's explanation is trusting an accident of training that an eq
 detector would contradict.
 
 All three necessary properties fail, with tight seed-to-seed variance, across three modern
-datasets. The trust that explainable ML-IDS invites is therefore, as currently produced, not
-well-founded.
+datasets. The failures are not artifacts of our choices: determinacy agreement stays low across
+top-$k$ sizes ($k{=}3,5,10$; e.g.\ CICIDS2017 $0.35$--$\input{claims/p2k_cicids_k10}$), and
+groundedness agreement is flat as the ensemble grows from four to ten models (CICIDS2017
+$\approx\input{claims/p3E_cicids_E10}$, 5G-NIDD $\approx\input{claims/p3E_5g_E10}$), so neither
+failure is rescued by showing more features or averaging more models. The trust that explainable
+ML-IDS invites is therefore, as currently produced, not well-founded.
 
 \textbf{Beyond agreement: the explanations are also unfaithful.} Agreement is about consistency;
 one might still hope the shown features are the ones the model \emph{uses}. They are not. We
@@ -496,9 +500,32 @@ alone retain), on a fourth modern dataset too, TON-IoT~\cite{tavallaee2009nslkdd
 top-5 attributed features barely moves the decision: comprehensiveness is only
 $\input{claims/faith_comp_unsw}$ (UNSW-NB15), $\input{claims/faith_comp_5g}$ (5G-NIDD), and
 $\input{claims/faith_comp_toniot}$ (TON-IoT), and reaches $\input{claims/faith_comp_cicids}$ only
-on CICIDS2017. So on three of four datasets the features an analyst is shown are largely not the
-ones driving the alarm (Table~\ref{tab:faith}). Faithfulness, the deepest of the properties,
-fails independently of the agreement failures above.
+on CICIDS2017. So on three of four datasets the features the analyst is shown (via gradient saliency) are largely
+not the ones driving the alarm (Table~\ref{tab:faith}). Extending to all five explainers
+(Table~\ref{tab:faith5}) shows faithfulness is real but \emph{unreliable}: it depends on both
+explainer and dataset. SHAP is highly faithful on CICSIDS2017 (comprehensiveness
+$\input{claims/f5_shap_cicids}$) but only $\input{claims/f5_shap_5g}$ on 5G-NIDD; LIME is the
+least faithful, as low as $\input{claims/f5_lime_unsw}$ on UNSW-NB15. No single explainer is
+faithful across datasets, so an analyst cannot assume the shown features are the operative ones
+without measuring it per deployment, which no audited paper does (Section~\ref{sec:audit}).
+
+\begin{table}[t]
+\centering
+\caption{Comprehensiveness of the top-5 explanation for all five explainers (higher is more
+faithful). Faithfulness is explainer- and dataset-dependent: no method is reliably faithful
+across datasets, and the most-deployed (SHAP, LIME) swing widely.}
+\label{tab:faith5}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lccccc}
+\toprule
+& grad & i$\times$g & int-g & SHAP & LIME \\
+\midrule
+UNSW-NB15  & $0.18$ & $0.27$ & $0.46$ & $0.35$ & $\mathbf{0.14}$ \\
+CICIDS2017 & $0.40$ & $0.76$ & $0.68$ & $\mathbf{0.96}$ & $0.50$ \\
+5G-NIDD    & $0.22$ & $0.30$ & $0.32$ & $0.41$ & $0.36$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[t]
 \centering
@@ -562,6 +589,34 @@ highest (Fig.~\ref{fig:harm}, Table~\ref{tab:harm}). Crucially, no adversary is 
 harm follows from the benign under-determination of Section~\ref{sec:fail}. The effect is robust
 to the analyst model: a random-forest auditor gives the same qualitative picture (divergence
 $0.94$ on CICIDS), so it is not an artifact of a linear analyst.
+
+\textbf{The blind spot concentrates on serious threats.} Resolving the harm by attack type on the
+multiclass datasets (Table~\ref{tab:hbt}) shows it is not uniform: divergence is near-total on
+scanning ($\input{claims/hbt_ton_scanning}$ on TON-IoT), backdoor
+($\input{claims/hbt_ton_backdoor}$), ransomware ($\input{claims/hbt_ton_ransomware}$), and DoS,
+but small on injection ($\input{claims/hbt_ton_injection}$) and XSS. So whether the analyst acts
+is most seed-dependent exactly for reconnaissance, backdoor, and ransomware, the threats where a
+missed response is most costly. Mis-founded trust does not spread its risk evenly; it clusters it
+on the attacks that matter.
+
+\begin{table}[t]
+\centering
+\caption{Action divergence by attack type on correctly-detected true attacks (TON-IoT). The
+explanation-induced blind spot is largest on serious threats (scanning, backdoor, ransomware, DoS)
+and small on injection/XSS.}
+\label{tab:hbt}
+\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lc@{\qquad}lc}
+\toprule
+Attack & divergence & Attack & divergence \\
+\midrule
+scanning   & $0.997$ & password  & $0.27$ \\
+backdoor   & $0.995$ & xss       & $0.21$ \\
+dos        & $0.981$ & injection & $0.12$ \\
+ransomware & $0.911$ & ddos      & $0.62$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{figure}[t]
 \centering

@@ -85,5 +85,18 @@
  "audit_c3": 0,
  "audit_c4": 12,
  "audit_c5": 12,
- "audit_c6": 4
+ "audit_c6": 4,
+ "hbt_ton_scanning": 0.997,
+ "hbt_ton_backdoor": 0.995,
+ "hbt_ton_ransomware": 0.91,
+ "hbt_ton_injection": 0.12,
+ "hbt_cicids_portscan": 0.89,
+ "hbt_cicids_ddos": 0.22,
+ "p2k_cicids_k10": 0.47,
+ "p3E_cicids_E10": 0.46,
+ "p3E_5g_E10": 0.63,
+ "f5_shap_cicids": 0.96,
+ "f5_lime_unsw": 0.14,
+ "f5_shap_5g": 0.41,
+ "f5_grad_unsw": 0.18
 }
