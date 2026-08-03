@@ -1,0 +1,13 @@
+key,label,year,venue,C1 fidelity,C2 method-inv,C3 instance-inv,C4 adv-robust,C5 warrant,C6 reliability
+warnecke2020,Warnecke et al. (eval),2020,EuroS&P,0.5,1,0,0.5,0.5,0
+nadeem2023,Nadeem et al. (SoK),2023,EuroS&P,0.5,0.5,0,0.5,0.5,0
+capuano2022,Capuano et al. (survey),2022,Access,0,0,0,0,0,0
+action2026,Le et al. action-contracts,2026,Electron.,0,0,0,0,0.5,0.5
+robustxai2022,Robust NID via XAI,2022,conf,0,0.5,0,0.5,0,0
+xgnid2024,XG-NID (GNN+LLM),2024,arXiv,0,0,0,0,0,0
+ngshap2025,NGSHAP-IDS (NGBoost),2025,journal,0,0,0,0,0,0
+selfattn2025,Self-attention XAI IoT,2025,Sci.Rep.,0,0.5,0,0,0,0
+feat5g2025,Feature Attrib. 5G IDS,2025,arXiv,0,1,0,0,0,0
+fronteval2025,Evaluating ML-IDS w/ XAI,2025,Frontiers,0,0.5,0,0,0,0
+lxaids2025,L-XAIDS (LIME framework),2025,arXiv,0,0,0,0,0,0
+insider2026,Insider-threat SHAP,2026,FGCS,0,0,0,0,0,0

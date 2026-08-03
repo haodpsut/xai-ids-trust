@@ -78,5 +78,12 @@
  "faith_comp_5g": 0.21,
  "faith_comp_toniot": 0.06,
  "faith_suffgap_5g": 0.55,
- "n_datasets4": 4
+ "n_datasets4": 4,
+ "audit_n": 12,
+ "audit_c1": 8,
+ "audit_c2": 33,
+ "audit_c3": 0,
+ "audit_c4": 12,
+ "audit_c5": 12,
+ "audit_c6": 4
 }

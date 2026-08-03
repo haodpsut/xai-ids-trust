@@ -12,6 +12,7 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage{amsthm}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage{wasysym}
 \graphicspath{{figs/}}
 \newtheorem{proposition}{Proposition}
 \newtheorem{definition}{Definition}
@@ -788,6 +789,54 @@ tells the analyst when the explanation should not be trusted, and validate it.
 
 These are necessary, not sufficient; but a claim that fails any of them should not be stated as a
 security benefit. They are cheap to run; we release code that computes all six.
+
+\subsection{How current work measures up}\label{sec:audit}
+To test whether these criteria are already met, we audit a corpus of twelve recent
+explainable-IDS papers ($2020$--$2026$) against the six. \emph{Methodology.} To avoid
+misrepresenting others' work we score conservatively from each paper's abstract and method: a
+criterion is marked met only when the paper explicitly reports the corresponding evidence,
+otherwise not-reported. Scores are therefore a lower bound on rigor, and the audit measures
+\emph{reporting practice}. The full scored list is released with our code.
+
+Table~\ref{tab:audit} shows the result, and it is stark. No criterion is met by a majority.
+Fidelity budgets are reported by $\input{claims/audit_c1}\%$ of papers, instance invariance by
+$\input{claims/audit_c3}\%$ (none), an explanation threat model by $\input{claims/audit_c4}\%$,
+warrant-style trust evaluation (versus analyst satisfaction) by $\input{claims/audit_c5}\%$, and a
+reliability signal by $\input{claims/audit_c6}\%$. Only method invariance reaches
+$\input{claims/audit_c2}\%$, and even there most papers that use two methods (SHAP and LIME) present
+them as complementary for \emph{cross-verification}~\cite{lxaids2025}, not as a determinacy check,
+so agreement is assumed rather than measured. The applied papers, which build XAI-IDS systems and
+report analyst usefulness~\cite{xgnid2024,feat5g2025}, report essentially none of the six; the two
+that engage explanation quality directly are the evaluation and SoK
+works~\cite{warnecke2020evaluating,nadeem2023sok}. In short, the properties whose failure we document are, in
+current practice, almost never checked, which is precisely why the failures go unnoticed and the
+trust claims stand unchallenged.
+
+\begin{table}[t]
+\centering
+\caption{Audit of recent explainable-IDS work against the six criteria (\CIRCLE~reported,
+\LEFTcircle~partial, \Circle~not reported; conservative lower bound from abstract/method). No
+criterion is met by a majority; instance invariance and reliability signalling by almost none.}
+\label{tab:audit}
+\small\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
+\toprule
+Paper & C1 & C2 & C3 & C4 & C5 & C6 \\
+ & fid & m-inv & i-inv & adv & warr & rely \\
+\midrule
+Warnecke~\cite{warnecke2020evaluating} (eval) & \LEFTcircle & \CIRCLE & \Circle & \LEFTcircle & \LEFTcircle & \Circle \\
+Nadeem~\cite{nadeem2023sok} (SoK)      & \LEFTcircle & \LEFTcircle & \Circle & \LEFTcircle & \LEFTcircle & \Circle \\
+Capuano~\cite{capuano2022}          & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
+Le~\cite{action2026}                & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
+Uccello~\cite{feat5g2025}           & \Circle & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
+Muhammad~\cite{lxaids2025}          & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
+Farrukh~\cite{xgnid2024}            & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
+5 further applied papers            & \Circle & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
+\midrule
+\textbf{coverage} & $8\%$ & $33\%$ & $0\%$ & $12\%$ & $12\%$ & $4\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % ============================================================================
 \section{Discussion}\label{sec:disc}
