@@ -326,6 +326,42 @@ disagreement is sufficient for an \emph{unwarranted} one, because the analyst ha
 basis to prefer either choice. We now show current practice violates all three properties, then
 that the violation carries a security cost and resists a cheap fix.
 
+\subsection{Which explanation approaches could warrant trust?}\label{sec:taxonomy}
+Before measuring, we systematize the landscape: which \emph{families} of explanation could, in
+principle, satisfy each property (Table~\ref{tab:taxo})? Post-hoc attributions
+(gradient~\cite{simonyan2013saliency,sundararajan2017ig}, perturbation-based SHAP and
+LIME~\cite{lundberg2017shap,ribeiro2016lime}) are computed \emph{from} a fixed deployed model, so
+they cannot violate fidelity, but they are method-dependent (determinacy at risk) and
+model-instance-dependent (groundedness at risk), and faithfulness is not guaranteed. Global
+surrogates (trees, sparse linear models) can be faithful only up to their approximation of the
+deployed model, trading fidelity against readability (Section~\ref{sec:fail}). Intrinsically
+interpretable models~\cite{rudin2019} (and interpretable-by-design networks such as the
+KAN~\cite{liu2024kan}) escape the surrogate gap by construction, but only if the deployed model
+\emph{is} the interpretable one, which sacrifices the capacity practitioners deploy for, and, as
+we show, a KAN's readable symbolic form is not faithful to the trained KAN. Rule- and
+concept-based methods~\cite{ribeiro2018anchors} are more stable but coarser. No family is free of
+all four risks; the table makes explicit where each must be checked.
+
+\begin{table}[t]
+\centering
+\caption{Which explanation families can, in principle, satisfy each trust property.
+\CIRCLE~structurally provides it, \LEFTcircle~conditionally, \Circle~at risk and must be
+measured. No family satisfies all four for free.}
+\label{tab:taxo}
+\small\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccc}
+\toprule
+Explanation family & fidelity & determ. & ground. & faithf. \\
+\midrule
+gradient attribution   & \CIRCLE & \Circle & \Circle & \Circle \\
+SHAP / LIME (perturb.) & \CIRCLE & \Circle & \Circle & \LEFTcircle \\
+global surrogate       & \LEFTcircle & \CIRCLE & \LEFTcircle & \LEFTcircle \\
+intrinsic / KAN        & \CIRCLE & \CIRCLE & \Circle & \Circle \\
+rule / concept         & \CIRCLE & \LEFTcircle & \LEFTcircle & \LEFTcircle \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 % ============================================================================
 \section{The Three Properties Fail}\label{sec:fail}
 % ============================================================================
@@ -451,28 +487,19 @@ $\input{claims/p2_agree_5g}{\pm}\input{claims/p2_agree_5g_std}$ (5G-NIDD). Cruci
 an artifact of using only gradient methods, nor of under-sampling: adding the two most deployed
 model-agnostic explainers, SHAP and LIME, at high sampling budgets, the mean five-explainer
 agreement stays at $\input{claims/p2_5explainer_unsw}$--$\input{claims/p2_5explainer_5g}$
-(Table~\ref{tab:breadth}), and \emph{cross-family} agreement is lower still: gradient saliency and
+(Fig.~\ref{fig:breadth}), and \emph{cross-family} agreement is lower still: gradient saliency and
 SHAP agree on only $\input{claims/p2_gradshap_cicids}$--$\input{claims/p2_gradshap_5g}$ of the
 top-5 features. The reason presented to the analyst is largely an artifact of which
 equally-defensible tool the vendor shipped.
 
-\begin{table}[t]
+\begin{figure}[t]
 \centering
-\caption{Determinacy across five explainers (high sampling budgets, so low agreement is not a
-Monte-Carlo artifact): mean top-5 agreement over all pairs, SHAP vs.\ LIME, and cross-family
-gradient vs.\ SHAP. Different explainer families disagree on most of the features they show.}
-\label{tab:breadth}
-\small\setlength{\tabcolsep}{3.5pt}
-\begin{tabular}{lccc}
-\toprule
-& UNSW-NB15 & CICIDS2017 & 5G-NIDD \\
-\midrule
-mean, all 5 explainers & $\input{claims/p2_5explainer_unsw}$ & $\input{claims/p2_5explainer_cicids}$ & $\input{claims/p2_5explainer_5g}$ \\
-SHAP vs.\ LIME        & $\input{claims/p2_shap_lime_unsw}$ & $\input{claims/p2_shap_lime_cicids}$ & $\input{claims/p2_shap_lime_5g}$ \\
-gradient vs.\ SHAP    & $\input{claims/p2_gradshap_unsw}$ & $\input{claims/p2_gradshap_cicids}$ & $\input{claims/p2_gradshap_5g}$ \\
-\bottomrule
-\end{tabular}
-\end{table}
+\includegraphics[width=0.88\columnwidth]{fig_pairwise_heat.pdf}
+\caption{Determinacy across five explainers (high sampling budgets): top-5 agreement for all ten
+pairs on each dataset. Only the two input$\times$gradient-based methods (i-ig) agree; every
+cross-family pair is light (low). The reason shown to the analyst is largely a tool artifact.}
+\label{fig:breadth}
+\end{figure}
 
 \textbf{Groundedness fails (Property~\ref{p:grnd}).} We train four detectors that differ only in
 random seed. Their detection performance is statistically identical (on UNSW-NB15,
@@ -489,8 +516,17 @@ datasets. The failures are not artifacts of our choices: determinacy agreement s
 top-$k$ sizes ($k{=}3,5,10$; e.g.\ CICIDS2017 $0.35$--$\input{claims/p2k_cicids_k10}$), and
 groundedness agreement is flat as the ensemble grows from four to ten models (CICIDS2017
 $\approx\input{claims/p3E_cicids_E10}$, 5G-NIDD $\approx\input{claims/p3E_5g_E10}$), so neither
-failure is rescued by showing more features or averaging more models. The trust that explainable
+failure is rescued by showing more features or averaging more models (Fig.~\ref{fig:robust}). The trust that explainable
 ML-IDS invites is therefore, as currently produced, not well-founded.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig_robust.pdf}
+\caption{Robustness of the determinacy and groundedness failures. Agreement stays low as the
+shown top-$k$ grows (left, $k{=}3,5,10$) and as the ensemble grows (right, $E{=}4,6,10$), far
+below the $1.0$ a trust signal needs. The failures are not artifacts of $k$ or ensemble size.}
+\label{fig:robust}
+\end{figure}
 
 \textbf{Beyond agreement: the explanations are also unfaithful.} Agreement is about consistency;
 one might still hope the shown features are the ones the model \emph{uses}. They are not. We
@@ -591,7 +627,7 @@ to the analyst model: a random-forest auditor gives the same qualitative picture
 $0.94$ on CICIDS), so it is not an artifact of a linear analyst.
 
 \textbf{The blind spot concentrates on serious threats.} Resolving the harm by attack type on the
-multiclass datasets (Table~\ref{tab:hbt}) shows it is not uniform: divergence is near-total on
+multiclass datasets (Fig.~\ref{fig:harmtype}) shows it is not uniform: divergence is near-total on
 scanning ($\input{claims/hbt_ton_scanning}$ on TON-IoT), backdoor
 ($\input{claims/hbt_ton_backdoor}$), ransomware ($\input{claims/hbt_ton_ransomware}$), and DoS,
 but small on injection ($\input{claims/hbt_ton_injection}$) and XSS. So whether the analyst acts
@@ -599,24 +635,14 @@ is most seed-dependent exactly for reconnaissance, backdoor, and ransomware, the
 missed response is most costly. Mis-founded trust does not spread its risk evenly; it clusters it
 on the attacks that matter.
 
-\begin{table}[t]
+\begin{figure}[t]
 \centering
+\includegraphics[width=0.82\columnwidth]{fig_harmtype.pdf}
 \caption{Action divergence by attack type on correctly-detected true attacks (TON-IoT). The
-explanation-induced blind spot is largest on serious threats (scanning, backdoor, ransomware, DoS)
-and small on injection/XSS.}
-\label{tab:hbt}
-\small\setlength{\tabcolsep}{5pt}
-\begin{tabular}{lc@{\qquad}lc}
-\toprule
-Attack & divergence & Attack & divergence \\
-\midrule
-scanning   & $0.997$ & password  & $0.27$ \\
-backdoor   & $0.995$ & xss       & $0.21$ \\
-dos        & $0.981$ & injection & $0.12$ \\
-ransomware & $0.911$ & ddos      & $0.62$ \\
-\bottomrule
-\end{tabular}
-\end{table}
+explanation-induced blind spot is largest on serious threats (scanning, backdoor, ransomware,
+DoS) and small on injection/XSS: mis-founded trust clusters risk on the attacks that matter.}
+\label{fig:harmtype}
+\end{figure}
 
 \begin{figure}[t]
 \centering

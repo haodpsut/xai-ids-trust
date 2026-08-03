@@ -113,8 +113,78 @@ def fig_harm():
     fig.tight_layout(rect=[0, 0, 1, 0.93]); ap.save(fig, os.path.join(FIG, "fig_harm"))
 
 
+def fig_pairwise_heat():
+    """HEATMAP: top-5 agreement for all 10 explainer pairs x 3 datasets. Visualizes determinacy
+    failure, most cells far below 1.0 (dark = agree, light = disagree)."""
+    import os as _os
+    from matplotlib.colors import LinearSegmentedColormap
+    with open(_os.path.join(HERE, "results", "breadth.csv")) as f:
+        d = {r["dataset"]: r for r in csv.DictReader(f)}
+    pairs = ["grad_vs_ixg", "grad_vs_ig", "grad_vs_shap", "grad_vs_lime", "ixg_vs_ig",
+             "ixg_vs_shap", "ixg_vs_lime", "ig_vs_shap", "ig_vs_lime", "shap_vs_lime"]
+    plab = ["g-i", "g-ig", "g-s", "g-l", "i-ig", "i-s", "i-l", "ig-s", "ig-l", "s-l"]
+    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    M = np.array([[float(d[k][p]) for k in ds] for p in pairs])
+    cmap = LinearSegmentedColormap.from_list("wag", ["#FFFFFF", ap.AGREEN])
+    fig, ax = plt.subplots(figsize=(3.5, 3.4))
+    im = ax.imshow(M, cmap=cmap, vmin=0, vmax=1, aspect="auto")
+    ax.set_xticks(range(3)); ax.set_xticklabels(ds, fontsize=7)
+    ax.set_yticks(range(len(pairs))); ax.set_yticklabels(plab, fontsize=7)
+    ax.grid(False); ax.tick_params(length=0)
+    for i in range(len(pairs)):
+        for j in range(3):
+            ax.text(j, i, f"{M[i,j]:.2f}", ha="center", va="center", fontsize=7,
+                    color="white" if M[i, j] > 0.6 else ap.INK)
+    cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04); cb.ax.tick_params(labelsize=7, length=0)
+    cb.set_label("top-5 agreement", fontsize=7)
+    ax.set_ylabel("explainer pair", fontsize=8)
+    fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_pairwise_heat"))
+
+
+def fig_robust():
+    """LINE: determinacy vs top-k and groundedness vs ensemble size. Both stay flat/low ->
+    failures are not artifacts of k or ensemble size."""
+    import os as _os
+    with open(_os.path.join(HERE, "results", "ablate_p2k.csv")) as f:
+        k = {r["dataset"]: r for r in csv.DictReader(f)}
+    with open(_os.path.join(HERE, "results", "ablate_p3E.csv")) as f:
+        E = {r["dataset"]: r for r in csv.DictReader(f)}
+    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    styd = {"UNSW": (ap.INK, "o", "-"), "CICIDS": (ap.WARM, "s", "--"), "5G-NIDD": (ap.AGREEN, "^", "-.")}
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(3.5, 2.0), sharey=True)
+    for dd in ds:
+        c, m, ls = styd[dd]
+        a1.plot([3, 5, 10], [float(k[dd][f"k{x}"]) for x in [3, 5, 10]], color=c, marker=m, ls=ls, ms=3, lw=1.1)
+        a2.plot([4, 6, 10], [float(E[dd][f"E{x}"]) for x in [4, 6, 10]], color=c, marker=m, ls=ls, ms=3, lw=1.1, label=dd)
+    a1.set_xlabel("top-$k$"); a1.set_ylabel("agreement"); a1.set_title("determinacy", fontsize=8)
+    a2.set_xlabel("ensemble size"); a2.set_title("groundedness", fontsize=8)
+    a1.set_ylim(0, 1); a1.axhline(1.0, color=ap.GRAY, ls=":", lw=0.8); a2.axhline(1.0, color=ap.GRAY, ls=":", lw=0.8)
+    a2.legend(fontsize=7, loc="upper center", bbox_to_anchor=(0.5, 1.02), ncol=1, frameon=False)
+    fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_robust"))
+
+
+def fig_harmtype():
+    """HORIZONTAL BAR sorted: action divergence by attack type (TON-IoT). Serious threats top."""
+    import os as _os
+    with open(_os.path.join(HERE, "results", "harm_bytype.csv")) as f:
+        rows = [r for r in csv.DictReader(f) if r["dataset"] == "TON-IoT"]
+    rows.sort(key=lambda r: float(r["action_divergence"]))
+    labs = [r["attack_type"] for r in rows]; vals = [float(r["action_divergence"]) for r in rows]
+    fig, ax = plt.subplots(figsize=(3.5, 2.6))
+    for i, v in enumerate(vals):
+        c = ap.WARM if v >= 0.5 else ap.GRAY
+        ax.barh(i, v, color="white", edgecolor=c, linewidth=1.0, hatch="///" if v >= 0.5 else "...")
+    ax.set_yticks(range(len(labs))); ax.set_yticklabels(labs, fontsize=7)
+    ax.set_xlabel("action divergence"); ax.set_xlim(0, 1.05)
+    ap.headline(ax, "serious threats (scanning,\nbackdoor, ransomware) worst", loc="lower right")
+    fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_harmtype"))
+
+
 if __name__ == "__main__":
     fig_trust(); print("fig_trust ok")
     fig_fidelity(); print("fig_fidelity ok")
     fig_defense(); print("fig_defense ok")
     fig_harm(); print("fig_harm ok")
+    fig_pairwise_heat(); print("fig_pairwise_heat ok")
+    fig_robust(); print("fig_robust ok")
+    fig_harmtype(); print("fig_harmtype ok")
