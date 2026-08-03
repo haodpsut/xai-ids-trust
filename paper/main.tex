@@ -195,7 +195,7 @@ how explanation functions socially~\cite{miller2019explanation}, and how trust i
 formalized~\cite{jacovi2021formalizing}. Our fidelity property makes Rudin's distinction
 operational for security: a post-hoc or distilled ``interpretable'' artifact that does not decide
 as the deployed model does cannot ground trust in that model. Our detectors include the
-Kolmogorov--Arnold network~\cite{liu2024kan}, marketed as interpretable-by-design, precisely to
+Kolmogorov-Arnold network~\cite{liu2024kan}, marketed as interpretable-by-design, precisely to
 test that claim.
 
 \textbf{Adversarial ML in security.} That ML models are brittle to adversarial input is
@@ -370,7 +370,7 @@ attribution is a claim about a real network quantity: UNSW-NB15~\cite{unsw2015},
 CICIDS2017 flow dataset~\cite{cicids2017,engelen2021}, and 5G-NIDD~\cite{g5nidd}, generated on a
 live 5G testbed and thus close to the next-generation settings where ML-IDS is now deployed. Each
 is cast as binary normal-versus-attack detection with standardized features. Our detectors are a
-multilayer perceptron (MLP) and a Kolmogorov--Arnold network (KAN, whose learnable univariate
+multilayer perceptron (MLP) and a Kolmogorov-Arnold network (KAN, whose learnable univariate
 edges are explicitly marketed as interpretable); explanations are gradient saliency,
 input$\times$gradient, integrated gradients, KernelSHAP, and LIME. All results are over three
 seeds; we report mean and standard deviation. Table~\ref{tab:data} lists the datasets;
@@ -443,7 +443,7 @@ so the reason does not even suffice for the decision. The analyst reasons about 
 not the one guarding the network.
 
 This is not special to the KAN. Fitting standard \emph{global} interpretable surrogates to mimic
-a deployed MLP-IDS reveals a fidelity--readability frontier (Table~\ref{tab:fidmulti}): a
+a deployed MLP-IDS reveals a fidelity-readability frontier (Table~\ref{tab:fidmulti}): a
 higher-capacity depth-4 tree matches the deployed decisions well
 ($\input{claims/fid_tree4_agree_cicids}$ agreement on CICIDS2017) but is barely more readable than
 the model, whereas the genuinely readable renderings, a depth-2 tree or a sparse logistic model,
@@ -454,7 +454,7 @@ depends on.
 
 \begin{table}[t]
 \centering
-\caption{The fidelity--readability frontier: decision agreement with the deployed MLP-IDS (higher
+\caption{The fidelity-readability frontier: decision agreement with the deployed MLP-IDS (higher
 is more faithful) and detection $F_1$, for global interpretable surrogates. Readable surrogates
 (depth-2 tree, sparse logit) are less faithful or detect worse.}
 \label{tab:fidmulti}
@@ -528,8 +528,12 @@ below the $1.0$ a trust signal needs. The failures are not artifacts of $k$ or e
 \label{fig:robust}
 \end{figure}
 
-\textbf{Beyond agreement: the explanations are also unfaithful.} Agreement is about consistency;
-one might still hope the shown features are the ones the model \emph{uses}. They are not. We
+\textbf{A fourth, deeper property: faithfulness.} The three properties above concern the
+\emph{consistency} of an explanation (across surrogate, method, and seed) and are each necessary
+for warrant. Faithfulness is stronger: even a perfectly consistent explanation could be wrong
+about the model. We treat it separately because, unlike the agreement properties, it compares the
+explanation to the model's actual behavior rather than to another explanation. One might hope the
+shown features are the ones the model \emph{uses}. They are not. We
 measure the two standard faithfulness metrics~\cite{hooker2019roar}, comprehensiveness (the drop
 in attack-probability when the top-5 features are removed) and sufficiency (how much the top-5
 alone retain), on a fourth modern dataset too, TON-IoT~\cite{tavallaee2009nslkdd}. Removing the
@@ -625,6 +629,38 @@ highest (Fig.~\ref{fig:harm}, Table~\ref{tab:harm}). Crucially, no adversary is 
 harm follows from the benign under-determination of Section~\ref{sec:fail}. The effect is robust
 to the analyst model: a random-forest auditor gives the same qualitative picture (divergence
 $0.94$ on CICIDS), so it is not an artifact of a linear analyst.
+
+The harm is not a coincidence of our auditor; it is a consequence of the groundedness failure.
+
+\begin{proposition}[Harm from ungroundedness]\label{prop:harm}
+Let the analyst action $a(e(x))\in\{\text{escalate},\text{suppress}\}$ depend on the explanation
+only through $\mathrm{top}_k$, and let $\pi$ be the probability that $a$ changes when
+$\mathrm{top}_k$ changes on a flow. For two equally-accurate models $f_1,f_2$ with cross-seed
+agreement $\mathbb{E}_x[J_k(e_{f_1},e_{f_2};x)]=1-\varepsilon_{\mathrm{grnd}}$, the action-divergence
+rate on their shared true positives is at least $\pi\,\varepsilon_{\mathrm{grnd}}'$, where
+$\varepsilon_{\mathrm{grnd}}'$ is the fraction of flows with disjoint-enough top-$k$ sets.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Groundedness failure means a positive-measure set $D$ of flows has
+$\mathrm{top}_k(e_{f_1},x)\neq\mathrm{top}_k(e_{f_2},x)$. On any $x\in D$ where the differing
+features flip the analyst's read, the two models induce different actions; the measure of such
+flows is at least $\pi$ times $|D|$. Since detection is stable on these true positives (both
+models flag attack), the divergence is entirely explanation-driven. Larger $\varepsilon_{\mathrm{grnd}}$
+(worse groundedness) forces larger $|D|$, hence more divergence, which is the monotone trend we
+observe across datasets (CICIDS, with worse groundedness on hard attacks, diverges most).
+\end{proof}
+
+\textbf{In operational cost.} The divergence matters because the two actions have very different
+costs. Write $C_{\mathrm{miss}}$ for the cost of suppressing a true attack and $C_{\mathrm{fp}}$
+for investigating a false positive, with $C_{\mathrm{miss}}\gg C_{\mathrm{fp}}$ in security. On a
+true attack the correct action is escalate; an explanation that reads benign induces suppress and
+incurs $C_{\mathrm{miss}}$. Under groundedness failure the suppress event occurs with a
+seed-dependent probability $s(x)$, so the expected excess cost of trusting the explanation is
+$\mathbb{E}_x[s(x)]\,C_{\mathrm{miss}}$ over the true attacks, and it concentrates, by
+Fig.~\ref{fig:harmtype}, on the high-$C_{\mathrm{miss}}$ threats (ransomware, backdoor). Trusting
+the explanation therefore does not merely add noise; it adds expected cost weighted toward the
+worst outcomes.
 
 \textbf{The blind spot concentrates on serious threats.} Resolving the harm by attack type on the
 multiclass datasets (Fig.~\ref{fig:harmtype}) shows it is not uniform: divergence is near-total on
@@ -1015,16 +1051,16 @@ i=input$\times$grad, ig=integrated grad, s=SHAP, l=LIME.}
 \toprule
 Pair & UNSW & CICIDS & 5G-NIDD \\
 \midrule
-g -- i   & $0.39$ & $0.18$ & $0.52$ \\
-g -- ig  & $0.36$ & $0.17$ & $0.52$ \\
-g -- s   & $0.24$ & $0.15$ & $0.32$ \\
-g -- l   & $0.22$ & $0.34$ & $0.51$ \\
-i -- ig  & $0.72$ & $0.75$ & $0.87$ \\
-i -- s   & $0.39$ & $0.54$ & $0.52$ \\
-i -- l   & $0.20$ & $0.19$ & $0.48$ \\
-ig -- s  & $0.39$ & $0.57$ & $0.57$ \\
-ig -- l  & $0.19$ & $0.21$ & $0.52$ \\
-s -- l   & $0.42$ & $0.22$ & $0.34$ \\
+g/i   & $0.39$ & $0.18$ & $0.52$ \\
+g/ig  & $0.36$ & $0.17$ & $0.52$ \\
+g/s   & $0.24$ & $0.15$ & $0.32$ \\
+g/l   & $0.22$ & $0.34$ & $0.51$ \\
+i/ig  & $0.72$ & $0.75$ & $0.87$ \\
+i/s   & $0.39$ & $0.54$ & $0.52$ \\
+i/l   & $0.20$ & $0.19$ & $0.48$ \\
+ig/s  & $0.39$ & $0.57$ & $0.57$ \\
+ig/l  & $0.19$ & $0.21$ & $0.52$ \\
+s/l   & $0.42$ & $0.22$ & $0.34$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1039,7 +1075,7 @@ source of truth. The main measurements are \texttt{exp\_trust.py} (P1--P3),
 manipulation attack), \texttt{exp\_defense.py} and \texttt{exp\_defense\_ablate.py}
 (Algorithm~\ref{alg:gate} and its ablation), \texttt{exp\_defense\_transfer.py} (cross-dataset
 non-generalization), \texttt{exp\_gate\_attack.py} (the adaptive attack), and
-\texttt{exp\_fidelity\_multi.py} (the fidelity--readability frontier). All three datasets are
+\texttt{exp\_fidelity\_multi.py} (the fidelity-readability frontier). All three datasets are
 public.
 
 \bibliographystyle{IEEEtran}
