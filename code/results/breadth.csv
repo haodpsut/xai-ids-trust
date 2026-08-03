@@ -1,0 +1,4 @@
+dataset,grad_vs_ig,grad_vs_ixg,grad_vs_lime,grad_vs_shap,ig_vs_lime,ig_vs_shap,ixg_vs_ig,ixg_vs_lime,ixg_vs_shap,mean_all_pairs,shap_vs_lime
+UNSW,0.381,0.39,0.258,0.188,0.221,0.305,0.788,0.213,0.291,0.329,0.258
+CICIDS,0.167,0.18,0.259,0.147,0.23,0.366,0.747,0.208,0.351,0.286,0.207
+5G-NIDD,0.522,0.524,0.461,0.259,0.445,0.46,0.865,0.42,0.414,0.462,0.251

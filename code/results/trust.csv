@@ -1,0 +1,4 @@
+dataset,kan_full_f1,kan_symbolic_f1,fidelity_drop,topk5_sufficiency,p2_grad_vs_ixg,p2_grad_vs_ig,p2_ixg_vs_ig,p2_mean_agree,p3_mean_f1,p3_std_f1,p3_topk_jaccard
+UNSW,0.9471,0.8832,0.0639,0.9249,0.3152,0.2629,0.7222,0.4334,0.9527,0.0014,0.5256
+CICIDS,0.889,0.5412,0.3478,0.8862,0.1789,0.1701,0.7568,0.3686,0.9295,0.0018,0.6168
+5G-NIDD,0.9971,0.891,0.1061,0.6315,0.5237,0.5149,0.8678,0.6355,0.9993,0.0003,0.5931

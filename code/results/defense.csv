@@ -1,0 +1,4 @@
+dataset,detector_auc,reliable_stability,unreliable_stability,stability_gain
+UNSW,0.671,0.48,0.438,0.042
+CICIDS,0.85,0.464,0.369,0.095
+5G-NIDD,0.944,0.778,0.506,0.272

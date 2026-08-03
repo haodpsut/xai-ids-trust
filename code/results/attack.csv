@@ -1,0 +1,4 @@
+dataset,still_attack,analyst_benign_before,analyst_benign_after,attack_success_dismissed,mean_l2_perturb
+UNSW,1.0,0.011,0.006,0.006,0.238
+CICIDS,1.0,0.254,0.264,0.264,0.129
+5G-NIDD,1.0,0.001,0.001,0.001,0.001
