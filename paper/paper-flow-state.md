@@ -138,7 +138,25 @@ Một điều chỉnh thật: hàng *detection agreement* của `tab:harm` in �
 
 ## Còn lại
 
-- [ ] **Claim sheet một trang → đọc ngoài** — mục DANGEROUS **duy nhất** còn lại. Đưa
+- [ ] **⚠ LÀM MỚI MIRROR ẨN DANH — chặn thứ hai, phát hiện 10/08.** Bài trỏ reviewer tới
+      `anonymous.4open.science/r/xai-ids-trust-2826`. **Link mở được, nhưng bên trong là bài khác:**
+
+      | | mirror (reviewer mở) | cây làm việc |
+      |---|---|---|
+      | `paper/main.tex` | 36 KB | **87 KB** |
+      | `paper/refs.bib` | 4,1 KB | **20 KB** |
+      | `code/*.py` | 10 | **23** |
+      | `paper/claims.json` | **CÒN** | đã loại vì mâu thuẫn bài ở 34/88 claim |
+
+      Kho GitHub thật thì đúng HEAD — nên cổng AR-1 vẫn xanh; chỉ AR-6 (mới) thấy. Hảo phải vào
+      4open.science **tạo lại mirror từ commit hiện tại** trước khi nộp, rồi thay ID trong bài nếu
+      ID đổi. Kiểm lại bằng `check_anon_mirror.py main.tex --code ../code`.
+- [x] ~~Khai dùng generative AI~~ — NDSS ghi *"The use of generative AI software tools must be
+      disclosed as part of the paper submission."* Đã thêm đoạn khai trong **Ethics Considerations**
+      (mục này không tính trang). Kiểm kèm: Ethics ở NDSS là **tuỳ chọn**, nhưng nếu có thì phải
+      đặt *"immediately preceding the reference section"* — bài đặt đúng.
+- [x] ~~Cover letter~~ — **NDSS là hội nghị, KHÔNG có cover letter.** Gói nộp chỉ gồm PDF + source.
+- [ ] **Claim sheet một trang → đọc ngoài** — mục DANGEROUS còn lại. Đưa
       `CLAIM-SHEET.md` cho một người ngoài, xin trả lời **ba câu** ở cuối tờ, rồi ghi vào file này:
       `CLAIM-SHEET-READ: <ngày> <người> -- <họ nói gì>`
 - [ ] Nếu người đọc ngoài nói *"cái này nghiêng về ML hơn an ninh"* thì **phải xử trước khi nộp** —
