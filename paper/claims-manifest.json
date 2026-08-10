@@ -1,0 +1,372 @@
+[
+ {
+  "id": "auc_5g",
+  "paper_value": "0.95",
+  "csv": "../code/results/defense_ablate.csv",
+  "column": "full_auc",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "auc_cicids",
+  "paper_value": "0.85",
+  "csv": "../code/results/defense_ablate.csv",
+  "column": "full_auc",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "auc_toniot",
+  "paper_value": "0.86",
+  "csv": "../code/results/defense_ablate.csv",
+  "column": "full_auc",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "auc_unsw",
+  "paper_value": "0.78",
+  "csv": "../code/results/defense_ablate.csv",
+  "column": "full_auc",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "f5_grad_toniot",
+  "paper_value": "0.04",
+  "csv": "../code/results/faith_5explainer.csv",
+  "column": "grad",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "f5_shap_5g",
+  "paper_value": "0.40",
+  "csv": "../code/results/faith_5explainer.csv",
+  "column": "shap",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "f5_shap_cicids",
+  "paper_value": "0.95",
+  "csv": "../code/results/faith_5explainer.csv",
+  "column": "shap",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "f5_shap_toniot",
+  "paper_value": "0.34",
+  "csv": "../code/results/faith_5explainer.csv",
+  "column": "shap",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "faith_comp_5g",
+  "paper_value": "0.16",
+  "csv": "../code/results/faithfulness.csv",
+  "column": "comprehensiveness",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "faith_comp_cicids",
+  "paper_value": "0.51",
+  "csv": "../code/results/faithfulness.csv",
+  "column": "comprehensiveness",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "faith_comp_ciciot",
+  "paper_value": "-0.001",
+  "csv": "../code/results/faithfulness.csv",
+  "column": "comprehensiveness",
+  "filter": {
+   "dataset": "CIC-IoT-2023"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "faith_comp_toniot",
+  "paper_value": "0.04",
+  "csv": "../code/results/faithfulness.csv",
+  "column": "comprehensiveness",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "faith_comp_unsw",
+  "paper_value": "0.18",
+  "csv": "../code/results/faithfulness.csv",
+  "column": "comprehensiveness",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_5g",
+  "paper_value": "0.11",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_mean",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_5g_std",
+  "paper_value": "0.01",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_std",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_cicids",
+  "paper_value": "0.35",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_mean",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_cicids_std",
+  "paper_value": "0.03",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_std",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_toniot",
+  "paper_value": "0.34",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_mean",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_toniot_std",
+  "paper_value": "0.04",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_std",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_unsw",
+  "paper_value": "0.08",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_mean",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p1_drop_unsw_std",
+  "paper_value": "0.01",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p1_fidelity_drop_std",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_5g",
+  "paper_value": "0.53",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_mean",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_5g_std",
+  "paper_value": "0.079",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_std",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_cicids",
+  "paper_value": "0.36",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_mean",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_cicids_std",
+  "paper_value": "0.005",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_std",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_toniot",
+  "paper_value": "0.37",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_mean",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_toniot_std",
+  "paper_value": "0.06",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_std",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_unsw",
+  "paper_value": "0.45",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_mean",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p2_agree_unsw_std",
+  "paper_value": "0.017",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p2_method_agree_std",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_5g",
+  "paper_value": "0.56",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_mean",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_5g_std",
+  "paper_value": "0.027",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_std",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_cicids",
+  "paper_value": "0.62",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_mean",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_cicids_std",
+  "paper_value": "0.029",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_std",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_toniot",
+  "paper_value": "0.37",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_mean",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_toniot_std",
+  "paper_value": "0.03",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_std",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_unsw",
+  "paper_value": "0.53",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_mean",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "p3_agree_unsw_std",
+  "paper_value": "0.005",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_std",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ }
+]

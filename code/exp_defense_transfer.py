@@ -4,7 +4,7 @@ re-fit on the target dataset's expensive (ensemble + multi-method) reliability l
 gate on one dataset and test its AUC on another. If cross-dataset AUC is near or below chance, the
 gate is not deployable: it needs the very label it was supposed to spare the operator.
 """
-import numpy as np, csv, os, warnings
+import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
@@ -15,6 +15,7 @@ from data import load, DATASETS
 
 
 def build(ds):
+    np.random.seed(0); torch.manual_seed(0)             # determinism for reproducible transfer AUCs
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]

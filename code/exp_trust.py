@@ -94,6 +94,7 @@ if __name__ == "__main__":
     os.makedirs("results", exist_ok=True)
     rows = []
     for ds in DATASETS:
+        np.random.seed(0); torch.manual_seed(0)         # determinism for reproducible P1/P2/P3
         Xtr, ytr, Xte, yte, feats = load(ds)
         print(f"\n=== {ds}: train{Xtr.shape} test{Xte.shape} attack-rate={yte.mean():.2f} ===")
         mlp, r1 = p1_fidelity(Xtr, ytr, Xte, yte)

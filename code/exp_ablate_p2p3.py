@@ -4,7 +4,7 @@ Phase-2 ablations for determinacy (P2) and groundedness (P3):
   P3 x E     -- does cross-seed explanation agreement stabilize with a larger ensemble (E=4/6/10)?
 Both test whether the failures are artifacts of our specific k or ensemble size. They are not.
 """
-import numpy as np, csv, os, warnings
+import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency,
                      input_x_gradient, integrated_gradients)
@@ -42,6 +42,7 @@ if __name__ == "__main__":
     os.makedirs("results", exist_ok=True)
     rk, rE = [], []
     for ds in DATASETS:
+        np.random.seed(0); torch.manual_seed(0)         # determinism for reproducible ablation curves
         Xtr, ytr, Xte, yte, feats = load(ds); din = Xtr.shape[1]
         h = match_mlp(din, nparams(KAN(din, 16, 4)))
         models = [train(MLP(din, h), Xtr, ytr, s) for s in range(10)]

@@ -4,7 +4,7 @@ multiclass datasets (CICIDS 'Attack Type', TON-IoT 'type'), we recompute action 
 attack category on correctly-detected true attacks. If some attack types are far more likely to
 be dismissed than others, mis-founded trust creates blind spots concentrated on specific threats.
 """
-import numpy as np, pandas as pd, csv, os, warnings
+import numpy as np, pandas as pd, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LogisticRegression
@@ -45,6 +45,7 @@ if __name__ == "__main__":
     os.makedirs("results", exist_ok=True)
     rows = []
     for ds in ["CICIDS", "TON-IoT"]:
+        np.random.seed(0); torch.manual_seed(0)         # determinism for reproducible per-type rates
         Xtr, ytr, Xte, yte, types = load_typed(ds); din = Xtr.shape[1]
         h = match_mlp(din, nparams(KAN(din, 16, 4)))
         models = [train(MLP(din, h), Xtr, ytr, s) for s in range(5)]

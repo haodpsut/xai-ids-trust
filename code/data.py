@@ -49,8 +49,13 @@ def load(name, seed=0):
         drop = {"label", "type", "src_ip", "dst_ip", "src_port", "dst_port", "ts"}
         feats = [c for c in df.columns if c not in drop]
         return _prep(df, "label", [0], feats, seed)
+    if name == "CIC-IoT-2023":
+        # cleaned parquet release of CIC-IoT-2023 (UNB, 2023), named flow features.
+        df = pd.read_parquet(f"{BASE}/ciciot2023/cic_iot_2023.parquet")
+        feats = [c for c in df.columns if c != "Label"]
+        return _prep(df, "Label", ["BENIGN"], feats, seed)
     raise ValueError(name)
 
 
-DATASETS = ["UNSW", "CICIDS", "5G-NIDD"]
+DATASETS = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
 DATASETS4 = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT"]

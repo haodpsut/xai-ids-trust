@@ -3,7 +3,7 @@ Multi-seed rigor pass: repeat the headline measurements over several data/model 
 report mean +/- std, so no NDSS number rests on a single run. Covers P1 fidelity drop,
 P2 determinacy (gradient-method agreement), P3 groundedness, and the reliability-detector AUC.
 """
-import numpy as np, csv, os
+import numpy as np, csv, os, torch
 from exp_trust import p1_fidelity, p2_determinacy, p3_groundedness
 from exp_defense import run as defense_run
 from data import load, DATASETS
@@ -22,6 +22,7 @@ if __name__ == "__main__":
     for ds in DATASETS:
         p1d, p2m, p3a, auc = [], [], [], []
         for s in SEEDS:
+            np.random.seed(s); torch.manual_seed(s)     # determinism per seed
             Xtr, ytr, Xte, yte, feats = load(ds, s)
             mlp, r1 = p1_fidelity(Xtr, ytr, Xte, yte)
             r2 = p2_determinacy(mlp, Xte, yte)
@@ -29,6 +30,7 @@ if __name__ == "__main__":
             p1d.append(r1["fidelity_drop"]); p2m.append(r2["mean_agree"]); p3a.append(r3["topk_jaccard"])
         # defense AUC already 5-fold CV internally; repeat across seeds for stability
         for s in SEEDS:
+            np.random.seed(s); torch.manual_seed(s)     # determinism per seed
             auc.append(defense_run(ds)["detector_auc"])
         m = dict(dataset=ds)
         for name, vals in [("p1_fidelity_drop", p1d), ("p2_method_agree", p2m),

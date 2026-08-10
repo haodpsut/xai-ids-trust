@@ -18,7 +18,7 @@ attack flow, the analyst action induced by each model's explanation. The harm:
     accident. Contrast with DETECTION agreement (all models correctly flag the attack), which is
     near 1: detection is grounded, the explanation-driven action is not.
 """
-import numpy as np, csv, os, warnings
+import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
@@ -34,6 +34,7 @@ def attr(model, X):
 
 
 def run(ds, auditor="logistic"):
+    np.random.seed(0); torch.manual_seed(0)             # determinism for reproducible harm rates
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]

@@ -5,7 +5,7 @@ disguise, or do the explanation-specific signals add value? We compare the AUC o
 (margin-only = confidence, ood-only = distribution distance). If the full detector beats every
 single-signal baseline, the reliability signal is not reducible to confidence or OOD.
 """
-import numpy as np, csv, os, warnings
+import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
@@ -22,6 +22,7 @@ def auc_of(S, y):
 
 
 def run(ds):
+    np.random.seed(0); torch.manual_seed(0)             # determinism for reproducible ablation AUCs
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]

@@ -1,0 +1,24 @@
+{
+  "_comment": "IV-1 muc menh de. Dung lan dau 10/08/2026 cho ban NDSS 2027. Bai chua tung chay cong nay.",
+
+  "superlatives": [],
+
+  "exclusivity": [
+    {
+      "label": "first joint measurement of fidelity + determinacy + groundedness on five NIDS datasets x five explainers",
+      "_why_uncheckable": "Menh de uu tien ve VAN LIEU, khong phai ve du lieu cua bai. Khong cot ket qua nao xac lap duoc no; no dua tren mot khao sat 58 tham khao da Layer-2 (REF-VERIFICATION-2026-08-10.md). Vi vay phai giu rao ro rang.",
+      "hedged_by": "to our knowledge"
+    },
+    {
+      "label": "none of the prior works do all three together (Related Work)",
+      "_why_uncheckable": "Menh de ve tap cong trinh DA TRICH, khong phai toan bo van lieu. Cau van da tu gioi han bang 'the above'.",
+      "hedged_by": "none of which the above do together"
+    }
+  ],
+
+  "mechanisms": [],
+
+  "_mechanisms_note": "De trong co y. Bai khong phat bieu menh de co che dang 'A tac dong qua B chu khong qua C' voi mot ti so headline phan ra duoc thanh tich cac thua so trong cung mot file ket qua -- do la hinh dang duy nhat ma cong nay kiem duoc. Ba tinh chat (fidelity/determinacy/groundedness) duoc DO doc lap, khong phai phan ra tu mot ti so chung.",
+
+  "_ref_integrity_note": "Vong Layer-2 ngay 10/08 phat hien 'salo2022soc' (Towards Explainable AI in the Security Operations Center, IEEE Big Data 2022) KHONG TON TAI -- hai luot tim doc lap khong ra. Da thay bang Nyre-Yu et al., USEC 2022, DOI 10.14722/usec.2022.23014, da xac minh qua Crossref. Cau trich cung duoc viet lai vi Nyre-Yu la nghien cuu trien khai thuc dia, khong phai survey."
+}

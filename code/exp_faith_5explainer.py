@@ -35,6 +35,7 @@ def comp_of_topk(model, Xm, base, tk):
 
 
 def run(ds):
+    np.random.seed(0); torch.manual_seed(0)             # determinism for SHAP/LIME sampling
     Xtr, ytr, Xte, yte, feats = load(ds); din = Xtr.shape[1]
     f = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, 0)
     idx = np.where((predict(f, Xte) == 1) & (yte == 1))[0][:NSAMP]
@@ -48,7 +49,7 @@ def run(ds):
     sv = sv[1] if isinstance(sv, list) else sv[..., 1]
     tks["shap"] = topk_features(np.asarray(sv), TOPK)
     ex = LimeTabularExplainer(Xtr[:1500], feature_names=[str(c) for c in feats],
-                              discretize_continuous=False, mode="classification")
+                              discretize_continuous=False, mode="classification", random_state=0)
     lime_tk = np.zeros((len(Xm), TOPK), int)
     for r in range(len(Xm)):
         e = ex.explain_instance(Xm[r], proba_fn(f), num_features=TOPK, labels=(1,), num_samples=800)

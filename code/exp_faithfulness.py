@@ -15,7 +15,7 @@ our own caveat that stability is not faithfulness.
 import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, topk_features
-from data import load, DATASETS4
+from data import load, DATASETS
 
 TOPK = 5
 
@@ -26,6 +26,7 @@ def prob_attack(model, X):
 
 
 def run(ds):
+    np.random.seed(0); torch.manual_seed(0)             # determinism
     Xtr, ytr, Xte, yte, feats = load(ds); din = Xtr.shape[1]
     f = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, 0)
     idx = np.where((predict(f, Xte) == 1) & (yte == 1))[0][:1500]
@@ -48,7 +49,7 @@ def run(ds):
 
 if __name__ == "__main__":
     os.makedirs("results", exist_ok=True)
-    rows = [run(ds) for ds in DATASETS4]
+    rows = [run(ds) for ds in DATASETS]
     with open("results/faithfulness.csv", "w", newline="") as fp:
         w = csv.DictWriter(fp, fieldnames=list(rows[0].keys())); w.writeheader(); w.writerows(rows)
     for r in rows:

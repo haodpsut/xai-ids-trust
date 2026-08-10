@@ -15,6 +15,10 @@ HERE = os.path.dirname(__file__)
 FIG = os.path.abspath(os.path.join(HERE, "..", "paper", "figs"))
 os.makedirs(FIG, exist_ok=True)
 
+SHORT = {"5G-NIDD": "5G", "TON-IoT": "TON", "CIC-IoT-2023": "CIC23"}      # compact x-tick labels
+def sl(ds):
+    return [SHORT.get(k, k) for k in ds]
+
 
 def row():
     with open(os.path.join(HERE, "results", "trust.csv")) as f:
@@ -23,7 +27,7 @@ def row():
 
 def fig_trust():
     d = row()
-    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
     # Three panels: P1 fidelity retention, P2 method-agreement, P3 seed-agreement.
     # For a trust signal, each SHOULD be ~1.0 (perfect). We plot the achieved value vs the 1.0 line.
     p1 = [1 - float(d[k]["fidelity_drop"]) for k in ds]       # fidelity retention of interpretable form
@@ -31,18 +35,19 @@ def fig_trust():
     p3 = [float(d[k]["p3_topk_jaccard"]) for k in ds]
     labels = ["P1 fidelity\n(surrogate=model?)", "P2 determinacy\n(method-agnostic?)", "P3 groundedness\n(model-agnostic?)"]
     series = [p1, p2, p3]
-    x = np.arange(len(labels)); w = 0.24
-    styd = {"UNSW": (ap.INK, "///"), "CICIDS": (ap.WARM, "\\\\\\"), "5G-NIDD": (ap.AGREEN, "...")}
-    fig, ax = plt.subplots(figsize=(3.5, 2.6))
+    x = np.arange(len(labels)); w = 0.2
+    styd = {"UNSW": (ap.INK, "///"), "CICIDS": (ap.WARM, "\\\\\\"), "5G-NIDD": (ap.AGREEN, "..."),
+            "TON-IoT": (ap.GRAY, "xxx"), "CIC-IoT-2023": (ap.LIME, "++")}
+    fig, ax = plt.subplots(figsize=(3.75, 2.7))
     for i, k in enumerate(ds):
         vals = [series[p][i] for p in range(3)]
         c, h = styd[k]
-        ax.bar(x + (i - 1) * w, vals, w, facecolor="white", edgecolor=c, linewidth=1.0, hatch=h, label=k)
+        ax.bar(x + (i - (len(ds) - 1) / 2) * w, vals, w, facecolor="white", edgecolor=c, linewidth=1.0, hatch=h, label=k)
     ax.axhline(1.0, color=ap.GRAY, ls=":", lw=0.9)
     ax.text(2.32, 1.01, "trust needs 1.0", fontsize=7, color=ap.GRAY, ha="right", va="bottom")
     ax.set_xticks(x); ax.set_xticklabels(labels, fontsize=7)
     ax.set_ylabel("agreement / retention"); ax.set_ylim(0, 1.12)
-    ax.legend(fontsize=7, ncol=3, loc="lower center", bbox_to_anchor=(0.5, 1.02), columnspacing=1.0, handlelength=1.3, frameon=False)
+    ax.legend(fontsize=7, ncol=5, loc="lower center", bbox_to_anchor=(0.5, 1.02), columnspacing=0.8, handlelength=1.1, frameon=False)
     fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_trust"))
 
 
@@ -50,7 +55,7 @@ def fig_fidelity():
     """The interpretable surrogate's detection F1 vs the deployed KAN-IDS, per dataset:
     interpretability is bought by giving up detection, most starkly on CICIDS2017."""
     d = row()
-    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
     full = [float(d[k]["kan_full_f1"]) for k in ds]
     sym = [float(d[k]["kan_symbolic_f1"]) for k in ds]
     x = np.arange(len(ds)); w = 0.36
@@ -62,7 +67,7 @@ def fig_fidelity():
     for i in range(len(ds)):
         ax.annotate("", xy=(x[i] + w / 2, sym[i]), xytext=(x[i] - w / 2, full[i]),
                     arrowprops=dict(arrowstyle="->", color=ap.GRAY, lw=0.7))
-    ax.set_xticks(x); ax.set_xticklabels(ds)
+    ax.set_xticks(x); ax.set_xticklabels(sl(ds))
     ax.set_ylabel("detection $F_1$"); ax.set_ylim(0, 1.08)
     ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
     fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_fidelity"))
@@ -74,7 +79,7 @@ def fig_defense():
     import os as _os
     with open(_os.path.join(HERE, "results", "defense_ablate.csv")) as f:
         d = {r["dataset"]: r for r in csv.DictReader(f)}
-    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
     full = [float(d[k]["full_auc"]) for k in ds]
     ood = [float(d[k]["ood_only"]) for k in ds]
     x = np.arange(len(ds)); w = 0.36
@@ -84,8 +89,8 @@ def fig_defense():
     ax.bar(x + w / 2, ood, w, facecolor="white", edgecolor=ap.GRAY, linewidth=1.0,
            hatch="...", label="OOD-only baseline")
     ax.axhline(0.5, color=ap.WARM, ls=":", lw=0.9)
-    ax.text(2.35, 0.505, "chance", fontsize=7, color=ap.WARM, ha="right", va="bottom")
-    ax.set_xticks(x); ax.set_xticklabels(ds)
+    ax.text(len(ds) - 0.6, 0.505, "chance", fontsize=7, color=ap.WARM, ha="right", va="bottom")
+    ax.set_xticks(x); ax.set_xticklabels(sl(ds))
     ax.set_ylabel("reliability-detection AUC"); ax.set_ylim(0.4, 1.0)
     ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
     fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_defense"))
@@ -98,7 +103,7 @@ def fig_harm():
     with open(_os.path.join(HERE, "results", "harm.csv")) as f:
         rows = [r for r in csv.DictReader(f) if r["auditor"] == "logistic"]
     d = {r["dataset"]: r for r in rows}
-    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
     detect = [float(d[k]["detection_agreement"]) for k in ds]
     diverge = [float(d[k]["action_divergence"]) for k in ds]
     x = np.arange(len(ds)); w = 0.36
@@ -107,7 +112,7 @@ def fig_harm():
            hatch="///", label="detection agreement")
     ax.bar(x + w / 2, diverge, w, facecolor="white", edgecolor=ap.WARM, linewidth=1.0,
            hatch="...", label="action divergence")
-    ax.set_xticks(x); ax.set_xticklabels(ds)
+    ax.set_xticks(x); ax.set_xticklabels(sl(ds))
     ax.set_ylabel("fraction of true attacks"); ax.set_ylim(0, 1.12)
     ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
     fig.tight_layout(rect=[0, 0, 1, 0.93]); ap.save(fig, os.path.join(FIG, "fig_harm"))
@@ -123,16 +128,16 @@ def fig_pairwise_heat():
     pairs = ["grad_vs_ixg", "grad_vs_ig", "grad_vs_shap", "grad_vs_lime", "ixg_vs_ig",
              "ixg_vs_shap", "ixg_vs_lime", "ig_vs_shap", "ig_vs_lime", "shap_vs_lime"]
     plab = ["g-i", "g-ig", "g-s", "g-l", "i-ig", "i-s", "i-l", "ig-s", "ig-l", "s-l"]
-    ds = ["UNSW", "CICIDS", "5G-NIDD"]
+    ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
     M = np.array([[float(d[k][p]) for k in ds] for p in pairs])
     cmap = LinearSegmentedColormap.from_list("wag", ["#FFFFFF", ap.AGREEN])
     fig, ax = plt.subplots(figsize=(3.5, 3.4))
     im = ax.imshow(M, cmap=cmap, vmin=0, vmax=1, aspect="auto")
-    ax.set_xticks(range(3)); ax.set_xticklabels(ds, fontsize=7)
+    ax.set_xticks(range(len(ds))); ax.set_xticklabels(sl(ds), fontsize=7)
     ax.set_yticks(range(len(pairs))); ax.set_yticklabels(plab, fontsize=7)
     ax.grid(False); ax.tick_params(length=0)
     for i in range(len(pairs)):
-        for j in range(3):
+        for j in range(len(ds)):
             ax.text(j, i, f"{M[i,j]:.2f}", ha="center", va="center", fontsize=7,
                     color="white" if M[i, j] > 0.6 else ap.INK)
     cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04); cb.ax.tick_params(labelsize=7, length=0)
@@ -149,8 +154,9 @@ def fig_robust():
         k = {r["dataset"]: r for r in csv.DictReader(f)}
     with open(_os.path.join(HERE, "results", "ablate_p3E.csv")) as f:
         E = {r["dataset"]: r for r in csv.DictReader(f)}
-    ds = ["UNSW", "CICIDS", "5G-NIDD"]
-    styd = {"UNSW": (ap.INK, "o", "-"), "CICIDS": (ap.WARM, "s", "--"), "5G-NIDD": (ap.AGREEN, "^", "-.")}
+    ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
+    styd = {"UNSW": (ap.INK, "o", "-"), "CICIDS": (ap.WARM, "s", "--"), "5G-NIDD": (ap.AGREEN, "^", "-."),
+            "TON-IoT": (ap.GRAY, "D", ":"), "CIC-IoT-2023": (ap.LIME, "v", (0, (1, 1)))}
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(3.5, 2.0), sharey=True)
     for dd in ds:
         c, m, ls = styd[dd]
@@ -164,10 +170,11 @@ def fig_robust():
 
 
 def fig_harmtype():
-    """HORIZONTAL BAR sorted: action divergence by attack type (TON-IoT). Serious threats top."""
+    """HORIZONTAL BAR sorted: action divergence by attack type (CICIDS2017). High-volume DoS and
+    port-scanning flows show the largest explanation-driven divergence."""
     import os as _os
     with open(_os.path.join(HERE, "results", "harm_bytype.csv")) as f:
-        rows = [r for r in csv.DictReader(f) if r["dataset"] == "TON-IoT"]
+        rows = [r for r in csv.DictReader(f) if r["dataset"] == "CICIDS"]
     rows.sort(key=lambda r: float(r["action_divergence"]))
     labs = [r["attack_type"] for r in rows]; vals = [float(r["action_divergence"]) for r in rows]
     fig, ax = plt.subplots(figsize=(3.5, 2.6))
@@ -176,7 +183,7 @@ def fig_harmtype():
         ax.barh(i, v, color="white", edgecolor=c, linewidth=1.0, hatch="///" if v >= 0.5 else "...")
     ax.set_yticks(range(len(labs))); ax.set_yticklabels(labs, fontsize=7)
     ax.set_xlabel("action divergence"); ax.set_xlim(0, 1.05)
-    ap.headline(ax, "serious threats (scanning,\nbackdoor, ransomware) worst", loc="lower right")
+    ap.headline(ax, "high-volume DoS and\nport scanning worst", loc="lower right")
     fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_harmtype"))
 
 

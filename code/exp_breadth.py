@@ -44,7 +44,7 @@ def lime_topk(model, Xtr, Xm, feats):
     f = proba_fn(model)
     ex = LimeTabularExplainer(Xtr, feature_names=[str(c) for c in feats],
                               class_names=["benign", "attack"], discretize_continuous=False,
-                              mode="classification")
+                              mode="classification", random_state=0)
     out = np.zeros((len(Xm), TOPK), int)
     for r in range(len(Xm)):
         e = ex.explain_instance(Xm[r], f, num_features=TOPK, labels=(1,), num_samples=3000)
@@ -53,6 +53,7 @@ def lime_topk(model, Xtr, Xm, feats):
 
 
 def run(ds):
+    np.random.seed(0); torch.manual_seed(0)             # determinism for SHAP/LIME sampling
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]
     mlp = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, 0)

@@ -8,3 +8,7 @@ paper/*.bbl
 paper/*.blg
 paper/c.log
 paper/figs/.methods_*.json
+
+# Goi nop da loi thoi: dung ban truoc luot don giong van 04/08. Ban that la paper/main.tex.
+SUBMIT-NDSS/
+paper/claims.json.STALE-*

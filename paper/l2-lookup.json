@@ -1,0 +1,356 @@
+{
+ "action2026": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Feature-Space Feasible Action Contracts for Explainable Intrusion Triage",
+  "closest": "TRACE: Feature-Space Feasible Action Contracts for Explainab"
+ },
+ "adebayo2018sanity": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1810.03292v3",
+  "title": "Sanity Checks for Saliency Maps"
+ },
+ "alvarezmelis2018robustness": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1806.08049v1",
+  "title": "On the Robustness of Interpretability Methods"
+ },
+ "apruzzese2022modeling": {
+  "doi": "10.1145/3469659",
+  "title": "Modeling Realistic Adversarial Attacks against Network Intrusion Detection Systems",
+  "year": 2022,
+  "venue": "Digital Threats: Research and Practice",
+  "status": "MATCHED"
+ },
+ "apruzzese2023role": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "2206.09707v1",
+  "title": "The Role of Machine Learning in Cybersecurity"
+ },
+ "arp2022": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Dos and Don'ts of Machine Learning in Computer Security",
+  "closest": "Das infizierte steife Kniegelenk\u00a0\u2013 Dos and Don\u2032ts"
+ },
+ "arreche2024exai": {
+  "doi": "10.1109/access.2024.3365140",
+  "title": "E-XAI: Evaluating Black-Box Explainable AI Frameworks for Network Intrusion Detection",
+  "year": 2024,
+  "venue": "IEEE Access",
+  "status": "MATCHED"
+ },
+ "axelsson2000": {
+  "doi": "10.1145/357830.357849",
+  "title": "The base-rate fallacy and the difficulty of intrusion detection",
+  "year": 2000,
+  "venue": "ACM Transactions on Information and System Security",
+  "status": "MATCHED"
+ },
+ "bach2015lrp": {
+  "doi": "10.1371/journal.pone.0130140",
+  "title": "On Pixel-Wise Explanations for Non-Linear Classifier Decisions by Layer-Wise Relevance Propagation",
+  "year": 2015,
+  "venue": "PLOS ONE",
+  "status": "MATCHED"
+ },
+ "biggio2018wild": {
+  "doi": "10.1016/j.patcog.2018.07.023",
+  "title": "Wild patterns: Ten years after the rise of adversarial machine learning",
+  "year": 2018,
+  "venue": "Pattern Recognition",
+  "status": "MATCHED"
+ },
+ "black2022multiplicity": {
+  "doi": "10.2139/ssrn.4142472",
+  "title": "Model Multiplicity: Opportunities, Concerns, and Solutions",
+  "year": 2022,
+  "venue": "SSRN Electronic Journal",
+  "status": "MATCHED"
+ },
+ "breiman2001two": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Statistical Modeling: The Two Cultures",
+  "closest": "Statistical Modeling: The Two Cultures (with comments and a "
+ },
+ "capuano2022": {
+  "doi": "10.1109/access.2022.3204171",
+  "title": "Explainable Artificial Intelligence in CyberSecurity: A Survey",
+  "year": 2022,
+  "venue": "IEEE Access",
+  "status": "MATCHED"
+ },
+ "carlini2017towards": {
+  "doi": "10.1109/sp.2017.49",
+  "title": "Towards Evaluating the Robustness of Neural Networks",
+  "year": 2017,
+  "venue": "2017 IEEE Symposium on Security and Privacy (SP)",
+  "status": "MATCHED"
+ },
+ "cicids2017": {
+  "doi": "10.5220/0006639801080116",
+  "title": "Toward Generating a New Intrusion Detection Dataset and Intrusion Traffic Characterization",
+  "year": 2018,
+  "venue": "Proceedings of the 4th International Conference on Information Systems Security and Privacy",
+  "status": "MATCHED"
+ },
+ "ciciot2023": {
+  "doi": "10.20944/preprints202305.0443.v1",
+  "title": "CICIoT2023: A real-time dataset and benchmark for large-scale attacks in IoT environment",
+  "year": 2023,
+  "venue": "",
+  "status": "MATCHED"
+ },
+ "dombrowski2019": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1906.07983v2",
+  "title": "Explanations Can Be Manipulated and Geometry Is to Blame"
+ },
+ "doshivelez2017rigorous": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1702.08608v2",
+  "title": "Towards a Rigorous Science of Interpretable Machine Learning"
+ },
+ "engelen2021": {
+  "doi": "10.1109/spw53761.2021.00009",
+  "title": "Troubleshooting an Intrusion Detection Dataset: the CICIDS2017 Case Study",
+  "year": 2021,
+  "venue": "2021 IEEE Security and Privacy Workshops (SPW)",
+  "status": "MATCHED"
+ },
+ "feat5g2025": {
+  "doi": "10.1016/j.jisa.2026.104448",
+  "title": "Feature attribution in 5G intrusion detection: A statistical vs. logic-based comparison",
+  "year": 2026,
+  "venue": "Journal of Information Security and Applications",
+  "status": "MATCHED"
+ },
+ "fisher2019rashomon": {
+  "status": "NOT-MATCHED",
+  "bib_title": "All Models Are Wrong, but Many Are Useful: Learning a Variable's Importance by S",
+  "closest": "All Explanations are Wrong, But Many Are Useful: Exploring t"
+ },
+ "g5nidd": {
+  "status": "NOT-MATCHED",
+  "bib_title": "{5G-NIDD}: A Comprehensive Network Intrusion Detection Dataset Generated over a ",
+  "closest": "Descriptor: 5G Wireless Network Intrusion Detection Dataset "
+ },
+ "ganz2021explaining": {
+  "doi": "10.1145/3474369.3486866",
+  "title": "Explaining Graph Neural Networks for Vulnerability Discovery",
+  "year": 2021,
+  "venue": "Proceedings of the 14th ACM Workshop on Artificial Intelligence and Security",
+  "status": "MATCHED"
+ },
+ "ghorbani2019": {
+  "doi": "10.1609/aaai.v33i01.33013681",
+  "title": "Interpretation of Neural Networks Is Fragile",
+  "year": 2019,
+  "venue": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "status": "MATCHED"
+ },
+ "ghorbani2019towards": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1902.03129v3",
+  "title": "Towards Automatic Concept-Based Explanations"
+ },
+ "hooker2019roar": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1806.10758v3",
+  "title": "A Benchmark for Interpretability Methods in Deep Neural Networks"
+ },
+ "jacovi2021formalizing": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "2010.07487v3",
+  "title": "Formalizing Trust in Artificial Intelligence: Prerequisites, Causes an"
+ },
+ "kastner2021": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "2108.05379v2",
+  "title": "On the Relation of Trust and Explainability: Why to Engineer for Trust"
+ },
+ "kindermans2019unreliability": {
+  "doi": "10.1007/978-3-030-28954-6_14",
+  "title": "The (Un)reliability of Saliency Methods",
+  "year": 2019,
+  "venue": "Lecture Notes in Computer Science",
+  "status": "MATCHED"
+ },
+ "krishna2022": {
+  "doi": "10.21203/rs.3.rs-2963888/v1",
+  "title": "The Disagreement Problem in Explainable Machine Learning: A Practitioner's Perspective",
+  "year": 2023,
+  "venue": "",
+  "status": "MATCHED"
+ },
+ "lipton2018mythos": {
+  "doi": "10.1145/3236386.3241340",
+  "title": "The Mythos of Model Interpretability",
+  "year": 2018,
+  "venue": "Queue",
+  "status": "MATCHED"
+ },
+ "liu2024kan": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "2404.19756v5",
+  "title": "{KAN}: Kolmogorov-Arnold Networks"
+ },
+ "lundberg2017shap": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1705.07874v2",
+  "title": "A Unified Approach to Interpreting Model Predictions"
+ },
+ "lxaids2025": {
+  "doi": "10.1007/s10586-025-05326-9",
+  "title": "L-xaids: A LIME-based eXplainable AI framework for intrusion detection systems",
+  "year": 2025,
+  "venue": "Cluster Computing",
+  "status": "MATCHED"
+ },
+ "mahdavifar2019application": {
+  "doi": "10.1016/j.neucom.2019.02.056",
+  "title": "Application of deep learning to cybersecurity: A survey",
+  "year": 2019,
+  "venue": "Neurocomputing",
+  "status": "MATCHED"
+ },
+ "marx2020multiplicity": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1909.06677v4",
+  "title": "Predictive Multiplicity in Classification"
+ },
+ "miller2019explanation": {
+  "doi": "10.1016/j.artint.2018.07.007",
+  "title": "Explanation in artificial intelligence: Insights from the social sciences",
+  "year": 2019,
+  "venue": "Artificial Intelligence",
+  "status": "MATCHED"
+ },
+ "molnar2022interpretable": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Interpretable Machine Learning: A Guide for Making Black Box Models Explainable",
+  "closest": "Book review: Christoph Molnar. 2020. Interpretable Machine L"
+ },
+ "nadeem2023sok": {
+  "doi": "10.1109/eurosp57164.2023.00022",
+  "title": "SoK: Explainable Machine Learning for Computer Security Applications",
+  "year": 2023,
+  "venue": "2023 IEEE 8th European Symposium on Security and Privacy (EuroS&amp;P)",
+  "status": "MATCHED"
+ },
+ "neupane2022xids": {
+  "doi": "10.1109/access.2022.3216617",
+  "title": "Explainable Intrusion Detection Systems (X-IDS): A Survey of Current Methods, Challenges, and Opportunities",
+  "year": 2022,
+  "venue": "IEEE Access",
+  "status": "MATCHED"
+ },
+ "ribeiro2016lime": {
+  "doi": "10.18653/v1/n16-3020",
+  "title": "\u201cWhy Should I Trust You?\u201d: Explaining the Predictions of Any Classifier",
+  "year": 2016,
+  "venue": "Proceedings of the 2016 Conference of the North American Chapter of the Association for Computational Linguistics: Demonstrations",
+  "status": "MATCHED"
+ },
+ "ribeiro2018anchors": {
+  "doi": "10.1609/aaai.v32i1.11491",
+  "title": "Anchors: High-Precision Model-Agnostic Explanations",
+  "year": 2018,
+  "venue": "Proceedings of the AAAI Conference on Artificial Intelligence",
+  "status": "MATCHED"
+ },
+ "rudin2019": {
+  "doi": "10.1038/s42256-019-0048-x",
+  "title": "Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead",
+  "year": 2019,
+  "venue": "Nature Machine Intelligence",
+  "status": "MATCHED"
+ },
+ "salo2022soc": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Towards Explainable {AI} in the Security Operations Center",
+  "closest": "AI-Enhanced SOC (Security Operations Center) in Financial Se"
+ },
+ "selvaraju2017gradcam": {
+  "doi": "10.1109/iccv.2017.74",
+  "title": "Grad-CAM: Visual Explanations from Deep Networks via Gradient-Based Localization",
+  "year": 2017,
+  "venue": "2017 IEEE International Conference on Computer Vision (ICCV)",
+  "status": "MATCHED"
+ },
+ "senevirathna2024": {
+  "doi": "10.1109/ccnc51664.2024.10454633",
+  "title": "Deceiving Post-Hoc Explainable AI (XAI) Methods in Network Intrusion Detection",
+  "year": 2024,
+  "venue": "2024 IEEE 21st Consumer Communications &amp; Networking Conference (CCNC)",
+  "status": "MATCHED"
+ },
+ "shrikumar2017deeplift": {
+  "status": "MATCHED-ARXIV",
+  "arxiv": "1704.02685v2",
+  "title": "Learning Important Features Through Propagating Activation Differences"
+ },
+ "simonyan2013saliency": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Deep Inside Convolutional Networks: Visualising Image Classification Models and ",
+  "closest": "Meaning maps and saliency models based on deep convolutional"
+ },
+ "slack2020": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Fooling LIME and SHAP: Adversarial Attacks on Post Hoc Explanation Methods",
+  "closest": "Fooling LIME and SHAP"
+ },
+ "smilkov2017smoothgrad": {
+  "status": "NOT-MATCHED",
+  "bib_title": "{SmoothGrad}: Removing Noise by Adding Noise",
+  "closest": "Adding Noise"
+ },
+ "sommer2010": {
+  "doi": "10.1109/sp.2010.25",
+  "title": "Outside the Closed World: On Using Machine Learning for Network Intrusion Detection",
+  "year": 2010,
+  "venue": "2010 IEEE Symposium on Security and Privacy",
+  "status": "MATCHED"
+ },
+ "sundararajan2017ig": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Axiomatic Attribution for Deep Networks",
+  "closest": "Towards robust explainability of deep neural networks agains"
+ },
+ "szegedy2014intriguing": {
+  "status": "NOT-MATCHED",
+  "bib_title": "Intriguing Properties of Neural Networks",
+  "closest": "Fooling Examples: Another Intriguing Property of Neural Netw"
+ },
+ "tavallaee2009nslkdd": {
+  "doi": "10.1109/cisda.2009.5356528",
+  "title": "A detailed analysis of the KDD CUP 99 data set",
+  "year": 2009,
+  "venue": "2009 IEEE Symposium on Computational Intelligence for Security and Defense Applications",
+  "status": "MATCHED"
+ },
+ "toniot2020": {
+  "doi": "10.1109/access.2020.3022862",
+  "title": "TON_IoT Telemetry Dataset: A New Generation Dataset of IoT and IIoT for Data-Driven Intrusion Detection Systems",
+  "year": 2020,
+  "venue": "IEEE Access",
+  "status": "MATCHED"
+ },
+ "unsw2015": {
+  "status": "NOT-MATCHED",
+  "bib_title": "{UNSW-NB15}: A Comprehensive Data Set for Network Intrusion Detection Systems",
+  "closest": "UNSW-NB15: a comprehensive data set for network intrusion de"
+ },
+ "warnecke2020evaluating": {
+  "doi": "10.1109/eurosp48549.2020.00018",
+  "title": "Evaluating Explanation Methods for Deep Learning in Security",
+  "year": 2020,
+  "venue": "2020 IEEE European Symposium on Security and Privacy (EuroS&amp;P)",
+  "status": "MATCHED"
+ },
+ "xgnid2024": {
+  "doi": "10.1016/j.eswa.2025.128089",
+  "title": "XG-NID: Dual-modality network intrusion detection using a heterogeneous graph neural network and large language model",
+  "year": 2025,
+  "venue": "Expert Systems with Applications",
+  "status": "MATCHED"
+ }
+}
