@@ -1,0 +1,31 @@
+# refs-manual.txt -- muc KHONG CO ban ghi Crossref, kem BANG CHUNG doc lap.
+#
+# Vi sao can file nay: cong Layer-2 doi moi ref phai co DOI Crossref. Voi mot bai ML/an ninh thi
+# gia thiet do SAI: NeurIPS, ICML, ICLR, USENIX Security, JMLR va arXiv KHONG dang ky DOI Crossref.
+# Khong co duong khai bao, cong se mai mai FAIL tren mot thu muc ref hoan toan dung -- va cach
+# "sua" duy nhat con lai la ha nguong, tuc la vut bo dung cai kha nang phat hien ma L2 sinh ra de co.
+#
+# Luat: moi dong = <key> <TAB> <bang chung>. Bang chung phai la mot nguon MAY TRA CUU DUOC
+# (DBLP rec / arXiv id), khong duoc la loi hua. Key khong co bang chung => cong CHAN.
+# Muc trong day duoc dem RIENG va IN RA: bo qua KHONG phai da xac minh.
+
+adebayo2018sanity           	DBLP https://dblp.org/rec/conf/nips/AdebayoGMGHK18 (NeurIPS 2018)
+alvarezmelis2018robustness  	arXiv:1806.08049 (David Alvarez-Melis, 2018-06-21)
+arp2022                     	DBLP https://dblp.org/rec/conf/uss/ArpQPWPWCR22 (USENIX Security Symposium 2022)
+dombrowski2019              	DBLP https://dblp.org/rec/conf/nips/DombrowskiAAAMK19 (NeurIPS 2019)
+doshivelez2017rigorous      	arXiv:1702.08608 (Finale Doshi-Velez, 2017-02-28)
+fisher2019rashomon          	DBLP https://dblp.org/rec/journals/jmlr/FisherRD19 (J. Mach. Learn. Res. 2019)
+g5nidd                      	arXiv:2212.01298 (Sehan Samarakoon, 2022-12-02)
+ghorbani2019towards         	DBLP https://dblp.org/rec/conf/nips/GhorbaniWZK19 (NeurIPS 2019)
+hooker2019roar              	DBLP https://dblp.org/rec/conf/nips/HookerEKK19 (NeurIPS 2019)
+kastner2021                 	arXiv:2108.05379 (Lena Kästner, 2021-08-11)
+krishna2022                 	DBLP https://dblp.org/rec/journals/tmlr/KrishnaHG0JL24 (Trans. Mach. Learn. Res. 2024) ; arXiv:2202.01602 (Satyapriya Krishna, 2022-02-03)
+liu2024kan                  	arXiv:2404.19756 (Ziming Liu, 2024-04-30)
+lundberg2017shap            	DBLP https://dblp.org/rec/conf/nips/LundbergL17 (NIPS 2017)
+marx2020multiplicity        	DBLP https://dblp.org/rec/conf/icml/MarxCU20 (ICML 2020)
+molnar2022interpretable     	trang chinh chu cua sach: christophm.github.io/interpretable-ml-book (Christoph Molnar, 'Interpretable Machine Learning: A Guide for Making Black Box Models Explainable'; ban 2 nam 2022 la ban duoc trich)
+shrikumar2017deeplift       	DBLP https://dblp.org/rec/conf/icml/ShrikumarGK17 (ICML 2017)
+simonyan2013saliency        	DBLP https://dblp.org/rec/journals/corr/SimonyanVZ13 (ICLR 2014) ; arXiv:1312.6034 (Karen Simonyan, 2013-12-20)
+smilkov2017smoothgrad       	DBLP https://dblp.org/rec/journals/corr/SmilkovTKVW17 (CoRR 2017) ; arXiv:1706.03825 (Daniel Smilkov, 2017-06-12)
+sundararajan2017ig          	DBLP https://dblp.org/rec/conf/icml/SundararajanTY17 (ICML 2017)
+szegedy2014intriguing       	DBLP https://dblp.org/rec/journals/corr/SzegedyZSBEGF13 (ICLR 2014)

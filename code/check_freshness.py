@@ -26,6 +26,7 @@ MAP = {
     "defense.csv": "exp_defense.py",
     "defense_ablate.csv": "exp_defense_ablate.py",
     "defense_transfer.csv": "exp_defense_transfer.py",
+    "dataset_profile.csv": "exp_dataset_profile.py",
     "faith_5explainer.csv": "exp_faith_5explainer.py",
     "faithfulness.csv": "exp_faithfulness.py",
     "field_audit.csv": "field_audit.py",

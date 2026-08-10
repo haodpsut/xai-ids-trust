@@ -3,7 +3,12 @@
 % NDSS 2027 submission (double-blind, anonymized).
 % Foundations of interpretability-based trust in ML-based intrusion detection.
 % All numbers trace to code/results/*.csv via paper/claims/ (one value per file).
+%
+% NDSS states the geometry as a hard rule: "columns no more than 9.25 in. high and 3.5 in. wide".
+% IEEEtran[conference] gives 3.49 in wide (fine) but 9.30 in high, which is 0.05 in OVER. Measured
+% 10/08/2026 with \the\textheight, not assumed from the class name. Trimmed to 668 pt = 9.24 in.
 % ============================================================================
+\addtolength{\textheight}{-4pt}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
@@ -50,10 +55,12 @@ by the decision, not by the choice of attribution method), and \emph{groundednes
 task, not the incidental model instance). On five modern datasets (2015--2023) all three fail: an
 interpretable surrogate loses up to $0.35$ $F_1$; cross-family explainers agree on as little as
 $0.15$ of the features they show; and equally accurate detectors disagree on nearly half their top
-features. A synthetic positive control confirms the metrics are satisfiable, not rigged to fail.
-The failure can carry security weight: on stable, correctly-detected true attacks, two equally-good
-models' explanations drive \emph{opposite} analyst actions, up to $0.87$ of flows on CICIDS2017 (a
-simulated-analyst upper bound). Two honest negatives, a non-transferring manipulation attack and a
+features. The failure carries security weight rather than merely epistemic weight: on stable,
+\emph{correctly detected} true attacks, two equally accurate detectors' explanations drive
+\emph{opposite} analyst actions, dismiss versus escalate, for up to $0.87$ of flows on
+CICIDS2017 (a simulated-analyst upper bound), so the same true positive is triaged either way
+depending on which equally-defensible model was deployed. A synthetic positive control confirms the
+metrics are satisfiable, not rigged to fail. Two honest negatives, a non-transferring attack and a
 circular, non-transferable, gameable reliability gate, show the warrant is not cheaply recovered.
 We distill the study into threat-aware evaluation criteria for such claims. Interpretability is
 not, by default, a warrant for trust in ML-IDS, and recovering that warrant is an open problem.
@@ -406,7 +413,8 @@ faithfulness on the tree ensembles that dominate tabular NIDS, random forests an
 boosting explained by exact TreeSHAP (Table~\ref{tab:tree}). Results are over three seeds (properties P1, P2) and
 four seeds (P3); we report mean and standard deviation. Table~\ref{tab:main} and
 Fig.~\ref{fig:trust} summarize the findings; each property should score $1.0$ for trust to hold,
-and none does on any dataset.
+and none does on any dataset. Appendix~\ref{app:repro} maps every reported quantity to the script
+and result file that produce it.
 
 \begin{table*}[t]
 \centering
@@ -562,7 +570,8 @@ equally-defensible tool the vendor shipped.
 \includegraphics[width=0.88\columnwidth]{fig_pairwise_heat.pdf}
 \caption{Determinacy across five explainers (high sampling budgets): top-5 agreement for all ten
 pairs on each dataset. Only the two input$\times$gradient-based methods (i-ig) agree; every
-cross-family pair is light (low). The reason shown to the analyst is largely a tool artifact.}
+cross-family pair is light (low). The reason shown to the analyst is largely a tool artifact.
+The underlying numbers for all ten pairs are in Appendix~\ref{app:pairwise}.}
 \label{fig:breadth}
 \end{figure}
 
@@ -780,8 +789,8 @@ $T \gets \{x : y(x){=}1 \wedge f_i(x){=}1\ \forall i\}$ \tcp*{true attacks all m
 \Return $\frac{1}{|T|}\sum_{x\in T}\mathrm{div}(x)$
 \end{algorithm}
 
-The result is stark on CICIDS2017, the most operationally realistic of the five (a $17\%$ attack
-rate over many attack types). Detection is stable: the seed-ensemble agrees on
+The result is stark on CICIDS2017, the most operationally realistic of the five (a
+$\input{claims/attrate_cicids_pct}\%$ attack rate over many attack types). Detection is stable: the seed-ensemble agrees on
 $\input{claims/harm_detect_agree_cicids}$ of these flows that they are attacks. Yet the
 explanation-driven analyst action is not: on $\input{claims/harm_divergence_cicids_lo}$ to
 $\input{claims/harm_divergence_cicids_hi}$ of the true attacks, two equally-good detectors'
@@ -801,7 +810,8 @@ harm follows from the benign under-determination of Section~\ref{sec:fail}. The 
 to the analyst model: a random-forest auditor amplifies the divergence and keeps it concentrated
 on the harder datasets ($0.87$ on CICIDS, $0.81$ on TON-IoT), so it is not an artifact of a linear analyst.
 
-The harm is not a coincidence of our auditor; it is a consequence of the groundedness failure.
+The harm is not a coincidence of our auditor; it is a consequence of the groundedness failure,
+which Proposition~\ref{prop:harm} states and the measurements below instantiate.
 
 \begin{proposition}[Harm from ungroundedness]\label{prop:harm}
 Let the analyst action $a(e(x))\in\{\text{escalate},\text{suppress}\}$ depend on the explanation
@@ -873,7 +883,7 @@ auditor). Detection is stable; the analyst action induced by the explanation is 
 \toprule
 & UNSW & CICIDS & 5G & TON & CIC23 \\
 \midrule
-detection agreement    & $0.96$ & $0.88$ & $1.00$ & $1.00$ & $0.99$ \\
+detection agreement    & $0.961$ & $0.880$ & $0.998$ & $0.995$ & $0.986$ \\
 action divergence      & $.12/.03$ & $\mathbf{.48/.87}$ & $.02/.68$ & $.37/.81$ & $.00/.01$ \\
 true attack dismissed  & $.04/.01$ & $.29/.35$ & $.00/.24$ & $.10/.22$ & $.00/.00$ \\
 \bottomrule
@@ -1098,7 +1108,7 @@ corpus, not an exhaustive survey, so we make no field-prevalence claim beyond it
 abstract and method only: a criterion is \emph{reported} ($1$) only when the paper explicitly presents
 the corresponding evidence, \emph{partial} ($0.5$) when it is touched but not measured (e.g.\ two
 explainers shown without an agreement number), and \emph{not-reported} ($0$) otherwise; coverage is
-the mean score over the twelve (e.g.\ $C_1{=}(0.5{+}0.5)/12{=}8\%$). Scores are thus a lower bound on
+the mean score over the twelve (e.g.\ $C_1{=}(0.5{+}0.5)/12{=}\input{claims/audit_c1}\%$). Scores are thus a lower bound on
 rigor, and the audit measures \emph{reporting practice}. The full list with DOIs and per-criterion
 coding is released as \texttt{field\_audit.csv}.
 
@@ -1135,11 +1145,11 @@ Le~\cite{action2026}                & \Circle & \Circle & \Circle & \Circle & \L
 Uccello~\cite{feat5g2025}           & \Circle & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
 Muhammad~\cite{lxaids2025}          & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
 Farrukh~\cite{xgnid2024}            & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
-Robust NID via XAI ('22)        & \Circle & \LEFTcircle & \Circle & \LEFTcircle & \Circle & \Circle \\
-Self-attn XAI IoT ('25)         & \Circle & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
-Eval.\ ML-IDS+XAI ('25)         & \Circle & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
-NGSHAP-IDS ('25)                & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
-Insider-threat SHAP ('26)       & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
+Barnard~\cite{robustxai2022}       & \Circle & \LEFTcircle & \Circle & \LEFTcircle & \Circle & \Circle \\
+Sharma~\cite{selfattn2025}         & \Circle & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
+Mohale~\cite{fronteval2025}        & \Circle & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
+Dong~\cite{ngshap2025}             & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
+Faqihi~\cite{insider2026}          & \Circle & \Circle & \Circle & \Circle & \Circle & \Circle \\
 \midrule
 \textbf{coverage} & $\input{claims/audit_c1}\%$ & $\input{claims/audit_c2}\%$ & $\input{claims/audit_c3}\%$ & $\input{claims/audit_c4}\%$ & $\input{claims/audit_c5}\%$ & $\input{claims/audit_c6}\%$ \\
 \bottomrule

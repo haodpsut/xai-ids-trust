@@ -1,0 +1,128 @@
+{
+ "adebayo2018sanity": {
+  "dblp": "https://dblp.org/rec/conf/nips/AdebayoGMGHK18",
+  "venue": "NeurIPS",
+  "year": "2018",
+  "type": "Conference and Workshop Papers"
+ },
+ "arp2022": {
+  "dblp": "https://dblp.org/rec/conf/uss/ArpQPWPWCR22",
+  "venue": "USENIX Security Symposium",
+  "year": "2022",
+  "type": "Conference and Workshop Papers"
+ },
+ "krishna2022": {
+  "dblp": "https://dblp.org/rec/journals/tmlr/KrishnaHG0JL24",
+  "venue": "Trans. Mach. Learn. Res.",
+  "year": "2024",
+  "type": "Journal Articles",
+  "arxiv": "2202.01602",
+  "arxiv_title": "The Disagreement Problem in Explainable Machine Learning: A Practitioner's Perspective",
+  "arxiv_first_author": "Satyapriya Krishna",
+  "arxiv_published": "2022-02-03"
+ },
+ "lundberg2017shap": {
+  "dblp": "https://dblp.org/rec/conf/nips/LundbergL17",
+  "venue": "NIPS",
+  "year": "2017",
+  "type": "Conference and Workshop Papers"
+ },
+ "marx2020multiplicity": {
+  "dblp": "https://dblp.org/rec/conf/icml/MarxCU20",
+  "venue": "ICML",
+  "year": "2020",
+  "type": "Conference and Workshop Papers"
+ },
+ "shrikumar2017deeplift": {
+  "dblp": "https://dblp.org/rec/conf/icml/ShrikumarGK17",
+  "venue": "ICML",
+  "year": "2017",
+  "type": "Conference and Workshop Papers"
+ },
+ "simonyan2013saliency": {
+  "dblp": "https://dblp.org/rec/journals/corr/SimonyanVZ13",
+  "venue": "ICLR",
+  "year": "2014",
+  "type": "Conference and Workshop Papers",
+  "arxiv": "1312.6034",
+  "arxiv_title": "Deep Inside Convolutional Networks: Visualising Image Classification Models and Saliency Maps",
+  "arxiv_first_author": "Karen Simonyan",
+  "arxiv_published": "2013-12-20"
+ },
+ "smilkov2017smoothgrad": {
+  "dblp": "https://dblp.org/rec/journals/corr/SmilkovTKVW17",
+  "venue": "CoRR",
+  "year": "2017",
+  "type": "Informal and Other Publications",
+  "arxiv": "1706.03825",
+  "arxiv_title": "SmoothGrad: removing noise by adding noise",
+  "arxiv_first_author": "Daniel Smilkov",
+  "arxiv_published": "2017-06-12"
+ },
+ "sundararajan2017ig": {
+  "dblp": "https://dblp.org/rec/conf/icml/SundararajanTY17",
+  "venue": "ICML",
+  "year": "2017",
+  "type": "Conference and Workshop Papers"
+ },
+ "szegedy2014intriguing": {
+  "dblp": "https://dblp.org/rec/journals/corr/SzegedyZSBEGF13",
+  "venue": "ICLR",
+  "year": "2014",
+  "type": "Conference and Workshop Papers"
+ },
+ "doshivelez2017rigorous": {
+  "arxiv": "1702.08608",
+  "arxiv_title": "Towards A Rigorous Science of Interpretable Machine Learning",
+  "arxiv_first_author": "Finale Doshi-Velez",
+  "arxiv_published": "2017-02-28"
+ },
+ "g5nidd": {
+  "arxiv": "2212.01298",
+  "arxiv_title": "5G-NIDD: A Comprehensive Network Intrusion Detection Dataset Generated over 5G Wireless Network",
+  "arxiv_first_author": "Sehan Samarakoon",
+  "arxiv_published": "2022-12-02"
+ },
+ "liu2024kan": {
+  "arxiv": "2404.19756",
+  "arxiv_title": "KAN: Kolmogorov-Arnold Networks",
+  "arxiv_first_author": "Ziming Liu",
+  "arxiv_published": "2024-04-30"
+ },
+ "kastner2021": {
+  "arxiv": "2108.05379",
+  "arxiv_title": "On the Relation of Trust and Explainability: Why to Engineer for Trustworthiness",
+  "arxiv_first_author": "Lena K\u00e4stner",
+  "arxiv_published": "2021-08-11"
+ },
+ "alvarezmelis2018robustness": {
+  "arxiv": "1806.08049",
+  "arxiv_title": "On the Robustness of Interpretability Methods",
+  "arxiv_first_author": "David Alvarez-Melis",
+  "arxiv_published": "2018-06-21"
+ },
+ "dombrowski2019": {
+  "dblp": "https://dblp.org/rec/conf/nips/DombrowskiAAAMK19",
+  "venue": "NeurIPS",
+  "year": "2019",
+  "type": "Conference and Workshop Papers"
+ },
+ "fisher2019rashomon": {
+  "dblp": "https://dblp.org/rec/journals/jmlr/FisherRD19",
+  "venue": "J. Mach. Learn. Res.",
+  "year": "2019",
+  "type": "Journal Articles"
+ },
+ "ghorbani2019towards": {
+  "dblp": "https://dblp.org/rec/conf/nips/GhorbaniWZK19",
+  "venue": "NeurIPS",
+  "year": "2019",
+  "type": "Conference and Workshop Papers"
+ },
+ "hooker2019roar": {
+  "dblp": "https://dblp.org/rec/conf/nips/HookerEKK19",
+  "venue": "NeurIPS",
+  "year": "2019",
+  "type": "Conference and Workshop Papers"
+ }
+}

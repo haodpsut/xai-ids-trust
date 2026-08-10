@@ -12,3 +12,9 @@ paper/figs/.methods_*.json
 # Goi nop da loi thoi: dung ban truoc luot don giong van 04/08. Ban that la paper/main.tex.
 SUBMIT-NDSS/
 paper/claims.json.STALE-*
+
+# san pham trung gian cua vong xac minh ref 10/08: bang chung da chot trong
+# refs-manual.txt + REF-VERIFICATION-*.md, cac file tra cuu tho khong can theo doi
+paper/l2-lookup*.json
+paper/venue-check.json
+paper/audit-refs-lookup.json

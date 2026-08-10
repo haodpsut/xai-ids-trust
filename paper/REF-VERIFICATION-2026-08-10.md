@@ -1,61 +1,71 @@
-# Layer-2 reference verification — 58 tham khảo, 10/08/2026
+# Xác minh tài liệu tham khảo — 10/08/2026 (vòng hai)
 
-`refs.bib` **không mục nào có DOI**, nên không thể tra theo DOI. Quy trình đã dùng:
-tra theo tiêu đề, rồi **chứng minh danh tính độc lập** trước khi nhận — tiêu đề phải khớp
-sau chuẩn hoá, **và** họ tác giả đầu phải khớp, **và** năm lệch không quá 1. Mục nào không
-chứng minh được thì ghi là CHƯA XÁC MINH, không nhận bừa.
+**62 mục** trong `refs.bib`, **62/62 được trích** trong bài, 0 mục giữ chỗ.
 
-## Tổng kết
+## Trạng thái theo nguồn chứng minh
 
-| nhóm | số mục |
-|---|---|
-| khớp Crossref, danh tính đã chứng minh | **32** |
-| khớp arXiv, tiêu đề khớp chính xác | **13** |
-| xác minh bằng mã arXiv có sẵn trong bib / tìm kiếm có nguồn | **4** |
-| kinh điển, nhận diện chắc chắn nhưng CHƯA đối chiếu máy | **8** |
-| ⛔ **KHÔNG TÌM THẤY** | **1** |
+| | số mục | chứng minh bằng gì |
+|---|---|---|
+| **Khớp Crossref trên sáu trường** | **42** | tra theo **DOI**, so tiêu đề · từng tác giả theo thứ tự · tạp chí/kỷ yếu · volume · number · trang · năm. Tổng **414 phép so trường**. |
+| Nhà XB nộp tiêu đề cắt/nối | 5 | vẫn nằm trong 42 ở trên; xem mục dưới |
+| Không có bản ghi Crossref | 20 | khai trong `refs-manual.txt`, **mỗi mục kèm nguồn tra cứu được** |
 
-## ⛔ Mục không tìm thấy — PHẢI XỬ LÝ TRƯỚC KHI NỘP
+Chạy lại bất cứ lúc nào:
 
-**`salo2022soc`** — *"Towards Explainable AI in the Security Operations Center"*,
-Salo, Fabio and Ali, Sarhad and others, IEEE Big Data 2022.
+```
+M=$(grep -vE '^\s*(#|$)' refs-manual.txt | awk '{print $1}' | paste -sd, -)
+python3 <pipeline>/scripts/verify_refs_layer2.py refs.bib --manual "$M"
+```
 
-Hai lượt tìm độc lập **không ra bài nào** mang tiêu đề/tác giả/venue đó. Trường `author`
-có `and others` mơ hồ. Đây có dạng của một ref **bịa hoặc nhớ nhầm**.
+## Vì sao 20 mục không có DOI — và vì sao đó KHÔNG phải miễn trừ im lặng
 
-Nó được trích ở Related Work: *"surveys of explainable IDS và of explanations in the
-security operations center [salo2022soc] call for stakeholder-specific evaluation"*.
+NeurIPS, ICML, ICLR, USENIX Security, JMLR và arXiv **không đăng ký DOI Crossref**. Với một bài
+ML/an ninh thì đó là một phần ba thư mục. Cổng Layer-2 đòi DOI cho mọi mục sẽ **FAIL vĩnh viễn**
+trên một thư mục hoàn toàn đúng — và cách "sửa" duy nhất còn lại là hạ ngưỡng, tức vứt bỏ đúng cái
+khả năng phát hiện mà L2 sinh ra để có.
 
-**Hướng xử lý:** thay bằng một công trình CÓ THẬT đỡ đúng luận điểm đó, ví dụ
-Nyre-Yu và cs., *"Explainable AI in Cybersecurity Operations: Lessons Learned from XAI
-Tool Deployment"*, USEC 2022 — hoặc bỏ hẳn vế đó. **Không nộp khi chưa xử lý:** với NDSS,
-ref bịa là vấn đề liêm chính, và tác giả đã từng bị TEVC bắt 6 ref giả.
+Nên: 20 mục đó khai trong `refs-manual.txt`, **mỗi dòng bắt buộc kèm bằng chứng máy tra được**
+(bản ghi DBLP hoặc arXiv id đã đối chiếu tiêu đề + họ tác giả đầu + năm). Cổng đọc file này, đếm
+riêng, **in ra từng khoá**, và **CHẶN nếu có khoá khai trần không kèm bằng chứng**. Bỏ qua vẫn
+không phải đã xác minh — nhưng nó không còn vô hình.
 
-## Kinh điển, nhận diện chắc chắn nhưng chưa đối chiếu máy
+## Bốn lỗi THẬT bắt được ở vòng này
 
-- **arp2022** — USENIX Security 2022 — công trình kinh điển, nhận diện chắc chắn
-- **breiman2001two** — Statistical Science 16(3):199-231, 2001 — kinh điển
-- **fisher2019rashomon** — JMLR 20(177), 2019 — Fisher/Rudin/Dominici
-- **molnar2022interpretable** — sách, tự xuất bản, 2nd ed. — không có DOI, xác minh bằng nhận diện
-- **slack2020** — AIES 2020 — Crossref trả về đúng tiêu đề "Fooling LIME and SHAP" ở vị trí gần nhất
-- **sundararajan2017ig** — ICML 2017 — kinh điển
-- **szegedy2014intriguing** — ICLR 2014 — kinh điển
-- **unsw2015** — MilCIS 2015 — Crossref trả về đúng tiêu đề ở vị trí gần nhất
+1. **`arreche2024exai`** thiếu tác giả thứ ba **Jack W. Roberts** (bib 3 người, bản ghi 4).
+2. **`cicids2017`** họ tác giả thứ hai là **Habibi Lashkari**, không phải Lashkari.
+3. **`action2026`** thiếu tiền tố tiêu đề **“TRACE:”**.
+4. **Ba mục còn ở dạng preprint dù đã xuất bản**: `xgnid2024` → ESWA 287:128089 (2025);
+   `feat5g2025` → JISA 99:104448 (2026); `krishna2022` → TMLR (2024).
 
-## Đã xác minh trực tiếp ngoài hai vòng tự động
+Cộng với lỗi đã sửa ở vòng một: **`salo2022soc` KHÔNG TỒN TẠI**, đã thay bằng Nyre-Yu và cs.,
+USEC 2022, DOI `10.14722/usec.2022.23014`.
 
-- **action2026** — MDPI Electronics 15(15):3291, 2026 — ĐÃ XÁC MINH qua tìm kiếm: khung TRACE, mdpi.com/2079-9292/15/15/3291
-- **g5nidd** — arXiv:2212.01298 — ĐÃ XÁC MINH trực tiếp: "5G-NIDD: A Comprehensive Network Intrusion Detection Dataset Generated over 5G Wireless Network"
-- **simonyan2013saliency** — arXiv:1312.6034 — ĐÃ XÁC MINH trực tiếp
-- **smilkov2017smoothgrad** — arXiv:1706.03825 — ĐÃ XÁC MINH trực tiếp
+## Năm ca nhà xuất bản nộp tiêu đề khác bản trích (L2-6g) — dung thứ nhưng IN RA
 
-## Khớp máy (32 Crossref + 13 arXiv)
+Nhà xuất bản không phải lúc nào cũng nộp đúng tiêu đề mà tác giả sẽ trích:
 
-Chi tiết từng mục kèm DOI/arXiv-id trong `l2-lookup.json`.
+| khoá | bài trích | nhà XB nộp |
+|---|---|---|
+| `ribeiro2016lime` | *"Why Should I Trust You?": Explaining the Predictions of Any Classifier* | `"Why Should I Trust You?"` (ACM cắt ở dấu hai chấm) |
+| `slack2020` | *Fooling LIME and SHAP: Adversarial Attacks on Post Hoc Explanation Methods* | `Fooling LIME and SHAP` |
+| `jacovi2021formalizing` | *Formalizing Trust in AI: Prerequisites, Causes and Goals…* | `Formalizing Trust in Artificial Intelligence` |
+| `breiman2001two` | *Statistical Modeling: The Two Cultures* | `… (with comments and a rejoinder by the author)` |
+| `unsw2015` | *UNSW-NB15: A Comprehensive Data Set…* | `… (UNSW-NB15 network data set)` |
 
-## Hạn chế của vòng kiểm này
+Chỉ **quan hệ tiền tố trọn vẹn** (hai chiều, phần ngắn ≥ 3 từ) được dung thứ, và vẫn phải khớp mọi
+trường còn lại. Một cái **đuôi sai** không bao giờ là tiền tố trọn vẹn, nên khả năng bắt lỗi gốc của
+L2 giữ nguyên — control có ca chứng minh điều đó.
 
-Đã chứng minh **danh tính** (đúng bài đó tồn tại, đúng tác giả đầu, đúng năm). **Chưa**
-đối chiếu đủ 6 trường (volume/issue/trang) vì bib không có DOI để lấy bản ghi đầy đủ.
-Nếu venue yêu cầu, bước tiếp là ghim DOI vừa tìm được vào `refs.bib` rồi chạy
-`verify_refs_layer2.py` để so 6 trường.
+## Cảnh báo còn lưu: tra theo TIÊU ĐỀ mà không chứng minh danh tính là bẫy
+
+Khi thử tra tiêu đề để tìm DOI cho các mục thiếu, Crossref trả về:
+- `jacovi2021formalizing` → một bài về **môi trường xây dựng** của tác giả khác, 2024;
+- `arp2022` → một bài **chỉnh hình tiếng Đức** về khớp gối nhiễm trùng.
+
+Cả hai đều là "kết quả gần nhất". Bộ so khớp chặt (tiêu đề **và** họ tác giả đầu **và** năm) loại
+đúng cả hai. Đây chính là L2-6a: **một phép tra không định danh được thì phải nói là không, chứ
+không được đoán.**
+
+Và thêm một chiều nữa học được ở vòng này: **phải so cả VENUE**. Tra tiêu đề LIME cho ra DOI của
+bản **demo NAACL 2016** — cùng tiêu đề, cùng tác giả, cùng năm với bản **KDD 2016** mà bài trích.
+Tiêu đề + tác giả + năm **không đủ** để phân biệt hai bản của cùng một công trình.

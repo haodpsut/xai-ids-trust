@@ -3,11 +3,41 @@
 Paper: **When Is an Explanation Trustworthy? Foundations of Interpretability-Based Trust in ML-IDS**
 Venue: **NDSS 2027**, chu kỳ **mùa thu**. Double-blind, đã ẩn danh (`Anonymous Submission`).
 
-## ⚠ ĐÍNH CHÍNH NGÀY 15/08
+## ⚠ NGÀY THẬT — TRA LẠI 10/08/2026 TRÊN TRANG CfP ĐÃ MỞ
 
-15/08 là ngày **MỞ nhận bài** của chu kỳ mùa thu, **không phải hạn nộp** — CfP NDSS 2027 ghi
-*"the fall cycle call for papers will open on 15 August"*. Chu kỳ mùa hè đã đóng 07/05/2026.
-**Hạn thật phải tra lại trên trang CfP khi cổng mở.**
+Trang CfP NDSS 2027 nay đã có đủ mốc chu kỳ mùa thu, chép nguyên văn **kèm nhãn** (§8e):
+
+| nhãn nguyên văn | ngày |
+|---|---|
+| *"Paper submission deadline"* | **Wed, 19 August 2026** |
+| *"Early reject/Round 2 notification and Round 1 reviews"* | Fri, 25 September 2026 |
+| *"Author notification"* | Wed, 4 November 2026 |
+| *"Camera Ready deadline"* | Wed, 6 January 2027 |
+
+**Hạn nộp là 19/08/2026, không phải 15/08.** 15/08 chỉ là ngày CfP mở. Cả hai bên đã tin nhầm
+15/08 là hạn — hoá ra còn **thêm 4 ngày**, chứ không phải ít đi.
+
+## ★ §8b — DANH SÁCH OUT-OF-SCOPE, CHÉP NGUYÊN VĂN (tra 10/08/2026)
+
+NDSS liệt kê thẳng những dạng bài **bị loại không qua phản biện**:
+
+> *"Papers with focus on theoretical cryptography but without implementation or evaluation on real systems"*
+> *"Papers with focus on mathematical proof without implementation/evaluation"*
+> *"Papers with contributions primarily in another field: AI, ML, etc."*
+> *"Papers without any security or privacy contribution; e.g. optimizing network performance"*
+> *"Major overlap between a rejected paper from the summer cycle and a submission to the fall cycle"*
+
+**Đối chiếu bài này — hai mục có rủi ro thật:**
+
+- ⚠ *"contributions primarily in another field: AI, ML"* — **đây là rủi ro lớn nhất của bài.**
+  Ba tính chất (fidelity/determinacy/groundedness) đọc thoáng qua là một quan sát về XAI. Cái kéo
+  bài về phía an ninh là mục **harm**: trên luồng **đã phát hiện đúng và ổn định**, giải thích của
+  hai mô hình tốt ngang nhau đẩy nhà phân tích tới **hành động ngược nhau** (tới 0,87 trên
+  CICIDS2017). Vế đó **phải đứng sớm và rõ** trong abstract + intro, nếu không desk-reject theo
+  đúng dòng này. Đã kiểm: abstract có nêu, nhưng ở câu thứ 6.
+- ✅ *"without any security or privacy contribution"* — không vướng, nhờ đúng mục harm ở trên.
+- ✅ *"major overlap with a rejected summer-cycle paper"* — bài **chưa từng nộp** chu kỳ mùa hè.
+- ✅ hai mục crypto/mathematical-proof — không liên quan.
 
 ## Ràng buộc venue (§8b/§8c/§8d), tra 10/08/2026
 
@@ -33,19 +63,63 @@ Venue: **NDSS 2027**, chu kỳ **mùa thu**. Double-blind, đã ẩn danh (`Anon
   attribution, chọn mô hình, quy mô khảo sát) kèm hướng ảnh hưởng. Kết quả tấn công **khai thật là
   inconclusive**, gate khai thật là **kết quả âm**.
 - **claim scope** — `claim-scope.json`, 2 mệnh đề độc quyền đều có `hedged_by` đã verify.
-- **⚠ đọc-ngoài trên CLAIM SHEET — CHƯA CÓ.** Đây là mục còn thiếu thật sự.
+- **⚠ đọc-ngoài trên CLAIM SHEET — tờ đã viết (`CLAIM-SHEET.md`), NGƯỜI ĐỌC THÌ CHƯA CÓ.**
+  Đây là mục DANGEROUS duy nhất còn lại, và nó chặn đúng. Khi có người đọc, ghi **một dòng**
+  vào file này: `CLAIM-SHEET-READ: <ngày> <người> -- <họ nói gì>`. Cổng chỉ nhận đúng dạng đó.
 
-## Cổng đã chạy 10/08/2026
+## Cổng đã chạy 10/08/2026 (vòng hai)
 
 | cổng | kết quả |
 |---|---|
-| `verify_refs` Layer-1 | ✅ 57 mục / 57 được trích, 0 giữ chỗ |
-| **Layer-2** | ✅ `REF-VERIFICATION-2026-08-10.md` — 45/58 chứng minh máy, 4 xác minh trực tiếp, 8 kinh điển nhận diện, **1 KHÔNG TỒN TẠI đã thay** |
+| `verify_refs` Layer-1 | ✅ **62 mục / 62 được trích**, 0 giữ chỗ |
+| **Layer-2 (chạy thật, không phải file .md)** | ✅ **42 mục khớp Crossref trên cả sáu trường, 414 phép so trường**; 5 ca nhà XB nộp tiêu đề cắt/nối được dung thứ và **in ra**; 20 mục không có DOI Crossref khai trong `refs-manual.txt`, mỗi mục kèm nguồn tra cứu được (DBLP rec / arXiv id) |
 | `check_claim_scope` | ✅ PASS |
-| `verify_numbers` | ✅ 37/37 claim ánh xạ được khớp CSV (`claims-manifest.json`) |
+| `verify_numbers` | ✅ **54/54** claim khớp CSV ở đúng độ chính xác in ra |
+| `trace_prose_numbers` | ✅ 0 số không truy được · **0 bảng không claim nào chạm tới** (trước là 4) · miễn trừ cắt từ 9 xuống **3** |
+| `ssot_prose_numbers` | ✅ **0 số gõ tay** ngoài `\input{}` (trước là 2) |
 | `self_consistency` | ✅ PASS |
-| `check_staleness` | ⚠ 4 CSV cũ hơn `data.py` — **đã kiểm diff: thuần CỘNG THÊM** (nhánh TON-IoT rồi CIC-IoT-2023), không đụng đường nạp của UNSW/CICIDS/5G ⇒ 11 claim từ 4 CSV đó **vẫn hợp lệ**. Cờ stale là dấu thời gian, không phải logic |
-| biên dịch | ✅ 0 lỗi · 15 trang · 0 overfull |
+| `check_freshness` | ✅ 4 CSV cũ hơn `data.py` — đã kiểm diff: thuần **CỘNG THÊM**, không đụng đường nạp cũ |
+| biên dịch | ✅ 0 lỗi · 15 trang (thân bài hết tr.12) · 0 overfull |
+| `g0_kill_first` | ❌ 1 mục: **đọc-ngoài claim sheet** — đúng, chưa ai đọc |
+
+## ★ Bốn lỗi thật bắt được trong vòng HAI (10/08, sau khi nạp DOI)
+
+1. **`arreche2024exai` thiếu một tác giả** — bib ghi 3, bản ghi nhà XB có 4: thiếu **Jack W.
+   Roberts** ở vị trí thứ ba. Đúng lớp lỗi L2 đã cảnh báo: sai nằm ở tác giả **giữa**.
+2. **`cicids2017` sai họ** — họ là **Habibi Lashkari**, bib tách thành `Lashkari, Arash Habibi`.
+3. **Hai ref còn nằm ở dạng preprint dù đã xuất bản** — `xgnid2024` → *Expert Systems with
+   Applications* 287:128089 (2025); `feat5g2025` → *J. Inf. Secur. Appl.* 99:104448 (2026).
+   Cùng lớp với `krishna2022` → TMLR 2024.
+4. **`action2026` mất tiền tố tiêu đề** — tên thật bắt đầu bằng **“TRACE:”**. Lỗi ở ĐẦU tiêu đề,
+   chỗ mắt người đọc lướt qua nhanh nhất.
+
+## ★ Bảng field-audit: từ “không kiểm chứng được” sang “kiểm chứng được”
+
+Năm trong mười hai dòng của `tab:audit` trước đây **không có trích dẫn** (“Robust NID via XAI
+('22)”). Trong một bài mà luận điểm chính là *ngành này không tự kiểm chứng*, một bảng khảo sát
+không ai tra được là chỗ hở nặng nhất — và câu văn còn hứa *“the full list with DOIs … is released
+as field\_audit.csv”* trong khi CSV **không có cột DOI**. Đã: định danh cả năm về bản ghi đã xuất
+bản, thêm **cột `doi`** cho cả 12 dòng, trích dẫn đủ 12/12 trong bảng. **Điểm C1–C6 không đổi một ô
+nào** (đã đối chiếu máy trước/sau), nên mọi con số coverage giữ nguyên.
+
+| khoá | bài | DOI |
+|---|---|---|
+| `robustxai2022` | Barnard và cs., IEEE Netw. Lett. 4(3) | `10.1109/LNET.2022.3186589` |
+| `ngshap2025` | Dong và cs., Computer Networks 275 | `10.1016/j.comnet.2025.111937` |
+| `selfattn2025` | Sharma và cs., Sci. Rep. 15 | `10.1038/s41598-025-23750-0` |
+| `fronteval2025` | Mohale & Obagbuwa, Front. Comput. Sci. 7 | `10.3389/fcomp.2025.1520741` |
+| `insider2026` | Faqihi và cs., FGCS 183 | `10.1016/j.future.2026.108543` |
+
+## ★ Bảng dữ liệu (tab:data) nay tính lại được
+
+Cột **Features** và **Attack rate** trước đây chỉ tồn tại trong mã LaTeX. Thêm
+`code/exp_dataset_profile.py` → `dataset_profile.csv`: nạp đúng đường mà thí nghiệm nạp (bỏ cột
+định danh, seed 0, n=40000) rồi tính. **Cả 10 số khớp bài y nguyên** (34/52/48/38/39 và
+0,68/0,17/0,61/0,76/0,97) — bảng vốn đúng, nay là **tính lại được** chứ không phải gõ tay.
+
+Một điều chỉnh thật: hàng *detection agreement* của `tab:harm` in ở 2 chữ số làm TON-IoT thành
+`1.00` trong khi CSV là `0.995` — đúng ranh giới làm tròn. Đã in cả hàng ở **3 chữ số**
+(0.961 · 0.880 · 0.998 · 0.995 · 0.986) để không giấu quyết định làm tròn nào.
 
 ## ★ Ba lỗi thật bắt được trong vòng này
 
@@ -64,7 +138,13 @@ Venue: **NDSS 2027**, chu kỳ **mùa thu**. Double-blind, đã ẩn danh (`Anon
 
 ## Còn lại
 
-- [ ] **Claim sheet một trang → đọc ngoài** (mục giết-trước duy nhất còn thiếu)
-- [ ] Tra hạn nộp thật khi CfP mùa thu mở 15/08
-- [ ] 51/88 claim chưa ánh xạ sang CSV trong manifest (phần ablation/audit) — mở rộng nếu có thời gian
-- [ ] 31 file `claims/*.tex` mồ côi — dọn cho gọn
+- [ ] **Claim sheet một trang → đọc ngoài** — mục DANGEROUS **duy nhất** còn lại. Đưa
+      `CLAIM-SHEET.md` cho một người ngoài, xin trả lời **ba câu** ở cuối tờ, rồi ghi vào file này:
+      `CLAIM-SHEET-READ: <ngày> <người> -- <họ nói gì>`
+- [ ] Nếu người đọc ngoài nói *"cái này nghiêng về ML hơn an ninh"* thì **phải xử trước khi nộp** —
+      đó đúng là dòng desk-reject của NDSS (xem §8b ở trên).
+- [x] ~~Tra hạn nộp thật~~ — **19/08/2026**, đã chép nguyên nhãn ở đầu file.
+- [x] ~~51 claim chưa ánh xạ~~ — manifest nay **54 claim**, `trace_prose_numbers` báo **0 bảng**
+      không được claim nào chạm tới. Số claim thấp hơn 88 vì 88 là số **file** `claims/*.tex`,
+      không phải số mệnh đề cần đối chiếu; nhiều file là hai mặt của cùng một con số.
+- [x] ~~31 file `claims/*.tex` mồ côi~~ — đã xoá **29** file không được `\input`, còn **90/90** dùng thật.

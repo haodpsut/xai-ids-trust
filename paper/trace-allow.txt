@@ -1,11 +1,13 @@
-# So KHONG truy thang duoc ve mot o CSV nhung DA kiem tay. Moi dong phai co ly do.
-# Dang:  <so>  # <ly do>
-2015  # nam phat hanh bo du lieu UNSW-NB15, trong bang mo ta du lieu (tab:data). Sieu du lieu, khong phai ket qua.
+# Mien tru CO LY DO cho trace_prose_numbers. Moi dong: <so>  # <ly do>
+#
+# Danh sach nay vua bi cat tu 9 xuong 3 (10/08/2026). Sau khi tab:data duoc noi vao
+# dataset_profile.csv va cong thoi dem khoa \cite / nhan cot ("CIC23") la du lieu, sau mien tru
+# cu tro thanh CHET. Mot mien tru chet khong vo hai: no dung san do de nuot mot con so SAI trong
+# tuong lai co cung gia tri. Mien tru phai duoc cat moi lan cong duoc va.
+#
+# Con lai dung ba, deu la SIEU DU LIEU nha cung cap -- khong dong code nao cua bai sinh ra chung,
+# nen khong CSV nao co the truy ve.
+
+2015  # nam phat hanh UNSW-NB15 (cot Year cua tab:data). Sieu du lieu, khong phai ket qua.
 2017  # nam phat hanh CICIDS2017. Nhu tren.
-2021  # nam phat hanh 5G-NIDD. Nhu tren.
-5.8   # so luong ban ghi (trieu) cua mot bo du lieu trong tab:data. Sieu du lieu nha cung cap, khong sinh tu code cua bai.
-105   # so dac trung cua mot bo du lieu trong tab:data. Nhu tren.
-25    # so bai trong khao sat field-audit (tab:audit). Dem tu danh sach bai, khong tu CSV ket qua.
-33    # (a) do rong cot / (b) da noi voi claims/audit_c2 sau khi sua dong coverage. Kiem lai neu con bao.
-4.6   # do rong cot LaTeX trong \begin{tabular}{p{4.6cm}...} cua tab:repro. Dinh dang, khong phai du lieu.
-6.2   # do rong cot LaTeX cua tab:repro. Nhu tren.
+105   # so thiet bi trong testbed CIC-IoT-2023, trich tu mo ta cua nhom cong bo bo du lieu.

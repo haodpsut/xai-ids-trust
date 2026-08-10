@@ -16,23 +16,43 @@ Criteria:
 
 Legend: 1 = reported, 0 = not reported, 0.5 = partial (mechanism present but not as the criterion).
 Papers are real and web-verified; two (Warnecke, Nadeem) are evaluation/SoK works, the rest applied.
+
+Every row carries the DOI of the version that was read. Five rows used to appear in the paper's
+table with no citation at all ("Robust NID via XAI ('22)"), which is indefensible in a paper whose
+whole argument is that this field does not check its own claims: an audit nobody can look up is
+exactly the artifact we are complaining about. Each was identified back to its published record on
+2026-08-10, and three of them turned out to have left preprint status since the audit was coded
+(XG-NID -> Expert Systems with Applications 2025; 5G feature attribution -> JISA 2026; NGSHAP ->
+Computer Networks 2026). The CODING is unchanged -- it was done against the version cited here.
 """
 import csv, os
 
-# (key, short label, year, venue-tier, [C1..C6])
+# (key, short label, year, venue, doi, [C1..C6])
 AUDIT = [
-    ("warnecke2020",  "Warnecke et al. (eval)",     2020, "EuroS&P", [0.5, 1, 0, 0.5, 0.5, 0]),
-    ("nadeem2023",    "Nadeem et al. (SoK)",         2023, "EuroS&P", [0.5, 0.5, 0, 0.5, 0.5, 0]),
-    ("capuano2022",   "Capuano et al. (survey)",     2022, "Access",  [0, 0, 0, 0, 0, 0]),
-    ("action2026",    "Le et al. action-contracts",  2026, "Electron.", [0, 0, 0, 0, 0.5, 0.5]),
-    ("robustxai2022", "Robust NID via XAI",          2022, "conf",    [0, 0.5, 0, 0.5, 0, 0]),
-    ("xgnid2024",     "XG-NID (GNN+LLM)",            2024, "arXiv",   [0, 0, 0, 0, 0, 0]),
-    ("ngshap2025",    "NGSHAP-IDS (NGBoost)",        2025, "journal", [0, 0, 0, 0, 0, 0]),
-    ("selfattn2025",  "Self-attention XAI IoT",      2025, "Sci.Rep.", [0, 0.5, 0, 0, 0, 0]),
-    ("feat5g2025",    "Feature Attrib. 5G IDS",      2025, "arXiv",   [0, 1, 0, 0, 0, 0]),
-    ("fronteval2025", "Evaluating ML-IDS w/ XAI",    2025, "Frontiers", [0, 0.5, 0, 0, 0, 0]),
-    ("lxaids2025",    "L-XAIDS (LIME framework)",     2025, "arXiv",   [0, 0, 0, 0, 0, 0]),
-    ("insider2026",   "Insider-threat SHAP",         2026, "FGCS",    [0, 0, 0, 0, 0, 0]),
+    ("warnecke2020",  "Warnecke et al. (eval)",     2020, "EuroS&P",
+     "10.1109/EuroSP48549.2020.00018", [0.5, 1, 0, 0.5, 0.5, 0]),
+    ("nadeem2023",    "Nadeem et al. (SoK)",        2023, "EuroS&P",
+     "10.1109/EuroSP57164.2023.00022", [0.5, 0.5, 0, 0.5, 0.5, 0]),
+    ("capuano2022",   "Capuano et al. (survey)",    2022, "IEEE Access",
+     "10.1109/ACCESS.2022.3204171", [0, 0, 0, 0, 0, 0]),
+    ("action2026",    "Le et al. (TRACE)",          2026, "Electronics",
+     "10.3390/electronics15153291", [0, 0, 0, 0, 0.5, 0.5]),
+    ("robustxai2022", "Barnard et al. robust XAI",  2022, "IEEE Netw. Lett.",
+     "10.1109/LNET.2022.3186589", [0, 0.5, 0, 0.5, 0, 0]),
+    ("xgnid2024",     "Farrukh et al. (XG-NID)",    2025, "Expert Syst. Appl.",
+     "10.1016/j.eswa.2025.128089", [0, 0, 0, 0, 0, 0]),
+    ("ngshap2025",    "Dong et al. (NGSHAP-IDS)",   2026, "Comput. Netw.",
+     "10.1016/j.comnet.2025.111937", [0, 0, 0, 0, 0, 0]),
+    ("selfattn2025",  "Sharma et al. self-attn.",   2025, "Sci. Rep.",
+     "10.1038/s41598-025-23750-0", [0, 0.5, 0, 0, 0, 0]),
+    ("feat5g2025",    "Uccello et al. 5G attrib.",  2026, "J. Inf. Secur. Appl.",
+     "10.1016/j.jisa.2026.104448", [0, 1, 0, 0, 0, 0]),
+    ("fronteval2025", "Mohale et al. evaluation",   2025, "Front. Comput. Sci.",
+     "10.3389/fcomp.2025.1520741", [0, 0.5, 0, 0, 0, 0]),
+    ("lxaids2025",    "Muhammad et al. (L-XAIDS)",  2025, "Cluster Comput.",
+     "10.1007/s10586-025-05326-9", [0, 0, 0, 0, 0, 0]),
+    ("insider2026",   "Faqihi et al. insider SHAP", 2026, "FGCS",
+     "10.1016/j.future.2026.108543", [0, 0, 0, 0, 0, 0]),
 ]
 
 CRITS = ["C1 fidelity", "C2 method-inv", "C3 instance-inv", "C4 adv-robust",
@@ -41,14 +61,16 @@ CRITS = ["C1 fidelity", "C2 method-inv", "C3 instance-inv", "C4 adv-robust",
 if __name__ == "__main__":
     os.makedirs("results", exist_ok=True)
     n = len(AUDIT)
+    assert len({r[4] for r in AUDIT}) == n, "a DOI is repeated: two rows are the same paper"
+    assert all(r[4].startswith("10.") for r in AUDIT), "a row has no resolvable DOI"
     with open("results/field_audit.csv", "w", newline="") as f:
-        w = csv.writer(f); w.writerow(["key", "label", "year", "venue"] + CRITS)
-        for k, lab, yr, ven, sc in AUDIT:
-            w.writerow([k, lab, yr, ven] + sc)
+        w = csv.writer(f); w.writerow(["key", "label", "year", "venue", "doi"] + CRITS)
+        for k, lab, yr, ven, doi, sc in AUDIT:
+            w.writerow([k, lab, yr, ven, doi] + sc)
     # coverage per criterion (fraction reporting, counting partial as 0.5)
-    print(f"audited {n} papers")
+    print(f"audited {n} papers, {n} distinct DOIs")
     for i, c in enumerate(CRITS):
-        cov = sum(sc[i] for _, _, _, _, sc in AUDIT) / n
-        full = sum(1 for _, _, _, _, sc in AUDIT if sc[i] == 1)
+        cov = sum(r[5][i] for r in AUDIT) / n
+        full = sum(1 for r in AUDIT if r[5][i] == 1)
         print(f"  {c:16s}: coverage={cov:.2f}  (fully reported by {full}/{n})")
     print("wrote results/field_audit.csv")

@@ -1,13 +1,13 @@
-key,label,year,venue,C1 fidelity,C2 method-inv,C3 instance-inv,C4 adv-robust,C5 warrant,C6 reliability
-warnecke2020,Warnecke et al. (eval),2020,EuroS&P,0.5,1,0,0.5,0.5,0
-nadeem2023,Nadeem et al. (SoK),2023,EuroS&P,0.5,0.5,0,0.5,0.5,0
-capuano2022,Capuano et al. (survey),2022,Access,0,0,0,0,0,0
-action2026,Le et al. action-contracts,2026,Electron.,0,0,0,0,0.5,0.5
-robustxai2022,Robust NID via XAI,2022,conf,0,0.5,0,0.5,0,0
-xgnid2024,XG-NID (GNN+LLM),2024,arXiv,0,0,0,0,0,0
-ngshap2025,NGSHAP-IDS (NGBoost),2025,journal,0,0,0,0,0,0
-selfattn2025,Self-attention XAI IoT,2025,Sci.Rep.,0,0.5,0,0,0,0
-feat5g2025,Feature Attrib. 5G IDS,2025,arXiv,0,1,0,0,0,0
-fronteval2025,Evaluating ML-IDS w/ XAI,2025,Frontiers,0,0.5,0,0,0,0
-lxaids2025,L-XAIDS (LIME framework),2025,arXiv,0,0,0,0,0,0
-insider2026,Insider-threat SHAP,2026,FGCS,0,0,0,0,0,0
+key,label,year,venue,doi,C1 fidelity,C2 method-inv,C3 instance-inv,C4 adv-robust,C5 warrant,C6 reliability
+warnecke2020,Warnecke et al. (eval),2020,EuroS&P,10.1109/EuroSP48549.2020.00018,0.5,1,0,0.5,0.5,0
+nadeem2023,Nadeem et al. (SoK),2023,EuroS&P,10.1109/EuroSP57164.2023.00022,0.5,0.5,0,0.5,0.5,0
+capuano2022,Capuano et al. (survey),2022,IEEE Access,10.1109/ACCESS.2022.3204171,0,0,0,0,0,0
+action2026,Le et al. (TRACE),2026,Electronics,10.3390/electronics15153291,0,0,0,0,0.5,0.5
+robustxai2022,Barnard et al. robust XAI,2022,IEEE Netw. Lett.,10.1109/LNET.2022.3186589,0,0.5,0,0.5,0,0
+xgnid2024,Farrukh et al. (XG-NID),2025,Expert Syst. Appl.,10.1016/j.eswa.2025.128089,0,0,0,0,0,0
+ngshap2025,Dong et al. (NGSHAP-IDS),2026,Comput. Netw.,10.1016/j.comnet.2025.111937,0,0,0,0,0,0
+selfattn2025,Sharma et al. self-attn.,2025,Sci. Rep.,10.1038/s41598-025-23750-0,0,0.5,0,0,0,0
+feat5g2025,Uccello et al. 5G attrib.,2026,J. Inf. Secur. Appl.,10.1016/j.jisa.2026.104448,0,1,0,0,0,0
+fronteval2025,Mohale et al. evaluation,2025,Front. Comput. Sci.,10.3389/fcomp.2025.1520741,0,0.5,0,0,0,0
+lxaids2025,Muhammad et al. (L-XAIDS),2025,Cluster Comput.,10.1007/s10586-025-05326-9,0,0,0,0,0,0
+insider2026,Faqihi et al. insider SHAP,2026,FGCS,10.1016/j.future.2026.108543,0,0,0,0,0,0
