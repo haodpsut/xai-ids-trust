@@ -1,5 +1,209 @@
 [
  {
+  "id": "ac_acc_hi",
+  "paper_value": "0.997",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "auditor_test_acc",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_acc_lo",
+  "paper_value": "0.916",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "auditor_test_acc",
+  "filter": {
+   "dataset": "UNSW",
+   "auditor": "logistic"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_div_cicids",
+  "paper_value": "0.873",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "div_measured",
+  "filter": {
+   "dataset": "CICIDS",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_pcross_5g",
+  "paper_value": "0.294",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_cross",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_pcross_cicids",
+  "paper_value": "0.433",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_cross",
+  "filter": {
+   "dataset": "CICIDS",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_pcross_ton",
+  "paper_value": "0.272",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_cross",
+  "filter": {
+   "dataset": "TON-IoT",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_prand_5g",
+  "paper_value": "0.15",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_rand_attr",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_prand_cicids",
+  "paper_value": "0.505",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_rand_attr",
+  "filter": {
+   "dataset": "CICIDS",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_prand_ton",
+  "paper_value": "0.179",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_rand_attr",
+  "filter": {
+   "dataset": "TON-IoT",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_pself_5g",
+  "paper_value": "0.001",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_self",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_pself_cicids",
+  "paper_value": "0.018",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_self",
+  "filter": {
+   "dataset": "CICIDS",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_pself_ton",
+  "paper_value": "0.026",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "p_self",
+  "filter": {
+   "dataset": "TON-IoT",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "ac_shuf_cicids",
+  "paper_value": "0.936",
+  "csv": "../code/results/auditor_control.csv",
+  "column": "div_shuffle",
+  "filter": {
+   "dataset": "CICIDS",
+   "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "attrate_cic23",
+  "paper_value": "0.97",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "attack_rate",
+  "filter": {
+   "dataset": "CIC-IoT-2023"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "attrate_cicids",
+  "paper_value": "0.17",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "attack_rate",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "attrate_cicids_pct",
+  "paper_value": "17",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "attack_rate",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value",
+  "scale": "x*100"
+ },
+ {
+  "id": "attrate_g5",
+  "paper_value": "0.61",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "attack_rate",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "attrate_ton",
+  "paper_value": "0.76",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "attack_rate",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "attrate_unsw",
+  "paper_value": "0.68",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "attack_rate",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
   "id": "auc_5g",
   "paper_value": "0.95",
   "csv": "../code/results/defense_ablate.csv",
@@ -36,6 +240,61 @@
   "column": "full_auc",
   "filter": {
    "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "detagree_cic23",
+  "paper_value": "0.986",
+  "csv": "../code/results/harm.csv",
+  "column": "detection_agreement",
+  "filter": {
+   "dataset": "CIC-IoT-2023",
+   "auditor": "logistic"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "detagree_cicids",
+  "paper_value": "0.880",
+  "csv": "../code/results/harm.csv",
+  "column": "detection_agreement",
+  "filter": {
+   "dataset": "CICIDS",
+   "auditor": "logistic"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "detagree_g5",
+  "paper_value": "0.998",
+  "csv": "../code/results/harm.csv",
+  "column": "detection_agreement",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "auditor": "logistic"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "detagree_ton",
+  "paper_value": "0.995",
+  "csv": "../code/results/harm.csv",
+  "column": "detection_agreement",
+  "filter": {
+   "dataset": "TON-IoT",
+   "auditor": "logistic"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "detagree_unsw",
+  "paper_value": "0.961",
+  "csv": "../code/results/harm.csv",
+  "column": "detection_agreement",
+  "filter": {
+   "dataset": "UNSW",
+   "auditor": "logistic"
   },
   "agg": "value"
  },
@@ -124,6 +383,116 @@
   "paper_value": "0.18",
   "csv": "../code/results/faithfulness.csv",
   "column": "comprehensiveness",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "fid_sparselogit_f1_cicids",
+  "paper_value": "0.84",
+  "csv": "../code/results/fidelity_multi.csv",
+  "column": "sparse-logit_f1",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "jf_chance_cicids",
+  "paper_value": "0.056",
+  "csv": "../code/results/jaccard_floor.csv",
+  "column": "E_J_random",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "jf_chance_unsw",
+  "paper_value": "0.087",
+  "csv": "../code/results/jaccard_floor.csv",
+  "column": "E_J_random",
+  "filter": {
+   "dataset": "UNSW"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "jf_frac_ton",
+  "paper_value": "0.261",
+  "csv": "../code/results/jaccard_floor.csv",
+  "column": "frac_shown_observed",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "jf_over_5g",
+  "paper_value": "5.13",
+  "csv": "../code/results/jaccard_floor.csv",
+  "column": "J_over_chance",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "jf_over_ton",
+  "paper_value": "1.94",
+  "csv": "../code/results/jaccard_floor.csv",
+  "column": "J_over_chance",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "nfeat_cic23",
+  "paper_value": "39",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "n_features",
+  "filter": {
+   "dataset": "CIC-IoT-2023"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "nfeat_cicids",
+  "paper_value": "52",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "n_features",
+  "filter": {
+   "dataset": "CICIDS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "nfeat_g5",
+  "paper_value": "48",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "n_features",
+  "filter": {
+   "dataset": "5G-NIDD"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "nfeat_ton",
+  "paper_value": "38",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "n_features",
+  "filter": {
+   "dataset": "TON-IoT"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "nfeat_unsw",
+  "paper_value": "34",
+  "csv": "../code/results/dataset_profile.csv",
+  "column": "n_features",
   "filter": {
    "dataset": "UNSW"
   },
@@ -370,179 +739,56 @@
   "agg": "value"
  },
  {
-  "id": "nfeat_unsw",
-  "paper_value": "34",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "n_features",
-  "filter": {
-   "dataset": "UNSW"
-  },
-  "agg": "value"
- },
- {
-  "id": "attrate_unsw",
-  "paper_value": "0.68",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "attack_rate",
-  "filter": {
-   "dataset": "UNSW"
-  },
-  "agg": "value"
- },
- {
-  "id": "nfeat_cicids",
-  "paper_value": "52",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "n_features",
+  "id": "p3_cicids",
+  "paper_value": "0.618",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_mean",
   "filter": {
    "dataset": "CICIDS"
   },
   "agg": "value"
  },
  {
-  "id": "attrate_cicids",
-  "paper_value": "0.17",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "attack_rate",
-  "filter": {
-   "dataset": "CICIDS"
-  },
-  "agg": "value"
- },
- {
-  "id": "nfeat_g5",
-  "paper_value": "48",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "n_features",
-  "filter": {
-   "dataset": "5G-NIDD"
-  },
-  "agg": "value"
- },
- {
-  "id": "attrate_g5",
-  "paper_value": "0.61",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "attack_rate",
-  "filter": {
-   "dataset": "5G-NIDD"
-  },
-  "agg": "value"
- },
- {
-  "id": "nfeat_ton",
-  "paper_value": "38",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "n_features",
+  "id": "p3_ton",
+  "paper_value": "0.374",
+  "csv": "../code/results/multiseed.csv",
+  "column": "p3_seed_agree_mean",
   "filter": {
    "dataset": "TON-IoT"
   },
   "agg": "value"
  },
  {
-  "id": "attrate_ton",
-  "paper_value": "0.76",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "attack_rate",
+  "id": "prop2_p_pcross",
+  "paper_value": "0.233",
+  "csv": "../code/results/prop2_test.csv",
+  "column": "exact_perm_p",
   "filter": {
-   "dataset": "TON-IoT"
+   "outcome": "p_cross",
+   "auditor": "rf"
   },
   "agg": "value"
  },
  {
-  "id": "nfeat_cic23",
-  "paper_value": "39",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "n_features",
+  "id": "prop2_rho_div",
+  "paper_value": "0.4",
+  "csv": "../code/results/prop2_test.csv",
+  "column": "spearman_rho_vs_p3",
   "filter": {
-   "dataset": "CIC-IoT-2023"
+   "outcome": "action_divergence",
+   "auditor": "rf"
   },
   "agg": "value"
  },
  {
-  "id": "attrate_cic23",
-  "paper_value": "0.97",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "attack_rate",
+  "id": "prop2_rho_pcross",
+  "paper_value": "0.7",
+  "csv": "../code/results/prop2_test.csv",
+  "column": "spearman_rho_vs_p3",
   "filter": {
-   "dataset": "CIC-IoT-2023"
+   "outcome": "p_cross",
+   "auditor": "rf"
   },
   "agg": "value"
- },
- {
-  "id": "detagree_unsw",
-  "paper_value": "0.961",
-  "csv": "../code/results/harm.csv",
-  "column": "detection_agreement",
-  "filter": {
-   "dataset": "UNSW",
-   "auditor": "logistic"
-  },
-  "agg": "value"
- },
- {
-  "id": "detagree_cicids",
-  "paper_value": "0.880",
-  "csv": "../code/results/harm.csv",
-  "column": "detection_agreement",
-  "filter": {
-   "dataset": "CICIDS",
-   "auditor": "logistic"
-  },
-  "agg": "value"
- },
- {
-  "id": "detagree_g5",
-  "paper_value": "0.998",
-  "csv": "../code/results/harm.csv",
-  "column": "detection_agreement",
-  "filter": {
-   "dataset": "5G-NIDD",
-   "auditor": "logistic"
-  },
-  "agg": "value"
- },
- {
-  "id": "detagree_ton",
-  "paper_value": "0.995",
-  "csv": "../code/results/harm.csv",
-  "column": "detection_agreement",
-  "filter": {
-   "dataset": "TON-IoT",
-   "auditor": "logistic"
-  },
-  "agg": "value"
- },
- {
-  "id": "detagree_cic23",
-  "paper_value": "0.986",
-  "csv": "../code/results/harm.csv",
-  "column": "detection_agreement",
-  "filter": {
-   "dataset": "CIC-IoT-2023",
-   "auditor": "logistic"
-  },
-  "agg": "value"
- },
- {
-  "id": "fid_sparselogit_f1_cicids",
-  "paper_value": "0.84",
-  "csv": "../code/results/fidelity_multi.csv",
-  "column": "sparse-logit_f1",
-  "filter": {
-   "dataset": "CICIDS"
-  },
-  "agg": "value"
- },
- {
-  "id": "attrate_cicids_pct",
-  "paper_value": "17",
-  "csv": "../code/results/dataset_profile.csv",
-  "column": "attack_rate",
-  "filter": {
-   "dataset": "CICIDS"
-  },
-  "agg": "value",
-  "scale": "x*100"
  }
 ]

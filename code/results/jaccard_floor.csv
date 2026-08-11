@@ -1,0 +1,6 @@
+dataset,n_features,k,E_inter_random,E_J_random,E_J_random_sim,J_observed_min_crossfamily,J_over_chance,frac_shown_observed,frac_shown_chance
+UNSW,34,5,0.735,0.087,0.087,0.18,2.07,0.305,0.16
+CICIDS,52,5,0.481,0.056,0.056,0.17,3.06,0.291,0.105
+5G-NIDD,48,5,0.521,0.06,0.06,0.31,5.13,0.473,0.114
+TON-IoT,38,5,0.658,0.077,0.077,0.15,1.94,0.261,0.143
+CIC-IoT-2023,39,5,0.641,0.075,0.075,0.21,2.8,0.347,0.14

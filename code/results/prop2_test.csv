@@ -1,0 +1,6 @@
+outcome,auditor,n_datasets,spearman_rho_vs_p3,exact_perm_p,sign_predicted_by_prop2,supports_prop2
+action_divergence,logistic,5,0.3,0.683,negative,no
+action_divergence,rf,5,0.4,0.517,negative,no
+suppression_rate,rf,5,0.7,0.233,negative,no
+p_cross,rf,5,0.7,0.233,negative,no
+p_excess,rf,5,0.7,0.233,negative,no

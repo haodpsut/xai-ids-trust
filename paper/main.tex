@@ -52,14 +52,19 @@ detector. We ask, for ML-IDS specifically, what an explanation must satisfy for 
 multiplicity, we formalize three necessary properties of the explanation map: \emph{fidelity} (the
 interpretable artifact decides as the deployed model), \emph{determinacy} (the explanation is fixed
 by the decision, not by the choice of attribution method), and \emph{groundedness} (it reflects the
-task, not the incidental model instance). On five modern datasets (2015--2023) all three fail: an
-interpretable surrogate loses up to $0.35$ $F_1$; cross-family explainers agree on as little as
-$0.15$ of the features they show; and equally accurate detectors disagree on nearly half their top
-features. The failure carries security weight rather than merely epistemic weight: on stable,
-\emph{correctly detected} true attacks, two equally accurate detectors' explanations drive
-\emph{opposite} analyst actions, dismiss versus escalate, for up to $0.87$ of flows on
-CICIDS2017 (a simulated-analyst upper bound), so the same true positive is triaged either way
-depending on which equally-defensible model was deployed. A synthetic positive control confirms the
+task, not the incidental model instance). On five modern datasets (2015--2023), fidelity is
+attainable but only at a price --- a readable surrogate matches the deployed detector's decisions on
+$0.96$--$1.00$ of flows, yet costs up to $0.35$ $F_1$ on the hardest corpus --- while determinacy
+and groundedness fail outright: cross-family explainers agree on as little as
+$\input{claims/jf_frac_ton}$ of the five features they put in front of an analyst, only
+$\input{claims/jf_over_ton}\times$ what two unrelated rankings would score by chance; and equally
+accurate detectors disagree on nearly half their top features. The failure carries security weight
+rather than merely epistemic weight: a simulated analyst calibrated on the deployed model's
+explanations dismisses $\input{claims/ac_pself_cicids}$ of correctly-detected true attacks on
+CICIDS2017, but $\input{claims/ac_pcross_cicids}$ of those same attacks once an equally accurate
+sibling model is put in its place, against $\input{claims/ac_prand_cicids}$ when the explanation is
+replaced by noise. Calibrated trust in an explanation therefore survives a seed change little
+better than reading no explanation at all. A synthetic positive control confirms the
 metrics are satisfiable, not rigged to fail. Two honest negatives, a non-transferring attack and a
 circular, non-transferable, gameable reliability gate, show the warrant is not cheaply recovered.
 We distill the study into threat-aware evaluation criteria for such claims. Interpretability is
@@ -98,16 +103,23 @@ explainer disagreement, and model multiplicity rather than claiming these phenom
 \item We provide, to our knowledge, the first \textbf{joint measurement} of all three, on
 \textbf{five modern NIDS datasets} and \textbf{five standard explainers
 (gradient saliency, input$\times$gradient, integrated gradients, SHAP, LIME)}, under one
-action-centered framework, and find all three
-fail with multi-seed statistics (Section~\ref{sec:fail}). Explainers from different
-families agree on as little as $0.15$ of the features they present, even at high sampling budgets.
-\item We show the failure can have \textbf{security consequences} (Section~\ref{sec:harm}): on
-correctly-detected true attacks, where detection is stable, equally-good detectors' explanations
-induce \emph{opposite} analyst actions at a dataset-dependent rate, up to $0.87$ of flows on
-CICIDS2017 (the most realistic corpus) and near-zero on the easiest task, and there make a true
-attack read benign $0.29$ to $0.35$ of the time, so where the effect is strong, mis-founded trust
-turns whether a real attack is acted on into an accident of the deployed model. These
-simulated-analyst rates are upper bounds (Section~\ref{sec:harm}).
+action-centered framework, with multi-seed statistics and, for each headline rate, the value it
+takes when the effect is switched off (Section~\ref{sec:fail}). Determinacy and groundedness fail;
+fidelity is attainable but costs detection. Explainers from different
+families agree on as little as $\input{claims/jf_frac_ton}$ of the five features they present, even
+at high sampling budgets, against a chance agreement of $\input{claims/jf_chance_cicids}$ to
+$\input{claims/jf_chance_unsw}$ Jaccard for the feature counts involved.
+\item We show the failure can have \textbf{security consequences} (Section~\ref{sec:harm}), and we
+measure them against their own floor. A simulated analyst calibrated on one deployed model's
+explanations dismisses $\input{claims/ac_pself_cicids}$ of correctly-detected true attacks on
+CICIDS2017; swapping in an equally accurate sibling raises that to
+$\input{claims/ac_pcross_cicids}$, most of the way to the $\input{claims/ac_prand_cicids}$ obtained
+when the explanation is replaced by signal-free noise. The same gap appears on 5G-NIDD
+($\input{claims/ac_pself_5g}\!\to\!\input{claims/ac_pcross_5g}$) and TON-IoT
+($\input{claims/ac_pself_ton}\!\to\!\input{claims/ac_pcross_ton}$), and vanishes on the easiest
+corpus. Where the effect is strong, mis-founded trust turns whether a real attack is acted on into
+an accident of the deployed model. These simulated-analyst rates are upper bounds
+(Section~\ref{sec:harm}).
 \item We map \textbf{how hard the failure is to fix} with two honest negatives: an
 explanation-manipulation attack does not transfer to tabular IDS (Section~\ref{sec:adv}), and the
 most natural per-alarm reliability gate, though it scores well in-distribution, is circular, non-transferable, and adversarially gameable (Section~\ref{sec:defense}). Trust is not cheaply recovered.
@@ -358,8 +370,9 @@ proposition shows that \emph{some} action policy sensitive to $\mathrm{top}_k$ d
 unadjudicated choices, and Section~\ref{sec:harm} exhibits two \emph{learned} such policies that do;
 it does not assert that every conceivable analyst policy would. A policy that ignored the
 explanation would be trivially invariant, but then interpretability plays no role in the trust it
-is invoked to support. We now show current practice violates all three properties, then
-that the violation carries a security cost and resists a cheap fix.
+is invoked to support. We now show current practice violates determinacy and groundedness and buys
+fidelity only at a cost in detection, then that the violation carries a security cost and resists a
+cheap fix.
 
 \subsection{Which explanation approaches could warrant trust?}\label{sec:taxonomy}
 Before measuring, we systematize the landscape: which \emph{families} of explanation could, in
@@ -565,6 +578,18 @@ SHAP agree on only $\input{claims/p2_gradshap_cicids}$--$\input{claims/p2_gradsh
 top-5 features. The reason presented to the analyst is largely an artifact of which
 equally-defensible tool the vendor shipped.
 
+Two clarifications, because a Jaccard is easy to over-read in either direction. It divides by the
+union, so an agreement of $J$ at $k{=}5$ means the two explanations share $2kJ/(1{+}J)$ features and
+the analyst sees $2J/(1{+}J)$ of the five endorsed by both, not $J$: our lowest cross-family value,
+$J{=}0.15$ on TON-IoT, is an overlap of $\input{claims/jf_frac_ton}$ of what is shown. Earlier
+drafts stated $J$ itself as that fraction, understating the overlap in the abstract. And $J$ must be
+read against chance, which depends on the feature count: two independent uniform top-5 rankings
+score $\input{claims/jf_chance_cicids}$ (52 features) to $\input{claims/jf_chance_unsw}$ (34) in
+expectation, so the observed agreements sit at $\input{claims/jf_over_ton}\times$--$\input{claims/jf_over_5g}\times$
+chance. They are above chance everywhere, as methods explaining one model should be, and nowhere
+near the $\approx 1.0$ determinacy requires. The claim is not that explainers agree at chance level;
+it is that they agree far too little for the shown features to be treated as \emph{the} reason.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.88\columnwidth]{fig_pairwise_heat.pdf}
@@ -586,8 +611,13 @@ $\input{claims/p3_agree_toniot}{\pm}\input{claims/p3_agree_toniot_std}$ (TON-IoT
 handed one detector's explanation is trusting an accident of training that an equally good
 detector would contradict.
 
-All three necessary properties fail, with tight seed-to-seed variance, across five modern
-datasets. The failures are not artifacts of our choices: determinacy agreement stays low across
+Determinacy and groundedness fail outright across five modern datasets, with tight seed-to-seed
+variance. Fidelity does not, and the distinction matters: a depth-4 tree reproduces the deployed
+detector's decisions on $.96$--$1.0$ of flows (Table~\ref{tab:fidmulti}), so a faithful readable
+artifact exists. What fails is fidelity \emph{at no cost} --- distillation loses up to
+$\input{claims/p1_drop_cicids}$ $F_1$, and the surrogates that stay faithful give up detection on
+the hardest corpus ($.72$ and $.84$ $F_1$). Fidelity is purchasable; the other two are not.
+The failures are not artifacts of our choices: determinacy agreement stays low across
 top-$k$ sizes ($k{=}3,5,10$; e.g.\ CICIDS2017 $0.35$--$\input{claims/p2k_cicids_k10}$), and
 groundedness agreement is flat as the ensemble grows from four to ten models (CICIDS2017
 $\approx\input{claims/p3E_cicids_E10}$, 5G-NIDD $\approx\input{claims/p3E_5g_E10}$), so neither
@@ -790,25 +820,44 @@ $T \gets \{x : y(x){=}1 \wedge f_i(x){=}1\ \forall i\}$ \tcp*{true attacks all m
 \end{algorithm}
 
 The result is stark on CICIDS2017, the most operationally realistic of the five (a
-$\input{claims/attrate_cicids_pct}\%$ attack rate over many attack types). Detection is stable: the seed-ensemble agrees on
-$\input{claims/harm_detect_agree_cicids}$ of these flows that they are attacks. Yet the
-explanation-driven analyst action is not: on $\input{claims/harm_divergence_cicids_lo}$ to
-$\input{claims/harm_divergence_cicids_hi}$ of the true attacks, two equally-good detectors'
-explanations induce \emph{opposite} analyst actions, and a true attack's explanation reads
-benign (so the analyst would dismiss it) $\input{claims/harm_suppress_cicids_lo}$ to
-$\input{claims/harm_suppress_cicids_hi}$ of the time. In other words, the detector agrees a flow
-is an attack, but whether the analyst \emph{acts} on it is decided by which arbitrary training
-seed was deployed. This is the security harm: mis-founded trust in the explanation converts a
-grounded detection into an ungrounded response. The effect is smaller on UNSW-NB15
-(divergence $\approx\input{claims/harm_divergence_unsw}$) and smallest on 5G-NIDD under the
-logistic auditor ($\approx\input{claims/harm_divergence_5g}$, where detection is near-perfect and
-the task easy), and substantial on TON-IoT ($\input{claims/harm_divergence_toniot_lo}$ to
-$\input{claims/harm_divergence_toniot_hi}$ across the two auditors, over its diverse IoT attack
-taxonomy), so the harm scales with task difficulty and attack diversity, being largest exactly
-where operational stakes are highest (Fig.~\ref{fig:harm}, Table~\ref{tab:harm}). No adversary is required: the
-harm follows from the benign under-determination of Section~\ref{sec:fail}. The effect is robust
-to the analyst model: a random-forest auditor amplifies the divergence and keeps it concentrated
-on the harder datasets ($0.87$ on CICIDS, $0.81$ on TON-IoT), so it is not an artifact of a linear analyst.
+$\input{claims/attrate_cicids_pct}\%$ attack rate over many attack types). Detection is stable: the
+seed-ensemble agrees on $\input{claims/harm_detect_agree_cicids}$ of these flows that they are
+attacks. The analyst's action is not. The detector agrees a flow is an attack, but whether the
+analyst \emph{acts} on it depends on which arbitrary training seed was deployed. This is the
+security harm: mis-founded trust in the explanation converts a grounded detection into an
+ungrounded response. No adversary is required; it follows from the benign under-determination of
+Section~\ref{sec:fail}. It is largest on the harder corpora and near-zero on the easiest
+(Fig.~\ref{fig:harm}, Table~\ref{tab:harm}), and it is not an artifact of a linear analyst: both a
+logistic and a random-forest auditor show it.
+
+\textbf{What survives control, and what does not.}\label{par:harmctrl}
+No such rate means anything on its own, so we place each against the value it takes when the effect
+under study is switched off (Table~\ref{tab:harm}). The auditor is first shown to be competent:
+it recovers the label from the explanations of the model it was calibrated on with accuracy
+$\input{claims/ac_acc_lo}$ to $\input{claims/ac_acc_hi}$, so a suppressed true attack is not simply
+an incompetent analyst.
+
+\emph{The suppression rate survives, and it is the result.} On the model it knows, the auditor
+dismisses only $\input{claims/ac_pself_cicids}$ of correctly-detected true attacks on CICIDS2017;
+on the four sibling models it has never seen, $\input{claims/ac_pcross_cicids}$. Feeding it
+attributions with the flow--explanation link destroyed --- same per-feature magnitudes, no signal ---
+gives $\input{claims/ac_prand_cicids}$. The calibrated analyst is therefore closer to reading noise
+than to reading the model it was calibrated on, and on 5G-NIDD and TON-IoT the sibling-model rate
+\emph{exceeds} the noise rate outright. This gap is the paper's security claim, and it is what the
+controls leave standing.
+
+\emph{Action divergence does not survive, and we withdraw it as independent evidence.} Divergence
+is $1-\Pr[\text{all }E\text{ escalate}]-\Pr[\text{all }E\text{ suppress}]$, so if the $E{=}5$
+per-model actions were independent at the observed marginal it would already be $1-p^{5}-(1-p)^{5}$.
+Permuting each model's action column across flows --- which fixes every per-model marginal exactly
+and destroys only the flow-level coupling, so it stays valid under flow heterogeneity --- gives a
+null of $\input{claims/ac_shuf_cicids}$ against a measured $\input{claims/ac_div_cicids}$ on
+CICIDS2017. Across all ten dataset--auditor pairs, \emph{not one} measured divergence exceeds this
+null; five sit within $0.02$ of it and the rest fall below. Divergence is thus fully accounted for
+by the marginal suppression rate and adds no information about explanation instability. We report it
+for comparison with prior work that quotes disagreement rates without a floor, but rest no claim on
+it. An earlier version of this paper rested its abstract on it.
+
 
 The harm is not a coincidence of our auditor; it is a consequence of the groundedness failure,
 which Proposition~\ref{prop:harm} states and the measurements below instantiate.
@@ -828,9 +877,28 @@ $\mathrm{top}_k(e_{f_1},x)\neq\mathrm{top}_k(e_{f_2},x)$. On any $x\in D$ where 
 features flip the analyst's read, the two models induce different actions; the measure of such
 flows is at least $\pi$ times $|D|$. Since detection is stable on these true positives (both
 models flag attack), the divergence is entirely explanation-driven. Larger $\varepsilon_{\mathrm{grnd}}$
-(worse groundedness) forces larger $|D|$, hence more divergence, which is the monotone trend we
-observe across datasets (CICIDS, with worse groundedness on hard attacks, diverges most).
+forces larger $|D|$, hence a larger lower bound, \emph{holding $\pi$ and the flow distribution
+fixed}.
 \end{proof}
+
+\textbf{The predicted cross-dataset trend is not observed, and we withdraw the claim that it is.}
+Ranking the five corpora by seed-agreement $P_3$ against each harm measure gives Spearman
+$\rho=+\input{claims/prop2_rho_div}$ for action divergence and
+$\rho=+\input{claims/prop2_rho_pcross}$ for the sibling-model dismissal rate (exact permutation
+$p=\input{claims/prop2_p_pcross}$ at $n{=}5$): five of five tests point \emph{opposite} to the
+direction the proposition suggests, none significantly. CICIDS2017, where harm is largest, has the
+\emph{highest} groundedness of the five ($P_3=\input{claims/p3_cicids}$, against
+$\input{claims/p3_ton}$ on TON-IoT). An earlier version of this paper asserted the reverse as
+observed fact here; it was wrong against our own Table~\ref{tab:main}.
+
+This does not refute the proposition, which holds $\pi$ and the flow distribution fixed and bounds
+harm from below --- neither condition a cross-corpus ranking can honour. It refutes only any reading
+of our results as empirical support for the mechanism, so we rest no measurement on it. Testing it
+properly requires varying groundedness with everything else fixed, which only the synthetic control
+of Table~\ref{tab:ceiling} does: spreading the ground-truth signal from $k{=}5$ to $k{=}28$ features
+drives $P_3$ from $1.00$ to $0.44$ with the explainer untouched. That also exposes a confound the
+cross-corpus comparison cannot escape --- $P_3$ tracks how sparse the underlying signal is, so
+ranking corpora by $P_3$ partly ranks them by problem structure rather than explanation quality.
 
 \textbf{In operational cost.} The divergence matters because the two actions have very different
 costs. Write $C_{\mathrm{miss}}$ for the cost of suppressing a true attack and $C_{\mathrm{fp}}$
@@ -875,17 +943,30 @@ an accident of the deployed seed.}
 
 \begin{table}[t]
 \centering
-\caption{Explanation-induced harm on correctly-detected true attacks (logistic / random-forest
-auditor). Detection is stable; the analyst action induced by the explanation is not.}
+\caption{Explanation-induced harm on correctly-detected true attacks, with its controls
+(random-forest auditor; the logistic auditor is weaker but ordered the same). Detection is stable.
+The rate at which a true attack is dismissed rises sharply when the auditor reads an equally
+accurate \emph{sibling} model rather than the one it was calibrated on --- that gap is the result.
+Action divergence, by contrast, never exceeds the permutation null that fixes each model's marginal,
+and is withdrawn as evidence.}
 \label{tab:harm}
 \small\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{lccccc}
 \toprule
 & UNSW & CICIDS & 5G & TON & CIC23 \\
 \midrule
-detection agreement    & $0.961$ & $0.880$ & $0.998$ & $0.995$ & $0.986$ \\
-action divergence      & $.12/.03$ & $\mathbf{.48/.87}$ & $.02/.68$ & $.37/.81$ & $.00/.01$ \\
-true attack dismissed  & $.04/.01$ & $.29/.35$ & $.00/.24$ & $.10/.22$ & $.00/.00$ \\
+detection agreement           & $.961$ & $.880$ & $.998$ & $.995$ & $.986$ \\
+\midrule
+dismissed, own model          & $.003$ & $\input{claims/ac_pself_cicids}$
+                              & $\input{claims/ac_pself_5g}$ & $\input{claims/ac_pself_ton}$ & $.001$ \\
+dismissed, sibling model      & $.008$ & $\mathbf{\input{claims/ac_pcross_cicids}}$
+                              & $\mathbf{\input{claims/ac_pcross_5g}}$
+                              & $\mathbf{\input{claims/ac_pcross_ton}}$ & $.003$ \\
+dismissed, signal-free        & $.000$ & $\input{claims/ac_prand_cicids}$
+                              & $\input{claims/ac_prand_5g}$ & $\input{claims/ac_prand_ton}$ & $.000$ \\
+\midrule
+action divergence             & $.029$ & $\input{claims/ac_div_cicids}$ & $.682$ & $.813$ & $.009$ \\
+\quad permutation null        & $.035$ & $\input{claims/ac_shuf_cicids}$ & $.816$ & $.821$ & $.013$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1189,11 +1270,13 @@ bound} on a real analyst's explanation-induced divergence, and a human study is 
 work before any operational claim. \emph{Detector scope}: beyond the MLP and KAN detectors, we
 re-ran determinacy, groundedness, and faithfulness on the tree ensembles that dominate tabular
 NIDS, random forests and gradient boosting explained by \emph{exact, deterministic} TreeSHAP
-(Table~\ref{tab:tree}); all three still fail in the same range, so the result is not an artifact of
-neural detectors or of Monte-Carlo explainers. A convolutional or transformer NIDS remains future
-work. \emph{Dataset difficulty}: 5G-NIDD is
-near-saturated in detection, which is why its harm is small; the effect is concentrated, as it
-should be, on the harder CICIDS2017 and TON-IoT. \emph{Statistical power}: we report three-seed
+(Table~\ref{tab:tree}); determinacy and groundedness still fail in the same range, so the result is
+not an artifact of neural detectors or of Monte-Carlo explainers. A convolutional or transformer NIDS remains future
+work. \emph{Dataset difficulty, discounted uniformly}: three of the five detectors are effectively
+saturated (5G-NIDD $F_1{=}1.00$, CIC-IoT-2023 and TON-IoT $0.99$). We had discounted only
+CIC-IoT-2023's faithfulness on that ground; the discount is owed wherever saturation can drive a
+score, so all three should be read as consistent rather than confirming, and the security-harm
+result rests on CICIDS2017 and TON-IoT --- two corpora, not five. \emph{Statistical power}: we report three-seed
 statistics and, for the gate, expose its true run-to-run instability rather than an
 over-tight interval. None of these points toward a hidden way that interpretability \emph{does}
 warrant trust; they bound where our specific numbers apply.
@@ -1205,16 +1288,18 @@ Explainable ML-IDS invites analysts to trust detectors through their explanation
 would make that trust well-founded, formalized it as fidelity, determinacy, and groundedness, and
 showed, on five modern intrusion datasets, that fidelity fails for the interpretable-surrogate
 route and that determinacy and groundedness fail across five standard explainers including SHAP and
-LIME. We showed the failure can carry a security cost: on correctly-detected true attacks, and at a
-dataset-dependent rate that reaches $0.87$ of flows on CICIDS2017 (near-zero on the easiest task),
-equally-good detectors' explanations drive opposite analyst actions and there make a true attack
-read benign $0.29$ to $0.35$ of the time (a simulated-analyst upper bound), so where the effect is
-strong, acting on the explanation makes catching a real attack an accident of the deployed model. We then mapped how hard the failure is to fix, reporting two honest negatives, an
+LIME. We showed the failure can carry a security cost, measured against its own floor: a simulated
+analyst calibrated on the deployed model dismisses $\input{claims/ac_pself_cicids}$ of
+correctly-detected true attacks on CICIDS2017, and $\input{claims/ac_pcross_cicids}$ of the same
+attacks when an equally accurate sibling is deployed instead --- most of the way to the
+$\input{claims/ac_prand_cicids}$ obtained from signal-free attributions (an upper bound), and
+near-zero on the easiest corpus. The raw action-divergence rate does not exceed its permutation
+null on any of ten dataset--auditor pairs (Table~\ref{tab:harm}), so we withdraw it: quoting
+disagreement without a floor is the practice this paper argues against.
+We then mapped how hard the failure is to fix, reporting two honest negatives, an
 explanation-manipulation attack that does not transfer to tabular IDS, and a natural reliability
 gate that is circular, non-transferable, and adversarially gameable. Interpretability, as currently produced and
 evaluated, is not a sound basis for trust in ML-IDS, and recovering that basis is an open problem.
-We offer threat-aware criteria so that the next claim of interpretability-for-trust in security is
-made, and checked, on evidence.
 
 \appendices
 % ============================================================================
