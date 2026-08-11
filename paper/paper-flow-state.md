@@ -235,6 +235,20 @@ tỉ lệ bỏ sót** (`suppress_rate`) nên nội dung giữ nguyên giá trị
 | ❌ | **AR-6** — mirror ẩn danh thiếu `exp_sparse_bydesign.py`, cần Hảo đồng bộ lại 4open **sau khi push** |
 | ⚠ | **AR-1 SKIP** — không đọc được `pushed_at`; một check bị bỏ qua **không phải** một check đã đạt |
 
+### Gói nộp dựng lại 11/08 13:07 — đã kiểm PHÒNG SẠCH
+
+| | |
+|---|---|
+| `01 submission.pdf` | 17 trang tổng, **thân bài 13** (phụ lục mở đầu tr.14), 778 KB |
+| `02 source.zip` | **163 file** phẳng theo `\graphicspath{{figs/}}`: main.tex · refs.bib · main.bbl · claims/ · figs/ |
+| Biên dịch **từ chính gói** | 0 lỗi · 0 overfull · **0 ref/cite chưa định nghĩa** · 17 trang · **văn bản TRÙNG KHỚP** với PDF trong gói |
+| Ẩn danh | main.tex/refs.bib/claims **sạch**; 0 file `.log/.aux` lọt vào zip; metadata PDF **rỗng** (Author/Title trống) |
+| AR-6 | **PASS** — mirror `xai-ids-trust-2826` khớp cây làm việc, 27/27 script |
+| AR-1 | cổng SKIP vì không gọi được API; **kiểm tay: repo `pushed_at` 11/08 05:30:23Z > code mới nhất 05:18:19Z ⇒ ĐẠT** |
+
+*SHA256 hai file PDF khác nhau vì `/CreationDate` trong metadata — không phải khác nội dung. Phép
+so đúng là văn bản trích ra, và nó trùng khớp.*
+
 ⚠ **Bài học vận hành:** lần chạy đầu báo **DANGEROUS = 9**; sáu cái là do tôi truyền **đường dẫn
 tương đối** trong khi script `cd` vào thư mục bài trước. **Phải truyền đường dẫn tuyệt đối.**
 Cổng kêu to vì lỗi gọi lệnh cũng nguy hiểm như cổng im lặng — nó che mất hai lỗi thật.
