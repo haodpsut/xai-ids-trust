@@ -399,6 +399,61 @@
   "agg": "value"
  },
  {
+  "id": "hbts_cicids_ddos",
+  "paper_value": "0.38",
+  "csv": "../code/results/harm_bytype.csv",
+  "column": "suppress_rate",
+  "filter": {
+   "dataset": "CICIDS",
+   "attack_type": "DDoS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "hbts_cicids_dos",
+  "paper_value": "0.458",
+  "csv": "../code/results/harm_bytype.csv",
+  "column": "suppress_rate",
+  "filter": {
+   "dataset": "CICIDS",
+   "attack_type": "DoS"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "hbts_cicids_portscan",
+  "paper_value": "0.519",
+  "csv": "../code/results/harm_bytype.csv",
+  "column": "suppress_rate",
+  "filter": {
+   "dataset": "CICIDS",
+   "attack_type": "Port Scanning"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "hbts_ton_backdoor",
+  "paper_value": "0.001",
+  "csv": "../code/results/harm_bytype.csv",
+  "column": "suppress_rate",
+  "filter": {
+   "dataset": "TON-IoT",
+   "attack_type": "backdoor"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "hbts_ton_mitm",
+  "paper_value": "0.376",
+  "csv": "../code/results/harm_bytype.csv",
+  "column": "suppress_rate",
+  "filter": {
+   "dataset": "TON-IoT",
+   "attack_type": "mitm"
+  },
+  "agg": "value"
+ },
+ {
   "id": "jf_chance_cicids",
   "paper_value": "0.056",
   "csv": "../code/results/jaccard_floor.csv",
@@ -788,6 +843,149 @@
   "filter": {
    "outcome": "p_cross",
    "auditor": "rf"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_exc_tree_5g",
+  "paper_value": "0.0",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p_excess",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_exc_tree_cicids",
+  "paper_value": "0.158",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p_excess",
+  "filter": {
+   "dataset": "CICIDS",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_exc_tree_ton",
+  "paper_value": "0.466",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p_excess",
+  "filter": {
+   "dataset": "TON-IoT",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_f1_l1_5g",
+  "paper_value": "0.939",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "f1_mean",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "l1-logit"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_f1_top5_5g",
+  "paper_value": "0.911",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "f1_mean",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "top5-logit"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_f1gap_tree_5g",
+  "paper_value": "0.002",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "f1_gap_vs_mlp",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_f1gap_tree_cicids",
+  "paper_value": "0.065",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "f1_gap_vs_mlp",
+  "filter": {
+   "dataset": "CICIDS",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_p2_cicids",
+  "paper_value": "0.778",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p2_determinacy",
+  "filter": {
+   "dataset": "CICIDS",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_p3_top5_5g",
+  "paper_value": "0.8",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p3_groundedness",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "top5-logit"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_p3_tree_unsw",
+  "paper_value": "0.391",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p3_groundedness",
+  "filter": {
+   "dataset": "UNSW",
+   "model": "tree-d3"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_pcross_l1_5g",
+  "paper_value": "0.01",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p_cross",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "l1-logit"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_pcross_top5_5g",
+  "paper_value": "0.755",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p_cross",
+  "filter": {
+   "dataset": "5G-NIDD",
+   "model": "top5-logit"
+  },
+  "agg": "value"
+ },
+ {
+  "id": "sp_pcross_top5_cicids",
+  "paper_value": "0.834",
+  "csv": "../code/results/sparse_bydesign.csv",
+  "column": "p_cross",
+  "filter": {
+   "dataset": "CICIDS",
+   "model": "top5-logit"
   },
   "agg": "value"
  }

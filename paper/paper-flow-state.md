@@ -44,7 +44,7 @@ NDSS liệt kê thẳng những dạng bài **bị loại không qua phản bi�
 | | |
 |---|---|
 | Giới hạn | **13 trang**, KHÔNG kể Ethics Considerations, tài liệu tham khảo, phụ lục |
-| Bài hiện tại | **15 trang tổng**: thân bài hết ở tr.13 (Appendix A bắt đầu ngay tr.13), phụ lục tr.13–14, refs tr.15 ⇒ **ĐẠT** |
+| Bài hiện tại | **16 trang tổng** (11/08): thân bài hết tr.13, **Appendix A mở đầu tr.14**, refs tr.15–16 ⇒ **ĐẠT, nhưng hết biên** |
 | Định dạng | US Letter, 2 cột, Times ≥10pt, template NDSS |
 | Chi phí | NDSS **không thu phí xuất bản**; kỷ yếu mở truy cập ⇒ không vướng ràng buộc gold OA |
 | Ẩn danh | ✅ không tên/affiliation/link repo trong bài; repo `haodpsut/xai-ids-trust` KHÔNG được nhắc |
@@ -74,7 +74,7 @@ NDSS liệt kê thẳng những dạng bài **bị loại không qua phản bi�
 | `verify_refs` Layer-1 | ✅ **62 mục / 62 được trích**, 0 giữ chỗ |
 | **Layer-2 (chạy thật, không phải file .md)** | ✅ **42 mục khớp Crossref trên cả sáu trường, 414 phép so trường**; 5 ca nhà XB nộp tiêu đề cắt/nối được dung thứ và **in ra**; 20 mục không có DOI Crossref khai trong `refs-manual.txt`, mỗi mục kèm nguồn tra cứu được (DBLP rec / arXiv id) |
 | `check_claim_scope` | ✅ PASS |
-| `verify_numbers` | ✅ **54/54** claim khớp CSV ở đúng độ chính xác in ra |
+| `verify_numbers` | ✅ **77/77** claim khớp CSV ở đúng độ chính xác in ra (11/08) |
 | `trace_prose_numbers` | ✅ 0 số không truy được · **0 bảng không claim nào chạm tới** (trước là 4) · miễn trừ cắt từ 9 xuống **3** |
 | `ssot_prose_numbers` | ✅ **0 số gõ tay** ngoài `\input{}` (trước là 2) |
 | `self_consistency` | ✅ PASS |
@@ -166,3 +166,78 @@ Một điều chỉnh thật: hàng *detection agreement* của `tab:harm` in �
       không được claim nào chạm tới. Số claim thấp hơn 88 vì 88 là số **file** `claims/*.tex`,
       không phải số mệnh đề cần đối chiếu; nhiều file là hai mặt của cùng một con số.
 - [x] ~~31 file `claims/*.tex` mồ côi~~ — đã xoá **29** file không được `\input`, còn **90/90** dùng thật.
+
+
+## ⚑ VÒNG 11/08/2026 — phản biện ngoài, và cái nó lật
+
+Bản thảo qua một vòng đọc-ngoài đầy đủ. Kết luận Reject, ~35 điểm. **Không cãi, kiểm bằng CSV.**
+
+### Cái bị RÚT khỏi bài
+
+**Phân kỳ hành động (0,87 — số headline cũ) đã bị rút, kể cả khỏi abstract.**
+`exp_auditor_control.py` dựng null hoán vị: cố định biên từng model, chỉ phá liên kết theo dòng,
+nên vẫn hợp lệ khi các dòng không đồng nhất. Kết quả **0/10 dòng vượt null**; CICIDS/RF đo 0,873
+so với null 0,936. Phân kỳ được giải thích trọn vẹn bởi tỉ lệ bỏ sót biên ⇒ không phải bằng chứng
+độc lập.
+
+⚠ **Bẫy tôi đã sập một lần:** tôi bác phép thử của reviewer bằng chính số mũ **4** của họ, trong
+khi `exp_harm.py` dùng **K=5** seed. Với số mũ đúng thì kết luận của họ đúng. **Khi bác một phép
+thử, lấy tham số từ CODE của mình, đừng mượn của người bác.**
+
+### Cái control ĐỂ LẠI — mạnh hơn cái nó lấy đi
+
+Auditor có năng lực thật (0,916–0,997 trên model nó được hiệu chỉnh). Trên model đó bỏ qua **1,8%**
+tấn công thật của CICIDS; trên **4 seed anh em**: **43,3%**; trên attribution vô nghĩa: 50,5%.
+5G-NIDD 0,001→0,294 · TON-IoT 0,026→0,272. Đây là tuyên bố an ninh mới, và `p_self` là sàn nội tại.
+
+### Ba lỗi khác — xác nhận, đã sửa
+
+| lỗi | sự thật | xử lý |
+|---|---|---|
+| Định lý 2: *"CICIDS groundedness tệ nhất"* | CICIDS **P3 = 0,618 CAO NHẤT**; `exp_prop2_test.py` cho **5/5** phép thử ngược dấu, không cái nào có ý nghĩa | xoá câu sai, rút tuyên bố thực nghiệm, giữ mệnh đề như phát biểu điều kiện |
+| Jaccard mô tả bằng lời sai | J=0,15 ⇒ trùng **26%** số đặc trưng hiện ra, không phải 15% | sửa abstract + thân bài; thêm sàn hypergeometric **chính xác** 0,056–0,087 |
+| *"All three fail"* | cây sâu 4 khớp quyết định **0,96–1,00** ⇒ P1 KHÔNG hỏng | đổi thành *fidelity đạt được nhưng CÓ GIÁ*; sửa 4 chỗ |
+| caveat bão hoà áp lệch | **3/5** detector bão hoà, chỉ 1 bị chiết khấu | áp cho cả ba, khai thẳng harm dựa **2 bộ, không phải 5** |
+
+### Script mới (đều có trong `csv-producer.map` và `check_freshness.py`)
+
+`exp_auditor_control.py` · `exp_jaccard_floor.py` · `exp_prop2_test.py` · `exp_sparse_bydesign.py`
+
+### §4.5 mô hình THƯA — câu hỏi đắt nhất của phản biện, đã trả lời
+
+| | MLP dày | thưa tốt nhất | |
+|---|---|---|---|
+| 5G-NIDD | +0,293 | **+0,000** (tree-d3, mất 0,002 F1) | đóng hẳn |
+| CICIDS | **+0,415** | +0,158 (tree-d3) | giảm 62%, chưa đóng |
+| TON-IoT | +0,245 | +0,151 — nhưng tree-d3 **+0,466** | **tệ hơn** |
+| UNSW · CIC23 | ~0 | ~0 | cả hai đều ~0 |
+
+Ba kết luận: **(1)** determinacy mua được gần như miễn phí (P2 = 1,00 ở **12/15** ô, so với
+0,32–0,53 của MLP dày). **(2)** groundedness thì không, và có khi tệ hơn — UNSW/tree-d3 cho
+P3 = **0,391**, thấp hơn cả MLP dày. **(3) Luận điểm của bài tự lặp lại một tầng cao hơn:** trên
+5G-NIDD hai mô hình tuyến tính thưa cách nhau **0,028 F1** lại cách nhau **0,745** ở tỉ lệ bỏ sót
+(0,010 vs 0,755). Chọn mô hình diễn giải được **không thoát** bất định, chỉ **dời** nó từ máy giải
+thích sang việc chọn mô hình, nơi độ tản còn lớn hơn.
+
+Và mảnh khớp với phát hiện về Định lý 2: 5G/top5-logit có **P3 = 0,80** (tốt) mà hại **0,755**
+(tệ nhất bộ đó). **Chỉ số tính chất không dự báo được tác hại ở tầng quyết định.**
+
+Chi phí giữ trong 13 trang: cắt **fig:harm** và chuyển phần *theo loại tấn công* xuống phụ lục —
+cả hai đều đang minh hoạ **phân kỳ**, tức đại lượng vừa bị rút. Phần theo-loại được **đổi nền sang
+tỉ lệ bỏ sót** (`suppress_rate`) nên nội dung giữ nguyên giá trị.
+
+### G7 sweep 11/08 — DANGEROUS = 2, cả hai KHÔNG nằm ở tôi
+
+| | |
+|---|---|
+| ✅ | verify_numbers **95/95** · claim scope · freshness · self_consistency · verify_refs 62/62 · L2 42 mục/414 trường · trace 0 số không truy được / 0 bảng hở · 0 overfull · thân bài **13 trang** |
+| ❌ | **kill-first** — thiếu `CLAIM-SHEET-READ`, cần **người ngoài** đọc |
+| ❌ | **AR-6** — mirror ẩn danh thiếu `exp_sparse_bydesign.py`, cần Hảo đồng bộ lại 4open **sau khi push** |
+| ⚠ | **AR-1 SKIP** — không đọc được `pushed_at`; một check bị bỏ qua **không phải** một check đã đạt |
+
+⚠ **Bài học vận hành:** lần chạy đầu báo **DANGEROUS = 9**; sáu cái là do tôi truyền **đường dẫn
+tương đối** trong khi script `cd` vào thư mục bài trước. **Phải truyền đường dẫn tuyệt đối.**
+Cổng kêu to vì lỗi gọi lệnh cũng nguy hiểm như cổng im lặng — nó che mất hai lỗi thật.
+
+**Cổng sau vòng này:** 77/77 claim · 0 số không truy được · 0 bảng hở · self-consistency sạch ·
+0 overfull · thân bài 13 trang. Commit `46e99d3`.

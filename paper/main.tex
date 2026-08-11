@@ -53,8 +53,8 @@ multiplicity, we formalize three necessary properties of the explanation map: \e
 interpretable artifact decides as the deployed model), \emph{determinacy} (the explanation is fixed
 by the decision, not by the choice of attribution method), and \emph{groundedness} (it reflects the
 task, not the incidental model instance). On five modern datasets (2015--2023), fidelity is
-attainable but only at a price --- a readable surrogate matches the deployed detector's decisions on
-$0.96$--$1.00$ of flows, yet costs up to $0.35$ $F_1$ on the hardest corpus --- while determinacy
+attainable but only at a price. A readable surrogate matches the deployed detector's decisions on
+$0.96$--$1.00$ of flows, yet costs up to $0.35$ $F_1$ on the hardest corpus. Determinacy
 and groundedness fail outright: cross-family explainers agree on as little as
 $\input{claims/jf_frac_ton}$ of the five features they put in front of an analyst, only
 $\input{claims/jf_over_ton}\times$ what two unrelated rankings would score by chance; and equally
@@ -65,8 +65,11 @@ CICIDS2017, but $\input{claims/ac_pcross_cicids}$ of those same attacks once an 
 sibling model is put in its place, against $\input{claims/ac_prand_cicids}$ when the explanation is
 replaced by noise. Calibrated trust in an explanation therefore survives a seed change little
 better than reading no explanation at all. A synthetic positive control confirms the
-metrics are satisfiable, not rigged to fail. Two honest negatives, a non-transferring attack and a
-circular, non-transferable, gameable reliability gate, show the warrant is not cheaply recovered.
+metrics are satisfiable, not rigged to fail. Three honest negatives show the warrant is not cheaply recovered: a
+non-transferring manipulation attack, a circular and gameable reliability gate, and sparse-by-design
+detectors, which restore determinacy almost for free yet close the analyst's calibration gap only on
+the easiest corpora, relocating the under-determination from the choice of explainer to the choice
+of model.
 We distill the study into threat-aware evaluation criteria for such claims. Interpretability is
 not, by default, a warrant for trust in ML-IDS, and recovering that warrant is an open problem.
 \end{abstract}
@@ -614,7 +617,7 @@ detector would contradict.
 Determinacy and groundedness fail outright across five modern datasets, with tight seed-to-seed
 variance. Fidelity does not, and the distinction matters: a depth-4 tree reproduces the deployed
 detector's decisions on $.96$--$1.0$ of flows (Table~\ref{tab:fidmulti}), so a faithful readable
-artifact exists. What fails is fidelity \emph{at no cost} --- distillation loses up to
+artifact exists. What fails is fidelity \emph{at no cost}: distillation loses up to
 $\input{claims/p1_drop_cicids}$ $F_1$, and the surrogates that stay faithful give up detection on
 the hardest corpus ($.72$ and $.84$ $F_1$). Fidelity is purchasable; the other two are not.
 The failures are not artifacts of our choices: determinacy agreement stays low across
@@ -827,10 +830,10 @@ analyst \emph{acts} on it depends on which arbitrary training seed was deployed.
 security harm: mis-founded trust in the explanation converts a grounded detection into an
 ungrounded response. No adversary is required; it follows from the benign under-determination of
 Section~\ref{sec:fail}. It is largest on the harder corpora and near-zero on the easiest
-(Fig.~\ref{fig:harm}, Table~\ref{tab:harm}), and it is not an artifact of a linear analyst: both a
+(Table~\ref{tab:harm}), and it is not an artifact of a linear analyst: both a
 logistic and a random-forest auditor show it.
 
-\textbf{What survives control, and what does not.}\label{par:harmctrl}
+\textbf{What survives control, and what does not.}
 No such rate means anything on its own, so we place each against the value it takes when the effect
 under study is switched off (Table~\ref{tab:harm}). The auditor is first shown to be competent:
 it recovers the label from the explanations of the model it was calibrated on with accuracy
@@ -840,8 +843,8 @@ an incompetent analyst.
 \emph{The suppression rate survives, and it is the result.} On the model it knows, the auditor
 dismisses only $\input{claims/ac_pself_cicids}$ of correctly-detected true attacks on CICIDS2017;
 on the four sibling models it has never seen, $\input{claims/ac_pcross_cicids}$. Feeding it
-attributions with the flow--explanation link destroyed --- same per-feature magnitudes, no signal ---
-gives $\input{claims/ac_prand_cicids}$. The calibrated analyst is therefore closer to reading noise
+attributions with the flow--explanation link destroyed, that is, same per-feature magnitudes but no
+signal, gives $\input{claims/ac_prand_cicids}$. The calibrated analyst is therefore closer to reading noise
 than to reading the model it was calibrated on, and on 5G-NIDD and TON-IoT the sibling-model rate
 \emph{exceeds} the noise rate outright. This gap is the paper's security claim, and it is what the
 controls leave standing.
@@ -849,8 +852,8 @@ controls leave standing.
 \emph{Action divergence does not survive, and we withdraw it as independent evidence.} Divergence
 is $1-\Pr[\text{all }E\text{ escalate}]-\Pr[\text{all }E\text{ suppress}]$, so if the $E{=}5$
 per-model actions were independent at the observed marginal it would already be $1-p^{5}-(1-p)^{5}$.
-Permuting each model's action column across flows --- which fixes every per-model marginal exactly
-and destroys only the flow-level coupling, so it stays valid under flow heterogeneity --- gives a
+Permuting each model's action column across flows fixes every per-model marginal exactly and
+destroys only the flow-level coupling, so it stays valid under flow heterogeneity. That gives a
 null of $\input{claims/ac_shuf_cicids}$ against a measured $\input{claims/ac_div_cicids}$ on
 CICIDS2017. Across all ten dataset--auditor pairs, \emph{not one} measured divergence exceeds this
 null; five sit within $0.02$ of it and the rest fall below. Divergence is thus fully accounted for
@@ -892,61 +895,33 @@ $\input{claims/p3_ton}$ on TON-IoT). An earlier version of this paper asserted t
 observed fact here; it was wrong against our own Table~\ref{tab:main}.
 
 This does not refute the proposition, which holds $\pi$ and the flow distribution fixed and bounds
-harm from below --- neither condition a cross-corpus ranking can honour. It refutes only any reading
+harm from below, and a cross-corpus ranking can honour neither condition. It refutes only any reading
 of our results as empirical support for the mechanism, so we rest no measurement on it. Testing it
 properly requires varying groundedness with everything else fixed, which only the synthetic control
 of Table~\ref{tab:ceiling} does: spreading the ground-truth signal from $k{=}5$ to $k{=}28$ features
 drives $P_3$ from $1.00$ to $0.44$ with the explainer untouched. That also exposes a confound the
-cross-corpus comparison cannot escape --- $P_3$ tracks how sparse the underlying signal is, so
+cross-corpus comparison cannot escape: $P_3$ tracks how sparse the underlying signal is, so
 ranking corpora by $P_3$ partly ranks them by problem structure rather than explanation quality.
 
-\textbf{In operational cost.} The divergence matters because the two actions have very different
-costs. Write $C_{\mathrm{miss}}$ for the cost of suppressing a true attack and $C_{\mathrm{fp}}$
-for investigating a false positive, with $C_{\mathrm{miss}}\gg C_{\mathrm{fp}}$ in security. On a
-true attack the correct action is escalate; an explanation that reads benign induces suppress and
-incurs $C_{\mathrm{miss}}$. Under groundedness failure the suppress event occurs with a
-seed-dependent probability $s(x)$, so the expected excess cost of trusting the explanation is
-$\mathbb{E}_x[s(x)]\,C_{\mathrm{miss}}$ over the true attacks, and it concentrates, by
-Fig.~\ref{fig:harmtype}, on the high-volume DoS and reconnaissance flows that dominate the attack
-set. Trusting the explanation therefore does not merely add noise; it adds expected cost weighted
-toward high-rate threats.
+\textbf{In operational cost.} The gap matters because the two actions have very different costs.
+Write $C_{\mathrm{miss}}$ for the cost of dismissing a true attack and $C_{\mathrm{fp}}$ for
+investigating a false positive, with $C_{\mathrm{miss}}\gg C_{\mathrm{fp}}$ in security. On a true
+attack the correct action is escalate; an explanation that reads benign induces dismiss and incurs
+$C_{\mathrm{miss}}$, so the expected excess cost of trusting the explanation is
+$\mathbb{E}_x[s(x)]\,C_{\mathrm{miss}}$ over the true attacks. That cost is not spread evenly:
+resolved by attack type on CICIDS2017 (Appendix~\ref{app:bytype}), a true DoS reads benign
+$\input{claims/hbts_cicids_dos}$ of the time and a port scan $\input{claims/hbts_cicids_portscan}$,
+against $\input{claims/hbts_cicids_ddos}$ for DDoS. It concentrates on the high-volume denial and
+reconnaissance flows an analyst most needs to escalate.
 
-\textbf{The blind spot is attack-type-dependent.} Resolving the harm by attack type on the
-multiclass datasets (Fig.~\ref{fig:harmtype}) shows it is far from uniform. On CICIDS2017 the
-divergence is largest on DoS ($\input{claims/hbt_cicids_dos}$) and port scanning
-($\input{claims/hbt_cicids_portscan}$), the high-volume denial and reconnaissance flows an analyst
-most needs to escalate, and smaller on DDoS ($\input{claims/hbt_cicids_ddos}$). The pattern differs
-on TON-IoT, where divergence is high on some flooding and man-in-the-middle traffic but low on
-several stealthier types, so there is no guarantee that the seed-dependent blind spot spares the
-serious threats: on the most operationally realistic corpus it clusters precisely on the
-high-rate DoS and scanning attacks. Mis-founded trust does not spread its risk evenly, and it
-offers no assurance of sparing the attacks that matter.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.82\columnwidth]{fig_harmtype.pdf}
-\caption{Action divergence by attack type on correctly-detected true attacks (CICIDS2017). The
-explanation-induced blind spot is largest on the high-volume DoS and port-scanning flows and
-smaller on DDoS: mis-founded trust does not spread its risk evenly across attack types.}
-\label{fig:harmtype}
-\end{figure}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.82\columnwidth]{fig_harm.pdf}
-\caption{The security consequences. On correctly-detected true attacks, detection is stable (the
-ensemble agrees the flow is an attack), yet the explanation-driven analyst action diverges across
-equally-good models, most on the realistic CICIDS2017. Whether a real attack is acted on becomes
-an accident of the deployed seed.}
-\label{fig:harm}
-\end{figure}
 
 \begin{table}[t]
 \centering
 \caption{Explanation-induced harm on correctly-detected true attacks, with its controls
 (random-forest auditor; the logistic auditor is weaker but ordered the same). Detection is stable.
 The rate at which a true attack is dismissed rises sharply when the auditor reads an equally
-accurate \emph{sibling} model rather than the one it was calibrated on --- that gap is the result.
+accurate \emph{sibling} model rather than the one it was calibrated on. That gap is the result.
 Action divergence, by contrast, never exceeds the permutation null that fixes each model's marginal,
 and is withdrawn as evidence.}
 \label{tab:harm}
@@ -1146,6 +1121,45 @@ OOD distance only  & $0.65$ & $0.55$ & $0.91$ & $0.68$ & $0.77$ \\
 \end{tabular}
 \end{table}
 
+
+\subsection{Does a sparse-by-design detector recover the properties?}\label{sec:sparse}
+Every result so far concerns post-hoc explanations of a dense model, and our positive control
+(Table~\ref{tab:ceiling}) shows the properties are attainable when the ground truth is genuinely
+sparse. The obvious prescription follows: stop explaining a dense detector and deploy one whose
+decision rule is already short. We tested it with three sparse-by-design detectors: an $L_1$
+logistic regression tuned to five nonzero coefficients, a mutual-information top-5 selection
+followed by logistic regression, and a depth-3 decision tree. Each was fitted five times per corpus,
+each fit on its own bootstrap resample and running its own feature selection, because selecting
+features once and sharing them across fits makes groundedness identically $1.0$ by construction.
+Full results are in Table~\ref{tab:sparse}.
+
+\emph{Determinacy is recovered, almost for free.} Agreement across attribution definitions reaches
+$1.00$ in twelve of fifteen cells, against $0.32$--$0.53$ for the dense detector, and the depth-3
+tree costs only $\input{claims/sp_f1gap_tree_5g}$--$\input{claims/sp_f1gap_tree_cicids}$ $F_1$
+against the dense model. If determinacy were the whole problem, this would be the answer.
+
+\emph{Groundedness is not, and can get worse.} On UNSW-NB15 the depth-3 tree scores
+$\input{claims/sp_p3_tree_unsw}$, \emph{below} the dense detector's $0.53$: a shallow tree is
+unstable under resampling, so sparsity does not imply stability.
+
+\emph{And the security harm survives, because the under-determination moves up one level.} The
+calibration gap closes completely on 5G-NIDD ($\input{claims/sp_exc_tree_5g}$, at a cost of
+$\input{claims/sp_f1gap_tree_5g}$ $F_1$) and on the two easiest corpora, falls but does not close
+on CICIDS2017 ($0.415\!\to\!\input{claims/sp_exc_tree_cicids}$), and on TON-IoT the tree makes it
+\emph{worse} than the dense detector ($0.245\!\to\!\input{claims/sp_exc_tree_ton}$). No sparse model
+dominates, and which one is chosen matters more than the choice of explainer ever did: on 5G-NIDD,
+two sparse linear detectors within $0.03$ $F_1$ of each other ($\input{claims/sp_f1_l1_5g}$ and
+$\input{claims/sp_f1_top5_5g}$) leave the analyst dismissing $\input{claims/sp_pcross_l1_5g}$ and
+$\input{claims/sp_pcross_top5_5g}$ of true attacks respectively. Choosing an interpretable model
+does not escape under-determination; it relocates it from the explainer to the model, where the
+spread is larger.
+
+One further observation sharpens Section~\ref{sec:harm}. The 5G-NIDD top-5 detector has good
+groundedness ($P_3=\input{claims/sp_p3_top5_5g}$) and the worst analyst harm on that corpus. As with
+the cross-corpus test of Proposition~\ref{prop:harm}, the property scores do not predict the
+decision-level cost. Whatever governs the harm, our three properties do not capture it, and we
+report this as an open problem rather than resolving it.
+
 % ============================================================================
 \section{Threat-Aware Evaluation Criteria}\label{sec:criteria}
 % ============================================================================
@@ -1276,7 +1290,7 @@ work. \emph{Dataset difficulty, discounted uniformly}: three of the five detecto
 saturated (5G-NIDD $F_1{=}1.00$, CIC-IoT-2023 and TON-IoT $0.99$). We had discounted only
 CIC-IoT-2023's faithfulness on that ground; the discount is owed wherever saturation can drive a
 score, so all three should be read as consistent rather than confirming, and the security-harm
-result rests on CICIDS2017 and TON-IoT --- two corpora, not five. \emph{Statistical power}: we report three-seed
+result rests on CICIDS2017 and TON-IoT, that is, two corpora, not five. \emph{Statistical power}: we report three-seed
 statistics and, for the gate, expose its true run-to-run instability rather than an
 over-tight interval. None of these points toward a hidden way that interpretability \emph{does}
 warrant trust; they bound where our specific numbers apply.
@@ -1291,7 +1305,7 @@ route and that determinacy and groundedness fail across five standard explainers
 LIME. We showed the failure can carry a security cost, measured against its own floor: a simulated
 analyst calibrated on the deployed model dismisses $\input{claims/ac_pself_cicids}$ of
 correctly-detected true attacks on CICIDS2017, and $\input{claims/ac_pcross_cicids}$ of the same
-attacks when an equally accurate sibling is deployed instead --- most of the way to the
+attacks when an equally accurate sibling is deployed instead, most of the way to the
 $\input{claims/ac_prand_cicids}$ obtained from signal-free attributions (an upper bound), and
 near-zero on the easiest corpus. The raw action-divergence rate does not exceed its permutation
 null on any of ten dataset--auditor pairs (Table~\ref{tab:harm}), so we withdraw it: quoting
@@ -1335,6 +1349,80 @@ i/l   & $0.19$ & $0.20$ & $0.49$ & $0.15$ & $0.22$ \\
 ig/s  & $0.40$ & $0.58$ & $0.51$ & $0.51$ & $0.24$ \\
 ig/l  & $0.18$ & $0.20$ & $0.50$ & $0.21$ & $0.25$ \\
 s/l   & $0.37$ & $0.25$ & $0.36$ & $0.18$ & $0.31$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+% ============================================================================
+\section{Harm by Attack Type}\label{app:bytype}
+% ============================================================================
+Resolving the dismissal rate by attack type on the multiclass corpora shows it is far from uniform.
+On CICIDS2017 it is highest on port scanning ($\input{claims/hbts_cicids_portscan}$) and DoS
+($\input{claims/hbts_cicids_dos}$) and lower on DDoS ($\input{claims/hbts_cicids_ddos}$). The
+pattern differs on TON-IoT, where man-in-the-middle traffic is dismissed
+$\input{claims/hbts_ton_mitm}$ of the time while backdoor traffic is almost never dismissed
+($\input{claims/hbts_ton_backdoor}$). There is thus no guarantee that the seed-dependent blind spot
+spares the serious threats; on the most operationally realistic corpus it clusters precisely on the
+high-rate denial and reconnaissance attacks. The figure below plots the divergence rate rather than
+the dismissal rate, and is retained only for continuity with the released artifact; per
+Section~\ref{sec:harm} we rest no claim on divergence.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.82\columnwidth]{fig_harmtype.pdf}
+\caption{Action divergence by attack type on correctly-detected true attacks (CICIDS2017). The
+explanation-induced blind spot is largest on the high-volume DoS and port-scanning flows and
+smaller on DDoS: mis-founded trust does not spread its risk evenly across attack types.}
+\label{fig:harmtype}
+\end{figure}
+
+% ============================================================================
+\section{Sparse-by-Design Detectors}\label{app:sparse}
+% ============================================================================
+Table~\ref{tab:sparse} gives the full results discussed in Section~\ref{sec:sparse}. $p_{\rm self}$
+and $p_{\rm cross}$ are the rates at which a simulated analyst calibrated on the first fit dismisses
+correctly-detected true attacks when reading that fit and when reading the four sibling fits;
+their difference is the calibration gap. The dense column repeats the gap from Table~\ref{tab:harm}
+for comparison.
+
+\begin{table}[h]
+\centering
+\caption{Three sparse-by-design detectors, five independent fits each. $\Delta F_1$ is the loss
+against the dense detector on the same split. P2 and P3 are top-5 agreement across attribution
+definitions and across fits. The last column is the calibration gap $p_{\rm cross}-p_{\rm self}$;
+the dense detector's own gap is in parentheses beside each corpus.}
+\label{tab:sparse}
+\footnotesize\setlength{\tabcolsep}{2.5pt}
+\begin{tabular}{@{}llcccc@{}}
+\toprule
+Corpus & Detector & $\Delta F_1$ & P2 & P3 & gap \\
+\midrule
+\multirow{3}{*}{UNSW\ \emph{(+.005)}}
+ & $L_1$-logit & $-.067$ & $1.00$ & $1.00$ & $+.016$ \\
+ & top5-logit  & $-.165$ & $1.00$ & $0.77$ & $+.026$ \\
+ & tree ($d{=}3$) & $-.021$ & $1.00$ & $\mathbf{0.39}$ & $+.032$ \\
+\midrule
+\multirow{3}{*}{CICIDS\ \emph{(+.415)}}
+ & $L_1$-logit & $-.228$ & $1.00$ & $0.80$ & $+.214$ \\
+ & top5-logit  & $-.243$ & $1.00$ & $0.87$ & $\mathbf{+.780}$ \\
+ & tree ($d{=}3$) & $-.065$ & $0.78$ & $0.87$ & $+.158$ \\
+\midrule
+\multirow{3}{*}{5G-NIDD\ \emph{(+.293)}}
+ & $L_1$-logit & $-.060$ & $1.00$ & $1.00$ & $+.009$ \\
+ & top5-logit  & $-.088$ & $1.00$ & $0.80$ & $\mathbf{+.754}$ \\
+ & tree ($d{=}3$) & $-.002$ & $1.00$ & $0.87$ & $\mathbf{+.000}$ \\
+\midrule
+\multirow{3}{*}{TON-IoT\ \emph{(+.245)}}
+ & $L_1$-logit & $-.083$ & $0.78$ & $0.70$ & $+.252$ \\
+ & top5-logit  & $-.124$ & $0.78$ & $1.00$ & $+.151$ \\
+ & tree ($d{=}3$) & $-.020$ & $1.00$ & $0.87$ & $\mathbf{+.466}$ \\
+\midrule
+\multirow{3}{*}{CIC-IoT-23\ \emph{(+.002)}}
+ & $L_1$-logit & $-.003$ & $1.00$ & $0.87$ & $-.000$ \\
+ & top5-logit  & $-.003$ & $1.00$ & $0.67$ & $-.001$ \\
+ & tree ($d{=}3$) & $-.001$ & $1.00$ & $0.87$ & $+.000$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1387,7 +1475,11 @@ $k$/ensemble robustness (Fig.~\ref{fig:robust}) & \texttt{exp\_ablate\_p2p3} & \
 Positive control (Tab.~\ref{tab:ceiling}) & \texttt{exp\_ceiling} & \texttt{ceiling} \\
 Tree ensembles (Tab.~\ref{tab:tree}) & \texttt{exp\_tree} & \texttt{tree} \\
 Faithfulness (Tab.~\ref{tab:faith},~\ref{tab:faith5}) & \texttt{exp\_faithfulness}, \texttt{exp\_faith\_5explainer} & \texttt{faithfulness}, \texttt{faith\_5explainer} \\
-Security harm (Tab.~\ref{tab:harm}, Fig.~\ref{fig:harm},~\ref{fig:harmtype}) & \texttt{exp\_harm}, \texttt{exp\_harm\_bytype} & \texttt{harm}, \texttt{harm\_bytype} \\
+Security harm (Tab.~\ref{tab:harm}, Fig.~\ref{fig:harmtype}) & \texttt{exp\_harm}, \texttt{exp\_harm\_bytype} & \texttt{harm}, \texttt{harm\_bytype} \\
+Harm controls, nulls (Tab.~\ref{tab:harm}) & \texttt{exp\_auditor\_control} & \texttt{auditor\_control} \\
+Jaccard chance floor (Sec.~\ref{sec:fail}) & \texttt{exp\_jaccard\_floor} & \texttt{jaccard\_floor} \\
+Proposition~\ref{prop:harm} test (Sec.~\ref{sec:harm}) & \texttt{exp\_prop2\_test} & \texttt{prop2\_test} \\
+Sparse-by-design (Tab.~\ref{tab:sparse}) & \texttt{exp\_sparse\_bydesign} & \texttt{sparse\_bydesign} \\
 Reliability gate, ablation, transfer (Tab.~\ref{tab:defense}, Fig.~\ref{fig:defense}) & \texttt{exp\_defense}, \texttt{\_ablate}, \texttt{\_transfer}, \texttt{\_gate\_attack} & \texttt{defense}, \texttt{defense\_ablate}, \texttt{defense\_transfer}, \texttt{gate\_attack} \\
 Manipulation attack (non-transfer) & \texttt{exp\_attack} & \texttt{attack} \\
 Field audit (Tab.~\ref{tab:audit}) & \texttt{field\_audit} & \texttt{field\_audit} \\
