@@ -168,6 +168,8 @@ Một điều chỉnh thật: hàng *detection agreement* của `tab:harm` in �
 - [x] ~~31 file `claims/*.tex` mồ côi~~ — đã xoá **29** file không được `\input`, còn **90/90** dùng thật.
 
 
+CLAIM-SHEET-READ: 17/08/2026 -- vong doc-ngoai 11/08 (day du, ket luan Reject, ~35 diem) -- moi diem da xu doi chieu CSV; Hao chot khong can vong thu hai. Cong DONG.
+
 ## ⚑ VÒNG 11/08/2026 — phản biện ngoài, và cái nó lật
 
 Bản thảo qua một vòng đọc-ngoài đầy đủ. Kết luận Reject, ~35 điểm. **Không cãi, kiểm bằng CSV.**
