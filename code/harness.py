@@ -26,8 +26,18 @@ class FourierKANLayer(nn.Module):
     def __init__(self, din, dout, K=4):
         super().__init__()
         self.din, self.dout, self.K = din, dout, K
-        self.coef = nn.Parameter(0.1 * torch.randn(2, dout, din, K) / (din * K) ** 0.5)
-        self.bias = nn.Parameter(torch.zeros(dout))
+        self.coef = nn.Parameter(torch.empty(2, dout, din, K))
+        self.bias = nn.Parameter(torch.empty(dout))
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        # ⛔ Phep khoi tao phai nam o MOT ham goi lai duoc, khong nam trong `__init__`.
+        # Khong the thi `gieo_lai()` khong cach nao dat lai trong so cua lop nay, va
+        # `nparams()`/`match_mlp()` (dung gan 300 MLP) da keo RNG toan cuc di truoc do.
+        with torch.no_grad():
+            self.coef.copy_(0.1 * torch.randn(2, self.dout, self.din, self.K)
+                            / (self.din * self.K) ** 0.5)
+            self.bias.zero_()
 
     def forward(self, x):
         kk = torch.arange(1, self.K + 1, device=x.device).float()
@@ -59,8 +69,39 @@ def match_mlp(din, target, nc=2):
     return bh
 
 
-def train(model, Xtr, ytr, seed, epochs=30, lr=2e-3, bs=256):
+def gieo_lai(model, seed):
+    """Gieo RNG roi KHOI TAO LAI moi tham so, nen trong so chi phu thuoc `seed`.
+
+    ⛔⛔ Vi sao can. Truoc 10/11/2026 `train()` goi `torch.manual_seed(seed)` nhung
+    mo hinh da duoc DUNG XONG tu truoc do o phia goi (`train(MLP(din, ...), ...)`),
+    nen trong so khoi tao lay tu RNG toan cuc CHUA GIEO: `torch.initial_seed()` do
+    duoc la mot so KHAC NHAU moi tien trinh. Hau qua: hai luot chay lien nhau cung
+    mot ma cho `analyst_benign_before` = 0,037 roi 0,014; va toi da quy 21/24 CSV
+    khong tai lap duoc cho kien truc CPU va BLAS, trong khi phan lon la do khoi tao
+    chua gieo. Ghim luong khong chua duoc gi, va dung la no khong chua duoc gi.
+    ⇒ [[feedback-do-loi-cho-ban-va-chua-tach-nguon]] · [[feedback-moi-truong-chay-la-phan-cua-hien-vat]]
+
+    Va o day, trong `train`, chu khong o 23 tep goi: mot dinh nghia dat o cho ma
+    moi duong di deu phai qua thi khong co duong di nao thieu no.
+    ⇒ [[feedback-tu-khoa-khop-vao-ben-trong-tu-khac]]
+    """
     torch.manual_seed(seed)
+    phu = set()
+    for m in model.modules():
+        if hasattr(m, "reset_parameters"):
+            m.reset_parameters()
+            phu |= {id(p) for p in m.parameters(recurse=False)}
+    # ⛔ Mot tham so khong module nao dat lai duoc thi van giu gia tri tu RNG chua
+    # gieo, va ca ham nay thanh mot dam bao GIA. Phai NEM, khong duoc im lang.
+    # ⇒ [[feedback-kiem-0-don-vi-khong-phai-sach]]
+    sot = [n for n, p in model.named_parameters() if id(p) not in phu]
+    if sot:
+        raise RuntimeError(f"gieo_lai: {len(sot)} tham so khong gieo lai duoc: {sot[:5]}")
+    return model
+
+
+def train(model, Xtr, ytr, seed, epochs=30, lr=2e-3, bs=256):
+    gieo_lai(model, seed)
     opt = torch.optim.Adam(model.parameters(), lr, weight_decay=1e-5)
     lossf = nn.CrossEntropyLoss()
     ds = torch.utils.data.TensorDataset(torch.tensor(Xtr), torch.tensor(ytr))
@@ -75,6 +116,56 @@ def train(model, Xtr, ytr, seed, epochs=30, lr=2e-3, bs=256):
 def predict(model, X):
     with torch.no_grad():
         return model(torch.tensor(X, dtype=torch.float32)).argmax(1).numpy()
+
+
+def flow_bao_dong(mo_hinh, Xte, yte, n=None, mat_na=False, du_doan=None):
+    """The one definition of the flow population every explanation measure runs on.
+
+    Returns the indices of flows that are genuine attacks (`yte == 1`) and that every
+    model in `mo_hinh` flags as attacks. That is exactly the set an analyst looks at
+    when an alarm fires, which is the set this paper's argument is about.
+
+    Accepts a single model or a list, and both the torch models in this file and the
+    scikit-learn detectors used for the tree ensembles. `n` caps the sample; the cap
+    is the caller's choice, the population is not.
+
+    This exists because the same expression had been retyped in seventeen scripts
+    with four different caps, and two of them had drifted to `Xte[:N]`, the first N
+    test flows including benign ones. A definition copied seventeen times diverges
+    eventually; that is a property of the copying, not an accident. One caller
+    measured P2 on alarms and P3 on the first thousand flows, in the same file, and
+    the paper printed both side by side.
+    """
+    if du_doan is not None:
+        # Cho nhung noi co bo do RIENG (vi du exp_sparse_bydesign.py dung
+        # `predict_sparse(kind, m, i, X)`), nen khong truyen mo hinh vao duoc. Dua
+        # thang ma tran du doan [n, K] vao de VAN dung MOT dinh nghia quan the.
+        p = np.asarray(du_doan)
+        if p.ndim == 1:
+            p = p[:, None]
+    else:
+        ds = mo_hinh if isinstance(mo_hinh, (list, tuple)) else [mo_hinh]
+        cot = []
+        for m in ds:
+            if isinstance(m, torch.nn.Module):
+                cot.append(predict(m, Xte))
+            elif hasattr(m, "predict"):
+                cot.append(np.asarray(m.predict(Xte)))
+            else:
+                raise TypeError(f"flow_bao_dong: khong biet du doan bang {type(m)!r}")
+        p = np.stack(cot, 1)
+    co = (np.asarray(yte) == 1) & (p == 1).all(1)
+    if mat_na:
+        # ⛔ Mot so noi can MAT NA boolean chu khong phai chi so, vi chung con AND
+        # tiep voi dieu kien khac (`tp & (types == t)`) hoac goi `tp.sum()`. Dua chi
+        # so vao nhung cho ay thi `&` tro thanh phep AND BIT tren so nguyen va nem
+        # ValueError ve hinh dang - dung cai da xay ra ngay 10/11/2026 khi toi thay
+        # may moc 4 cho dang mat na bang dang chi so ma khong doc tung cho.
+        if n is not None:
+            raise ValueError("flow_bao_dong: mat_na=True thi khong dung n")
+        return co
+    idx = np.where(co)[0]
+    return idx if n is None else idx[:n]
 
 
 def saliency(model, X, target_class=1):

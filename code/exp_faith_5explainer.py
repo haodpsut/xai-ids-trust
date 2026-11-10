@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore")
 import shap
 from lime.lime_tabular import LimeTabularExplainer
 from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency,
-                     input_x_gradient, integrated_gradients, topk_features)
+                     input_x_gradient, integrated_gradients, topk_features, flow_bao_dong)
 from data import load, DATASETS
 
 TOPK = 5
@@ -38,7 +38,7 @@ def run(ds):
     np.random.seed(0); torch.manual_seed(0)             # determinism for SHAP/LIME sampling
     Xtr, ytr, Xte, yte, feats = load(ds); din = Xtr.shape[1]
     f = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, 0)
-    idx = np.where((predict(f, Xte) == 1) & (yte == 1))[0][:NSAMP]
+    idx = flow_bao_dong(f, Xte, yte, NSAMP)
     Xm = Xte[idx]; base = Xtr.mean(0)
     tks = {
         "grad": topk_features(saliency(f, Xm), TOPK),

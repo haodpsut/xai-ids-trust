@@ -5,6 +5,15 @@ Vi sao co ban rieng thay vi de sweep dung --auto: --auto suy producer tu ten fil
 sai 18/19 lan roi BLOCK -- mot cong bao DANGEROUS gia tren mot bai hoan toan dung. Bang duoi day
 khai tuong minh, doc ra tu chinh cac script (moi exp_*.py deu ghi duong dan results/<ten>.csv).
 
+⛔ GIOI HAN cua phep do nay, do ngay 11/11/2026: no so MTIME, va mtime khong noi gi
+ve viec HANH VI co doi khong. Hom ay toi sua CHU THICH trong exp_faithfulness.py va
+exp_fidelity_multi.py, khong doi mot dong ma chay nao, va ca hai CSV lap tuc bi gan
+STALE. Bao dong ay la that theo dung dinh nghia cua cong, nhung no khong tro vao mot
+lo hong nao. Cach xu re nhat la chay lai script (neu tien dinh thi CSV y nguyen, va
+ta duoc them mot luot doi chung); cach xu dung hon la bam MA DA BO CHU THICH, nhung
+nhu the thi lai bo qua truong hop doi mot HANG SO trong chu thich khai bao.
+⇒ [[feedback-cong-kiem-ten-thay-vi-ban-chat]]
+
 Ngoai producer rieng, MOI CSV con phu thuoc data.py (moi exp_*.py deu `import data`). CSV cu hon
 data.py duoc bao STALE-DEP va KHONG tu dong BLOCK: mot thay doi THUAN CONG THEM vao data.py
 (them mot nhanh dataset moi) khong lam hong ket qua cu. Ca 10/08/2026: data.py them nhanh TON-IoT
@@ -38,6 +47,7 @@ MAP = {
     "harm_bytype.csv": "exp_harm_bytype.py",
     "multiseed.csv": "exp_multiseed.py",
     "prop2_test.csv": "exp_prop2_test.py",
+    "rerun.csv": "exp_rerun.py",
     "redundancy.csv": "exp_redundancy.py",
     "sparse_bydesign.csv": "exp_sparse_bydesign.py",
     "tree.csv": "exp_tree.py",

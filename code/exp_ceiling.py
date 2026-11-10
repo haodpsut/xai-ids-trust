@@ -17,7 +17,7 @@ import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, topk_features
+from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, topk_features, flow_bao_dong
 from exp_trust import p1_fidelity, p2_determinacy, p3_groundedness
 
 D = 32                       # total features (all independent -> decorrelated)
@@ -45,7 +45,7 @@ def gt_recovery(Xtr, ytr, Xte, yte, true_set):
     actual ground truth, not just cross-seed agreement)."""
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     m = train(MLP(din, h), Xtr, ytr, 0)
-    idx = np.where((predict(m, Xte) == 1) & (yte == 1))[0][:1000]
+    idx = flow_bao_dong(m, Xte, yte, 1000)
     tk = topk_features(saliency(m, Xte[idx]), TOPK)
     hit = np.mean([len(set(tk[r].tolist()) & true_set) / TOPK for r in range(len(idx))])
     return float(hit)

@@ -1,4 +1,6 @@
 dataset,still_attack,analyst_benign_before,analyst_benign_after,attack_success_dismissed,mean_l2_perturb
-UNSW,1.0,0.011,0.006,0.006,0.238
-CICIDS,1.0,0.254,0.264,0.264,0.129
-5G-NIDD,1.0,0.001,0.001,0.001,0.001
+UNSW,1.0,0.015,0.007,0.007,0.231
+CICIDS,1.0,0.212,0.188,0.188,0.128
+5G-NIDD,1.0,0.0,0.0,0.0,0.004
+TON-IoT,1.0,0.021,0.011,0.011,0.028
+CIC-IoT-2023,1.0,0.003,0.0,0.0,0.027

@@ -7,7 +7,7 @@ Both test whether the failures are artifacts of our specific k or ensemble size.
 import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency,
-                     input_x_gradient, integrated_gradients)
+                     input_x_gradient, integrated_gradients, flow_bao_dong)
 from data import load, DATASETS
 
 
@@ -46,7 +46,7 @@ if __name__ == "__main__":
         Xtr, ytr, Xte, yte, feats = load(ds); din = Xtr.shape[1]
         h = match_mlp(din, nparams(KAN(din, 16, 4)))
         models = [train(MLP(din, h), Xtr, ytr, s) for s in range(10)]
-        idx = np.where((predict(models[0], Xte) == 1) & (yte == 1))[0][:1000]
+        idx = flow_bao_dong(models[0], Xte, yte, 1000)
         Xm = Xte[idx]
         row_k = dict(dataset=ds)
         for k in [3, 5, 10]:

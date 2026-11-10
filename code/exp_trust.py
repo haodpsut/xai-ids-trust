@@ -14,7 +14,7 @@ the formalization and the threat-aware criteria.
 import numpy as np, csv, os, torch
 from sklearn.metrics import f1_score, accuracy_score
 from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency, topk_features,
-                     input_x_gradient, integrated_gradients)
+                     input_x_gradient, integrated_gradients, flow_bao_dong)
 from data import load, DATASETS
 
 
@@ -63,7 +63,7 @@ def p2_determinacy(mlp, Xte, yte):
     attributions (gradient saliency, input x gradient, integrated gradients) for the SAME model on
     the SAME flagged-malicious flows, and measure how much their top-5 'reasons' agree. Low
     agreement => the 'reason' is a method artifact, so trusting it is unfounded."""
-    idx = np.where((predict(mlp, Xte) == 1) & (yte == 1))[0][:1000]
+    idx = flow_bao_dong(mlp, Xte, yte, 1000)
     if len(idx) < 20:
         return dict(grad_vs_ixg=float("nan"), grad_vs_ig=float("nan"), ixg_vs_ig=float("nan"), mean_agree=float("nan"))
     Xm = Xte[idx]
@@ -81,7 +81,13 @@ def p3_groundedness(Xtr, ytr, Xte, yte):
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(4)]
     f1s = [f1_score(yte, predict(m, Xte)) for m in models]
-    sub = Xte[:1000]; tks = [topk_features(saliency(m, sub), 5) for m in models]
+    # ⛔ Truoc 10/11/2026 dong nay la `sub = Xte[:1000]`: 1000 flow DAU cua tap
+    # kiem, ke ca flow LANH. Do tren UNSW-NB15: ty le tan cong trong tap ay la
+    # 0,676, nghia la 32% flow ma P3 do tren la flow phan tich vien KHONG BAO GIO
+    # xem. Cung tep nay do P2 tren tap bao dong, nen P2 va P3 cua bai duoc do tren
+    # HAI quan the khac nhau roi in canh nhau. Nay ca hai goi `flow_bao_dong`.
+    sub = Xte[flow_bao_dong(models, Xte, yte, 1000)]
+    tks = [topk_features(saliency(m, sub), 5) for m in models]
     ov = []
     for a in range(len(models)):
         for b in range(a + 1, len(models)):

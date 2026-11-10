@@ -1,14 +1,14 @@
 dataset,attack_type,n,action_divergence,suppress_rate
-CICIDS,Brute Force,30,0.4,0.92
-CICIDS,DDoS,599,0.202,0.38
-CICIDS,DoS,845,0.863,0.458
-CICIDS,Port Scanning,390,0.621,0.519
-TON-IoT,backdoor,1171,0.002,0.001
-TON-IoT,ddos,1113,0.297,0.065
-TON-IoT,dos,1150,0.085,0.07
-TON-IoT,injection,1147,0.044,0.021
-TON-IoT,mitm,41,0.854,0.376
-TON-IoT,password,1117,0.033,0.009
-TON-IoT,ransomware,1123,0.134,0.028
-TON-IoT,scanning,1115,0.045,0.024
-TON-IoT,xss,1172,0.118,0.048
+CICIDS,Brute Force,30,0.5,0.887
+CICIDS,DDoS,595,0.071,0.353
+CICIDS,DoS,838,0.425,0.193
+CICIDS,Port Scanning,398,0.251,0.186
+TON-IoT,backdoor,1171,0.002,0.0
+TON-IoT,ddos,1138,0.268,0.061
+TON-IoT,dos,1152,0.085,0.075
+TON-IoT,injection,1147,0.037,0.026
+TON-IoT,mitm,40,0.15,0.41
+TON-IoT,password,1118,0.004,0.004
+TON-IoT,ransomware,927,0.735,0.466
+TON-IoT,scanning,1116,0.039,0.016
+TON-IoT,xss,1173,0.073,0.041

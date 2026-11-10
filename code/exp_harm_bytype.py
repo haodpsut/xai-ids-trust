@@ -8,7 +8,7 @@ import numpy as np, pandas as pd, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LogisticRegression
-from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency
+from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong
 from data import BASE
 
 K = 5
@@ -51,7 +51,7 @@ if __name__ == "__main__":
         models = [train(MLP(din, h), Xtr, ytr, s) for s in range(5)]
         g = LogisticRegression(max_iter=300).fit(attr(models[0], Xtr), ytr)
         preds = np.stack([predict(m, Xte) for m in models], 1)
-        tp = (yte == 1) & (preds == 1).all(1)
+        tp = flow_bao_dong(models, Xte, yte, mat_na=True)   # dong 57 dung `tp & (...)`
         print(f"\n=== {ds} action-divergence by attack type ===")
         for t in sorted(set(types[tp])):
             mask = tp & (types == t)

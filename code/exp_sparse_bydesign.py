@@ -54,7 +54,7 @@ from sklearn.metrics import f1_score
 from sklearn.tree import DecisionTreeClassifier
 
 from data import DATASETS, load
-from harness import KAN, MLP, match_mlp, nparams, predict, train
+from harness import KAN, MLP, match_mlp, nparams, predict, train, flow_bao_dong
 
 K = 5              # independent fits, matching exp_harm.py
 TOPK = 5           # top-k for every Jaccard in this paper
@@ -188,7 +188,10 @@ def run(ds):
         A0tr = attr_sparse(kind, fits[0], idxs[0], Xtr)
         g = RandomForestClassifier(n_estimators=80, max_depth=8, random_state=0).fit(A0tr, ytr)
         preds = np.stack([predict_sparse(kind, m, i, Xte) for m, i in zip(fits, idxs)], 1)
-        tp = (yte == 1) & (preds == 1).all(1)
+        # Bo do o day la `predict_sparse`, khong phai mo hinh torch, nen dua
+        # thang ma tran du doan vao de VAN dung mot dinh nghia quan the.
+        # `tp.sum()` ngay duoi doi MAT NA, khong phai chi so.
+        tp = flow_bao_dong(None, Xte, yte, mat_na=True, du_doan=preds)
         if tp.sum() >= 50:
             acts = np.stack([g.predict(attr_sparse(kind, m, i, Xte[tp]))
                              for m, i in zip(fits, idxs)], 1)

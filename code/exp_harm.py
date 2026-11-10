@@ -22,7 +22,7 @@ import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency
+from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong
 from data import load, DATASETS
 
 K = 5
@@ -48,9 +48,15 @@ def run(ds, auditor="logistic"):
 
     # true-positive attack flows: ground-truth attack AND every model flags attack (detection agrees)
     preds = np.stack([predict(m, Xte) for m in models], 1)
-    tp = (yte == 1) & (preds == 1).all(1)
+    # ⛔ `tp` o day dung CA HAI vai: `Xte[tp]` va `int(tp.sum())`. Phai lay MAT NA,
+    # khong thi `.sum()` cong CAC CHI SO lai: do la cach `n_true_attacks` ra
+    # 47012435 thay vi 7851 ngay 10/11/2026. Truyen `du_doan=preds` de khong
+    # chay lai 5 lan `predict` va de `preds` van la nguon duy nhat.
+    tp = flow_bao_dong(None, Xte, yte, mat_na=True, du_doan=preds)
     Xtp = Xte[tp]
-    detection_agree = float(((preds == 1).all(1) & (yte == 1)).sum() / max((yte == 1).sum(), 1))
+    # Dung CHINH ham quan the de dem, kheo co hai cong thuc cho cung mot dai luong.
+    detection_agree = float(len(flow_bao_dong(None, Xte, yte, du_doan=preds))
+                            / max((yte == 1).sum(), 1))
 
     # analyst action per model per flow: 1=escalate (reads attack), 0=suppress (reads benign)
     actions = np.stack([g.predict(attr(m, Xtp)) for m in models], 1)   # [n_tp, K]

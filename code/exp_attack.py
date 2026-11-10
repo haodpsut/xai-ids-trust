@@ -17,7 +17,7 @@ controls a subset, stated as a limitation). Budget is bounded in standardized un
 """
 import numpy as np, torch, csv, os
 from sklearn.linear_model import LogisticRegression
-from harness import MLP, nparams, match_mlp, train, predict, saliency
+from harness import MLP, nparams, match_mlp, train, predict, saliency, flow_bao_dong
 from data import load, DATASETS
 from harness import KAN  # for budget parity only
 
@@ -41,7 +41,7 @@ def run(ds, seed=0):
     benign_proto = torch.tensor(Atr[ytr == 0].mean(0), dtype=torch.float32)
 
     # target: malicious flows the IDS correctly flags as attack
-    idx = np.where((predict(mlp, Xte) == 1) & (yte == 1))[0][:800]
+    idx = flow_bao_dong(mlp, Xte, yte, 800)
     Xm = Xte[idx]
     A0 = attr_matrix(mlp, Xm)
     auditor0 = g.predict(A0)                      # analyst verdict BEFORE attack (should be attack=1)

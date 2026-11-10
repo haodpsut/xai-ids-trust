@@ -9,7 +9,7 @@ import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import cross_val_score
-from harness import MLP, KAN, nparams, match_mlp, train, predict
+from harness import MLP, KAN, nparams, match_mlp, train, predict, flow_bao_dong
 from exp_defense import ground_truth_reliability, cheap_signals, K
 from data import load, DATASETS
 
@@ -26,7 +26,7 @@ def run(ds):
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]
-    idx = np.where((predict(models[0], Xte) == 1) & (yte == 1))[0][:2000]
+    idx = flow_bao_dong(models[0], Xte, yte, 2000)
     Xm = Xte[idx]
     rel = ground_truth_reliability(models, Xm)
     y = (rel > np.median(rel)).astype(int)

@@ -15,10 +15,19 @@ from harness import MLP, KAN, nparams, match_mlp, train, predict
 from data import load, DATASETS
 
 
-def run(ds):
+# ⛔ Bao mean±std tren SEEDS vi mot lan do o day di qua phep chon roi rac (mo hinh
+# trien khai quyet dinh nhan ma surrogate hoc theo), nen mot luot chay la mot diem
+# khong mang theo do rong. Do duoc 10/11/2026: tep nay lech 0,009 giua hai may va
+# 3/35 o DOI khi lam tron 2 chu so. Chi tiet trong exp_faithfulness.py.
+SEEDS = range(4)          # ⛔ KHONG trung voi exp_multiseed.py (vong ngoai 3 seed);
+                          # xem chu thich cung loai trong exp_faithfulness.py
+
+
+def mot_seed(ds, seed):
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]
-    f = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, 0)
+    np.random.seed(seed)
+    f = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, seed)
     ftr, fte = predict(f, Xtr), predict(f, Xte)         # deployed model's decisions
     f1_dep = f1_score(yte, fte)
     surr = {
@@ -26,14 +35,22 @@ def run(ds):
         "tree(d=2)": DecisionTreeClassifier(max_depth=2, random_state=0),
         "sparse-logit": LogisticRegression(penalty="l1", solver="liblinear", C=0.1, max_iter=300),
     }
-    out = dict(dataset=ds, deployed_f1=round(float(f1_dep), 3))
+    out = dict(deployed_f1=float(f1_dep))
     for name, m in surr.items():
         m.fit(Xtr, ftr)                                  # distill: mimic deployed decisions
         pred = m.predict(Xte)
-        agree = accuracy_score(fte, pred)                # fidelity: same decisions as deployed?
-        f1s = f1_score(yte, pred)
-        out[f"{name}_agree"] = round(float(agree), 3)
-        out[f"{name}_f1"] = round(float(f1s), 3)
+        out[f"{name}_agree"] = float(accuracy_score(fte, pred))   # same decisions as deployed?
+        out[f"{name}_f1"] = float(f1_score(yte, pred))
+    return out
+
+
+def run(ds):
+    rs = [mot_seed(ds, s) for s in SEEDS]
+    out = dict(dataset=ds, n_seeds=len(rs))
+    for k in rs[0]:
+        v = np.array([r[k] for r in rs], dtype=float)
+        out[k] = round(float(v.mean()), 3)
+        out[k + "_std"] = round(float(v.std()), 3)
     return out
 
 

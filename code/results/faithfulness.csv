@@ -1,6 +1,6 @@
-dataset,deployed_attack_prob,comprehensiveness,sufficiency_gap
-UNSW,0.953,0.178,0.016
-CICIDS,0.972,0.508,0.371
-5G-NIDD,1.0,0.162,0.752
-TON-IoT,0.989,0.044,0.039
-CIC-IoT-2023,0.996,-0.001,-0.003
+dataset,n_seeds,deployed_attack_prob,deployed_attack_prob_std,comprehensiveness,comprehensiveness_std,sufficiency_gap,sufficiency_gap_std
+UNSW,4,0.945,0.003,0.147,0.064,0.004,0.009
+CICIDS,4,0.967,0.004,0.342,0.093,0.316,0.01
+5G-NIDD,4,0.999,0.0,0.31,0.126,0.306,0.243
+TON-IoT,4,0.986,0.003,0.022,0.032,0.182,0.015
+CIC-IoT-2023,4,0.995,0.0,-0.001,0.001,-0.005,0.0

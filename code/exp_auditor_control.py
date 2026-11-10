@@ -51,7 +51,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 from data import DATASETS, load
-from harness import KAN, MLP, match_mlp, nparams, predict, saliency, train
+from harness import KAN, MLP, match_mlp, nparams, predict, saliency, train, flow_bao_dong
 
 K = 5
 
@@ -81,7 +81,11 @@ def run(ds, rng):
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]
 
     preds = np.stack([predict(m, Xte) for m in models], 1)
-    tp = (yte == 1) & (preds == 1).all(1)
+    # ⛔ `tp` o day dung CA HAI vai: `Xte[tp]` va `int(tp.sum())`. Phai lay MAT NA,
+    # khong thi `.sum()` cong CAC CHI SO lai: do la cach `n_true_attacks` ra
+    # 47012435 thay vi 7851 ngay 10/11/2026. Truyen `du_doan=preds` de khong
+    # chay lai 5 lan `predict` va de `preds` van la nguon duy nhat.
+    tp = flow_bao_dong(None, Xte, yte, mat_na=True, du_doan=preds)
     Xtp = Xte[tp]
     A0tr = attr(models[0], Xtr)
     Atp = [attr(m, Xtp) for m in models]

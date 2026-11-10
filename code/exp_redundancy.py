@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore")
 from scipy.stats import spearmanr
 from sklearn.metrics import f1_score
 from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency, topk_features,
-                     input_x_gradient, integrated_gradients)
+                     input_x_gradient, integrated_gradients, flow_bao_dong)
 from data import load, DATASETS
 
 K = 5
@@ -55,7 +55,7 @@ def jac_clustered(a, b, cid):
 
 def p2_pairs(mlp, Xte, yte):
     """Top-k sets from the three gradient-family methods on flagged-malicious flows."""
-    idx = np.where((predict(mlp, Xte) == 1) & (yte == 1))[0][:1000]
+    idx = flow_bao_dong(mlp, Xte, yte, 1000)
     Xm = Xte[idx]
     return [topk_features(saliency(mlp, Xm), K),
             topk_features(input_x_gradient(mlp, Xm), K),
@@ -64,7 +64,8 @@ def p2_pairs(mlp, Xte, yte):
 
 def p3_sets(Xtr, ytr, Xte, yte, din, h):
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(4)]
-    sub = Xte[:1000]
+    # ⛔ cung cap loi nhu exp_trust.py: xem chu thich o do.
+    sub = Xte[flow_bao_dong(models, Xte, yte, 1000)]
     return [topk_features(saliency(m, sub), K) for m in models], len(sub)
 
 

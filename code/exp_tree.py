@@ -22,6 +22,7 @@ from sklearn.inspection import permutation_importance
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import f1_score, accuracy_score
 from lime.lime_tabular import LimeTabularExplainer
+from harness import flow_bao_dong
 from data import load, DATASETS
 
 K = 5
@@ -64,7 +65,7 @@ def run(ds, algo):
     np.random.seed(0)
     m, Xtr, ytr, Xte, yte, feats = build(ds, algo, 0)
     f1_full = f1_score(yte, m.predict(Xte))
-    tp = np.where((m.predict(Xte) == 1) & (yte == 1))[0][:NSAMP]
+    tp = flow_bao_dong(m, Xte, yte, NSAMP)
     Xm = Xte[tp]
 
     # ---- P2 determinacy: agreement across equally-defensible tree attributions ----

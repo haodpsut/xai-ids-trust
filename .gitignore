@@ -6,6 +6,15 @@ paper/*.log
 paper/*.out
 paper/*.bbl
 paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+
+# Hao chot 11/11/2026: ban thao CHUA NOP khong de tren kho CONG KHAI. Ba tep nay
+# tung bi day len (G7 cua code/cong_dong_bo.py bat duoc 11/11), da `git rm --cached`
+# khoi cay hien tai. Lich su cu VAN con chung, day la lua chon co y thuc.
+paper/main.tex
+paper/main.pdf
+paper/refs.bib
 paper/c.log
 paper/figs/.methods_*.json
 

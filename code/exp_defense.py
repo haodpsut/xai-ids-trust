@@ -19,8 +19,9 @@ import numpy as np, torch, csv, os
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import cross_val_score
+from scipy.stats import spearmanr
 from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency,
-                     input_x_gradient, integrated_gradients, topk_features)
+                     input_x_gradient, integrated_gradients, topk_features, flow_bao_dong)
 from data import load, DATASETS
 
 K = 5            # ensemble size for ground-truth stability
@@ -59,7 +60,19 @@ def cheap_signals(model, Xm, Xtr):
     margin = np.abs(logit[:, 1] - logit[:, 0])                    # decision confidence
     a = np.abs(saliency(model, Xm)) + 1e-12
     p = a / a.sum(1, keepdims=True)
-    concentration = -(p * np.log(p)).sum(1)                       # attribution entropy (peakedness)
+    # ⛔⛔ TRUOC 11/11/2026 dong nay la `-(p*log p).sum(1)`, tuc ENTROPY, va chu
+    # thich goi no la "attribution entropy (peakedness)", gop hai thu TRAI NGHIA
+    # vao mot dong. Bien thi ten `concentration`. Proposition cua bai dinh nghia
+    # kappa = sum p log p = -H, "high when peaked", nen MA va BAI dung hai dai luong
+    # NGUOC DAU nhau duoi cung mot ten. AUC khong thay doi (hoi quy logistic hut
+    # dau vao trong so), nen khong cong nao thay. Nhung:
+    #   1. `conc_rel_rho` doi dau, va bai doc no canh Proposition de noi ve HUONG.
+    #   2. `exp_gate_attack.py` day diem cong bang `w[1] * (-ent)`, tuc no GIA DINH
+    #      dac trung la -H; voi dac trung +H thi mot trong hai thanh phan gradient
+    #      cua tan cong day NGUOC huong, nen so tan cong bai bao la CHAN DUOI.
+    # Sua o DAY, mot cho duy nhat, thi ca bon script dung cheap_signals deu khop.
+    # ⇒ [[feedback-nhan-cot-giong-nhau-nghia-khac-nhau]] · [[feedback-mot-tham-so-dieu-khien-hai-thu]]
+    concentration = (p * np.log(p)).sum(1)        # kappa = -H, cao khi quy gan NHON
     # local linear surrogate fidelity: correlation of saliency-linearization with the logit gap
     lin = (saliency(model, Xm) * Xm).sum(1)
     fidelity = np.abs(lin) / (np.abs(lin).std() + 1e-9)
@@ -72,7 +85,7 @@ def run(ds):
     Xtr, ytr, Xte, yte, feats = load(ds)
     din = Xtr.shape[1]; h = match_mlp(din, nparams(KAN(din, 16, 4)))
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]
-    idx = np.where((predict(models[0], Xte) == 1) & (yte == 1))[0][:2000]
+    idx = flow_bao_dong(models[0], Xte, yte, 2000)
     Xm = Xte[idx]
     rel = ground_truth_reliability(models, Xm)
     y_rel = (rel > np.median(rel)).astype(int)                   # reliable vs not (balanced split)
@@ -84,7 +97,14 @@ def run(ds):
     clf.fit(S, y_rel); score = clf.predict_proba(S)[:, 1]
     hi = score > np.median(score)
     stab_gain = float(rel[hi].mean() - rel[~hi].mean())
+    # ⛔ Bai tuyen bo "their correlation is \approx 0.82 in magnitude" giua do TAP
+    # TRUNG cua quy gan (kappa) va nhan do tin cay S(x), va dung no lam CHUNG CU
+    # THUC NGHIEM ngay canh Proposition. Do 11/11/2026: KHONG CSV nao chua con so ay,
+    # khong script nao tinh ra no. Mot tuyen bo chiu luc ma khong co hien vat.
+    # Gan lien ket don dieu nen dung Spearman. ⇒ [[feedback-tuyen-bo-khong-co-chu-so]]
+    rho = spearmanr(S[:, 1], rel).correlation
     return dict(dataset=ds, detector_auc=round(float(auc), 3),
+                conc_rel_rho=round(float(rho), 3),
                 reliable_stability=round(float(rel[hi].mean()), 3),
                 unreliable_stability=round(float(rel[~hi].mean()), 3),
                 stability_gain=round(stab_gain, 3))

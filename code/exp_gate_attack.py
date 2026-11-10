@@ -12,7 +12,7 @@ through it.
 import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
-from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency
+from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong
 from exp_defense import ground_truth_reliability, cheap_signals, K
 from data import load, DATASETS
 
@@ -23,7 +23,7 @@ def run(ds):
     models = [train(MLP(din, h), Xtr, ytr, s) for s in range(K)]
     f = models[0]
     # fit the gate on true attacks (as in exp_defense)
-    idx = np.where((predict(f, Xte) == 1) & (yte == 1))[0][:2000]
+    idx = flow_bao_dong(f, Xte, yte, 2000)
     Xm = Xte[idx]
     rel = ground_truth_reliability(models, Xm)
     ythr = np.median(rel)
@@ -48,6 +48,12 @@ def run(ds):
         g, = torch.autograd.grad(logit[:, 1].sum(), x, create_graph=True)
         p = g.abs() / (g.abs().sum(1, keepdim=True) + 1e-9)
         ent = -(p * (p + 1e-12).log()).sum(1)
+        # ⛔ `-ent` o day la kappa = -H cua Proposition, va tu 11/11/2026 day DUNG
+        # la dac trung so 1 ma `cheap_signals` tra ve. Truoc do `cheap_signals` tra
+        # ve +H duoi ten `concentration`, nen cong duoc khop tren +H trong khi tan
+        # cong day theo -H: mot trong hai thanh phan gradient day NGUOC huong, va
+        # so tan cong bai bao la CHAN DUOI chu khong phai suc manh thuc.
+        # ⇒ [[feedback-nhan-cot-giong-nhau-nghia-khac-nhau]]
         # gate weight sign tells us which direction is "more reliable"
         push = -(w[0] * margin + w[1] * (-ent)).sum()                     # raise gate score
         budget = ((delta / sd) ** 2).sum()
