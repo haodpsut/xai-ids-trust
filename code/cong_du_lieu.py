@@ -82,7 +82,13 @@ def main():
         that = bam(p)
         if that != mong:
             lech.append(f"{k}: mong {mong[:12]}... that {that[:12]}...")
-    dat("D2", not lech, f"sha256 khop {len(ke) - len(thieu) - len(lech)}/{len(ke) - len(thieu)} tep da doc"
+    # ⛔⛔ KIEM 0 DON VI KHONG PHAI SACH. Tu clone sach (chua co data/), ban dau D2 in
+    # "sha256 khop 0/0 tep da doc" va duoc tinh la XANH. Mot cong da kiem KHONG CAI GI
+    # ma vao cot xanh thi no la cong mu. ⇒ [[feedback-kiem-0-don-vi-khong-phai-sach]]
+    da_doc = len(ke) - len(thieu)
+    dat("D2", not lech and da_doc > 0,
+        f"sha256 khop {da_doc - len(lech)}/{da_doc} tep da doc"
+        + ("; ⛔ KIEM 0 TEP, khong ket luan duoc gi" if da_doc == 0 else "")
         + (f"; LECH: {lech}" if lech else ""))
 
     # ⛔ Ban ke la HE THAM CHIEU THU HAI ben canh data.py. Hai cai phan ky thi ban ke
@@ -116,14 +122,13 @@ def main():
                     pd.read_csv(p, nrows=5, low_memory=False)
             except Exception as e:
                 khong_doc.append(f"{k}: {type(e).__name__}")
-    dat("D4", not khong_doc, f"pandas doc thu {len(ke) - len(thieu)} tep"
+    dat("D4", not khong_doc and da_doc > 0, f"pandas doc thu {da_doc} tep"
+        + ("; ⛔ KIEM 0 TEP, khong ket luan duoc gi" if da_doc == 0 else "")
         + (f"; KHONG DOC DUOC: {khong_doc}" if khong_doc else ""))
 
     if loi:
-        print()
-        for d in loi:
-            print("  ⛔", d)
-        sys.exit(f"\n{len(loi)}/{len(da_cham)} cong DO")
+        # `dat` da in tung loi ngay luc xay ra, nen o day chi tong ket, khong in lai.
+        sys.exit(f"\n{len(loi)}/{len(da_cham)} cong DO: {', '.join(d.split()[0] for d in loi)}")
     print(f"\n  => {len(da_cham)}/{len(da_cham)} cong XANH")
 
 

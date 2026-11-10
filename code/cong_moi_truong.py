@@ -190,8 +190,14 @@ def main():
         except Exception as e:
             doc_that.append(f"{os.path.basename(t)}: ⛔ {type(e).__name__}")
             thieu_engine.append(f"read_parquet({os.path.basename(t)}) that bai")
-    dat("M6", not thieu_engine,
-        "pandas doc duoc .parquet: " + ("; ".join(doc_that) if doc_that else "khong co tep de thu")
+    # ⛔ Neu khong co tep nao de thu thi M6 KHONG duoc xanh: no da khong kiem gi.
+    # Phep thu `get_engine("auto")` o tren van chay duoc ke ca khi vang tep, nen
+    # dieu kien la "engine giai duoc" VA "co it nhat mot tep that su doc duoc".
+    doc_ok = sum(1 for d in doc_that if "doc OK" in d)
+    dat("M6", not thieu_engine and doc_ok > 0,
+        f"pandas doc duoc .parquet ({doc_ok} tep): "
+        + ("; ".join(doc_that) if doc_that else "khong co tep de thu")
+        + ("; ⛔ KHONG doc duoc tep nao, khong ket luan duoc gi" if doc_ok == 0 else "")
         + (f" | LOI: {thieu_engine}" if thieu_engine else ""))
 
     if loi:
