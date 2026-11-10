@@ -18,3 +18,18 @@ paper/claims.json.STALE-*
 paper/l2-lookup*.json
 paper/venue-check.json
 paper/audit-refs-lookup.json
+
+# Scratch build directories written by local tooling.
+code/_tam-*/
+paper/*.spl
+
+# Local snapshots kept for diffing, not for publication.
+paper/*.truoc-*
+.DS_Store
+
+# Local working notes and locally assembled bundles: author-side material that is
+# deliberately not part of the published artifact.
+*-VIEC.md
+_local/
+review/
+submit-*/

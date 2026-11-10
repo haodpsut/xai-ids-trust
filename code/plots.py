@@ -3,9 +3,12 @@ trust, each shown failing across three modern NIDS datasets. agentra_plot, print
 import csv, os, sys
 import numpy as np
 
+# The default is the copy vendored in this repository, so a clean clone can rebuild the
+# figures. Before this, the default was a path outside the repository and `plots.py` raised
+# ModuleNotFoundError for everyone but the author, while the paper promised otherwise.
+# Set AGENTRA_PLOT_ASSETS to render against a different copy of the module.
 ASSETS = os.environ.get("AGENTRA_PLOT_ASSETS", os.path.join(
-    os.path.dirname(__file__), "..", "..", "..", "my-skills", "ALL-FIGURES",
-    "0-SKILLS", "plot-figure-dph", "assets"))
+    os.path.dirname(__file__), "vendor", "plot-assets"))
 sys.path.insert(0, os.path.abspath(ASSETS))
 import agentra_plot as ap  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402

@@ -1,0 +1,39 @@
+# Moi truong conda cho may co GPU (sol1: Ubuntu 24.04, 2x RTX 4090, KHONG co root).
+#
+# ⛔ Vi sao ghim Python 3.9: moi con so trong bai sinh ra duoi Python 3.9.6 voi
+#    numpy 2.0.2. Doi len 3.11 thi keo theo numpy/torch khac, va vong sua sap toi
+#    se TRON so cu voi so moi trong cung mot bang. Giu nguyen ban cu cho toi khi
+#    chay lai TOAN BO, dung chay lai mot phan.
+#
+# ⛔ Bai khai "no GPU is required": bo thi nghiem chay duoi mot gio tren CPU thuong.
+#    GPU chi de chay nhanh hon, khong phai dieu kien.
+#
+# Cai (khong can root):
+#    conda env create -f environment.yml -p ~/xai-ids-trust/env
+#    conda activate ~/xai-ids-trust/env
+name: xai-ids-trust
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.9.6
+  - numpy=2.0.2
+  - scipy=1.13.1
+  - scikit-learn=1.6.1
+  - matplotlib=3.9.4
+  - pandas=2.3.3
+  - pip
+  # ⛔ torch KHONG lay duoc tu conda cho Python 3.9: kenh `pytorch` khong con ban
+  #    2.8.0, va conda-forge co 0 ban dung py39 cho pytorch 2.8.0. Do tren sol1
+  #    ngay 10/11/2026. Nen torch di qua pip, banh xe cp39-manylinux_2_28 co san.
+  # ⛔ KHONG dung --index-url .../whl/cpu: ban do mang hau to +cpu, lech chuoi
+  #    phien ban so voi khoi Environment cua bai.
+  - pip:
+      - torch==2.8.0
+      - shap==0.49.1
+      - lime==0.2.0.1
+      - pyarrow==21.0.0
+      # chi can cho buoc ve hinh, xem requirements.txt
+      - pillow==11.3.0
+      - PyMuPDF==1.26.5

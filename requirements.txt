@@ -1,0 +1,31 @@
+# Moi truong da sinh ra moi so trong bai. Ban ghim o day PHAI khop nguyen van
+# khoi "Environment" trong paper/main.tex; cong code/cong_moi_truong.py kiem dieu do.
+#
+# Python 3.9.6
+#
+# ⛔ torch o day la ban CPU. Bai khai "no GPU is required" va bo thi nghiem chay
+#    duoi mot gio tren CPU thuong. Tren may co GPU (sol1, 2x RTX 4090) thi cai
+#    torch ban CUDA CUNG SO HIEU, xem environment.yml.
+numpy==2.0.2
+scipy==1.13.1
+scikit-learn==1.6.1
+torch==2.8.0
+shap==0.49.1
+lime==0.2.0.1
+# Hai goi duoi day duoc MA import that su nhung khoi "Environment" cua bai KHONG ke.
+# Da bo sung 09/11/2026 sau khi quet AST toan bo code/.
+matplotlib==3.9.4
+pandas==2.3.3
+# ⛔ pyarrow la PHU THUOC LUC CHAY, khong phai luc import: `pandas.read_parquet` nap no
+#    ben trong ham, nen khong co dong `import pyarrow` nao trong code/. Cong quet AST
+#    MU voi loai phu thuoc nay. Thieu no thi data.load("UNSW") va load("CIC-IoT-2023")
+#    nem ImportError, tuc 2 trong 5 bo du lieu KHONG NAP DUOC.
+#    Bat duoc 10/11/2026 khi chay that tren sol1, khong phai khi doc ma.
+pyarrow==21.0.0
+# Hai goi duoi day CHI can cho buoc VE HINH (code/plots.py qua code/vendor/plot-assets):
+#   pillow   : agentra_plot.save() luon ghi ban xam de kiem in den trang
+#   PyMuPDF  : measure_plot.py (`import fitz`) do kho in va co chu tren PDF
+# ⛔ Ca hai truoc day KHONG duoc khai o dau, cung ly do pyarrow bi sot: chung nam
+#    sau mot lop goi (subprocess, va import trong ham), khong trong do thi import cua code/.
+pillow==11.3.0
+PyMuPDF==1.26.5
