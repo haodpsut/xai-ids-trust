@@ -13,6 +13,18 @@ sys.path.insert(0, os.path.abspath(ASSETS))
 import agentra_plot as ap  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 
+def hai_chu_so(v):
+    """Round half up, exactly as the paper's tables do.
+
+    This used to be f"{v:.2f}". Python rounds the binary value, so 0.745 prints as
+    "0.74", while the tables (Decimal, ROUND_HALF_UP) print 0.75. The figure and the
+    table read the same breadth.csv yet disagreed in 8 of 50 cells. Each was correct
+    under its own rule; the defect was having two rules for one number.
+    """
+    from decimal import Decimal, ROUND_HALF_UP
+    return str(Decimal(repr(float(v))).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+
 ap.use_style()
 HERE = os.path.dirname(__file__)
 FIG = os.path.abspath(os.path.join(HERE, "..", "paper", "figs"))
@@ -141,7 +153,7 @@ def fig_pairwise_heat():
     ax.grid(False); ax.tick_params(length=0)
     for i in range(len(pairs)):
         for j in range(len(ds)):
-            ax.text(j, i, f"{M[i,j]:.2f}", ha="center", va="center", fontsize=7,
+            ax.text(j, i, hai_chu_so(M[i, j]), ha="center", va="center", fontsize=7,
                     color="white" if M[i, j] > 0.6 else ap.INK)
     cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04); cb.ax.tick_params(labelsize=7, length=0)
     cb.set_label("top-5 agreement", fontsize=7)
