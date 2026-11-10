@@ -201,10 +201,8 @@ def main():
         + (f" | LOI: {thieu_engine}" if thieu_engine else ""))
 
     if loi:
-        print()
-        for d in loi:
-            print("  ⛔", d)
-        sys.exit(f"\n{len(loi)}/{len(da_cham)} cong DO")
+        # `dat` da in tung loi ngay luc xay ra, nen o day chi tong ket, khong in lai.
+        sys.exit(f"\n{len(loi)}/{len(da_cham)} cong DO: {', '.join(d.split()[0] for d in loi)}")
     print(f"\n  => {len(da_cham)}/{len(da_cham)} cong XANH  (Python bai khai: {py_bai})")
 
 
