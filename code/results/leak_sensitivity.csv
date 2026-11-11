@@ -1,0 +1,5 @@
+quantity,definition,value_all,dataset_all,value_clean,dataset_clean,delta,n_all,n_clean,dropped,dup_threshold
+eps_fid_clean,1 - min tree(d=4)_agree,0.047,UNSW,0.026,CICIDS,-0.021,5,3,TON-IoT UNSW,0.1
+eps_det_clean,1 - min o cap explainer,0.848,UNSW,0.829,CICIDS,-0.019,5,3,TON-IoT UNSW,0.1
+eps_grnd_clean,1 - min p3_seed_agree_mean,0.62,TON-IoT,0.566,CIC-IoT-2023,-0.054,5,3,TON-IoT UNSW,0.1
+p2_min_clean,min p2_method_agree_mean,0.355,CICIDS,0.355,CICIDS,0.0,5,3,TON-IoT UNSW,0.1

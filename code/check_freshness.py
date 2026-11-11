@@ -54,6 +54,7 @@ MAP = {
     "breadth_ci.csv": "exp_breadth.py",
     "explainer_swap.csv": "exp_explainer_swap.py",
     "reader_controls.csv": "exp_reader_controls.py",
+    "leak_sensitivity.csv": "exp_leak_sensitivity.py",
     "redundancy.csv": "exp_redundancy.py",
     "sparse_bydesign.csv": "exp_sparse_bydesign.py",
     "tree.csv": "exp_tree.py",
