@@ -15,6 +15,10 @@ paper/*.fls
 paper/main.tex
 paper/main.pdf
 paper/refs.bib
+
+# Hao chot 11/11/2026: kho claims chi de main.tex doc, ma main.tex khong o kho nua.
+paper/claims/
+paper/than-bang-moi/
 paper/c.log
 paper/figs/.methods_*.json
 
