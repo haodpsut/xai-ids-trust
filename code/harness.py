@@ -177,6 +177,36 @@ def saliency(model, X, target_class=1):
     return g.detach().numpy()
 
 
+def quy_gan_chuan_hoa(mo_hinh, X, dtype=None):
+    """MOT dinh nghia cho "vector giai thich" ma bo phan tich vien doc: saliency co
+    dau, chuan hoa L1 tung mau.
+
+    ⛔ Vi sao gom ve day. Do 11/11/2026: cong thuc nay bi chep NGUYEN VAN o BON cho
+    (`exp_auditor_control.attr`, `exp_harm.attr`, `exp_harm_bytype.attr`,
+    `exp_attack.attr_matrix`), moi cho mot ten khac. Bon ban chep cua mot dinh nghia
+    thi roi se lech, va do la tinh chat cua phep CHEP, khong phai tai nan: `flow_bao_dong`
+    o tren ton tai vi dung chuyen ay da xay ra voi muoi bay ban chep.
+    ⇒ [[feedback-liet-ke-bang-luat-khong-phai-liet-ke-co-che]]
+
+    ⛔ GIU NGUYEN dtype cua `saliency` (float32), de phep gom nay TRUNG TINH ve hanh vi:
+    khong mot con so nao trong bai doi vi no. Chuyen doi float64 la mot viec RIENG, va
+    day la ly do no chua lam o day: trong `exp_prop2_topk.py` toi do thay sklearn tinh
+    `X @ weights` trong float32 roi TRAN SO o lbfgs, va ba script cu co
+    `warnings.filterwarnings("ignore")` nen o do no im lang. Do tiep thi f32 va f64 cho
+    `p_self`/`p_cross` GIONG NHAU tren ca nam tap, va tren sol1 (BLAS khac) KHONG he co
+    canh bao, nen tran so ay la co gia cua Accelerate tren macOS. Vi the day la viec
+    don dep, khong phai viec sua so. ⇒ [[feedback-sua-loi-va-doi-thuoc-trong-cung-ban-va]]
+    """
+    # ⛔ `dtype` phai ep TRUOC khi chia, khong phai sau. Ep sau la chia trong float32
+    # roi moi nang lên, tuc mat do chinh xac ngay o phep chia: hai thu ay KHAC nhau.
+    # Toi suyt doi so cua `exp_prop2_topk` theo dung cach ay khi gom ham.
+    # ⇒ [[feedback-sua-khau-giua-phai-diff-dau-ra-cuoi]]
+    a = saliency(mo_hinh, X)
+    if dtype is not None:
+        a = a.astype(dtype)
+    return a / (np.abs(a).sum(1, keepdims=True) + 1e-9)
+
+
 def topk_features(attr, k=5):
     """Top-k attributed feature indices per sample (the 'reason' shown to the analyst)."""
     return np.argsort(-np.abs(attr), axis=1)[:, :k]

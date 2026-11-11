@@ -17,15 +17,13 @@ controls a subset, stated as a limitation). Budget is bounded in standardized un
 """
 import numpy as np, torch, csv, os
 from sklearn.linear_model import LogisticRegression
-from harness import MLP, nparams, match_mlp, train, predict, saliency, flow_bao_dong
+from harness import MLP, nparams, match_mlp, train, predict, saliency, flow_bao_dong, quy_gan_chuan_hoa
 from data import load, DATASETS
 from harness import KAN  # for budget parity only
 
 
-def attr_matrix(mlp, X):
-    """Signed gradient saliency (the explanation vector), L1-normalized per sample."""
-    a = saliency(mlp, X)
-    return a / (np.abs(a).sum(1, keepdims=True) + 1e-9)
+# ⛔ MOT dinh nghia, o harness.quy_gan_chuan_hoa. Xem ghi chu o do.
+attr_matrix = quy_gan_chuan_hoa
 
 
 def run(ds, seed=0):

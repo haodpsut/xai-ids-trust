@@ -91,6 +91,19 @@ PHU_IT = {
 
 # ⛔ Cot that su co the vuot [-1, 1]. Moi muc phai co LY DO, va cong IN RA chung
 # moi lan chay de mot mien tru khong con dung van bi nhin thay.
+# ⛔⛔ O RONG duoc phep, CHI o nhung cho khai duoi day, kem ly do. `exp_leakage.py`
+# de trong `f1/p2/p3_trung` khi nua tap do duoi 200 hang: in mot con so tren 0 hang
+# hay tren 20 hang la BIA, con in rong la noi "khong do duoc". Nhung rong KHONG
+# duoc la cua sau: moi o rong khac van la loi, va mot muc khai khong con o rong nao
+# cung la loi, vi no thanh mot cho mo khong ai canh.
+# ⇒ [[feedback-kiem-0-don-vi-khong-phai-sach]] · [[feedback-dau-xac-nhan-phai-tu-mat-hieu-luc]]
+O_RONG_CHO_PHEP = {
+    ("leakage.csv", "f1_trung"): "nua tap co ban sao duoi 200 hang: khong do duoc",
+    ("leakage.csv", "p2_trung"): "nhu tren",
+    ("leakage.csv", "p3_trung"): "nhu tren",
+}
+
+
 def _ban_do_csv():
     """Danh sach CSV cua du an, doc tu `check_freshness.MAP`, khong dem tay."""
     import importlib.util
@@ -118,6 +131,7 @@ def main():
 
     n_o = n_nhan = 0
     xau_dem, xau_khoang, xau_tron, xau_std, mien = [], [], [], [], []
+    rong_thay = set()
 
     for f in tep:
         hang = doc(f)
@@ -132,10 +146,20 @@ def main():
                 n_nhan += 1
                 continue
             if any(v is None for v in gt):
-                # ⛔ Mot cot VUA co so VUA co chu la trieu chung that, khong phai cot nhan.
-                xau_tron += [f"{f}:{c} hang {i}: {hang[i].get(c)!r}"
-                             for i, v in enumerate(gt) if v is None][:3]
-                continue
+                rong = [i for i, v in enumerate(gt)
+                        if v is None and str(hang[i].get(c) or "").strip() == ""]
+                if (f, c) in O_RONG_CHO_PHEP and len(rong) == sum(
+                        1 for v in gt if v is None):
+                    rong_thay.add((f, c))
+                    gt = [v for v in gt if v is not None]
+                    if not gt:
+                        n_nhan += 1
+                        continue
+                else:
+                    # ⛔ Mot cot VUA co so VUA co chu la trieu chung that, khong phai cot nhan.
+                    xau_tron += [f"{f}:{c} hang {i}: {hang[i].get(c)!r}"
+                                 for i, v in enumerate(gt) if v is None][:3]
+                    continue
             for i, x in enumerate(gt):
                 n_o += 1
                 if math.isnan(x):
@@ -181,9 +205,19 @@ def main():
     dat("H4", not xau_std, f"cot `_std` khong am: {len(xau_std)} o am"
         + (("; ⛔ " + "; ".join(xau_std[:6])) if xau_std else ""))
     # ⛔ Mien tru phai HIEN RA moi lan chay, khong thi no thanh cua sau im lang.
-    dat("H5", len(set(mien)) == len(MIEN_TRU),
+    # ⛔⛔ Truoc 11/11/2026 dong nay so `len(set(mien))` voi `len(MIEN_TRU)`, ma `mien`
+    # giu cap `tep:cot`. Mot ten cot co o HAI tep (`n_flows` trong rerun.csv va
+    # prop2_topk.csv) la cong do ngay, du khong mien tru nao chet. Phai so TEN COT.
+    # ⇒ [[feedback-cong-phu-dem-khoa-hay-dem-gia-tri]]
+    ten_mien = {x.split(":", 1)[1] for x in mien}
+    chet_rong = sorted(k for k in O_RONG_CHO_PHEP if k not in rong_thay)
+    dat("H5", ten_mien == set(MIEN_TRU) and not chet_rong,
         "mien tru dung: " + ", ".join(f"{k} ({v})" for k, v in MIEN_TRU.items())
-        + f" | thay {len(set(mien))}/{len(MIEN_TRU)} trong du lieu")
+        + f" | thay {len(ten_mien)}/{len(MIEN_TRU)} cot mien tru trong du lieu"
+        + f"; o rong khai {len(rong_thay)}/{len(O_RONG_CHO_PHEP)} con doi tuong"
+        + (f"; ⛔ KHAI O RONG DA CHET: {chet_rong}" if chet_rong else "")
+        + (f"; ⛔ mien tru CHET: {sorted(set(MIEN_TRU) - ten_mien)}"
+           if set(MIEN_TRU) - ten_mien else ""))
 
     # ── H6: do phu tap du lieu ───────────────────────────────────────────────
     import data as _d

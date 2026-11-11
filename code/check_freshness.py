@@ -48,6 +48,8 @@ MAP = {
     "multiseed.csv": "exp_multiseed.py",
     "prop2_test.csv": "exp_prop2_test.py",
     "rerun.csv": "exp_rerun.py",
+    "leakage.csv": "exp_leakage.py",
+    "prop2_topk.csv": "exp_prop2_topk.py",
     "redundancy.csv": "exp_redundancy.py",
     "sparse_bydesign.csv": "exp_sparse_bydesign.py",
     "tree.csv": "exp_tree.py",

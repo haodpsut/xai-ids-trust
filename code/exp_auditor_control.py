@@ -51,14 +51,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 from data import DATASETS, load
-from harness import KAN, MLP, match_mlp, nparams, predict, saliency, train, flow_bao_dong
+from harness import KAN, MLP, match_mlp, nparams, predict, saliency, train, flow_bao_dong, quy_gan_chuan_hoa
 
 K = 5
 
 
-def attr(model, X):
-    a = saliency(model, X)
-    return a / (np.abs(a).sum(1, keepdims=True) + 1e-9)
+# ⛔ MOT dinh nghia, o harness.quy_gan_chuan_hoa. Xem ghi chu o do.
+attr = quy_gan_chuan_hoa
 
 
 def divergence(actions):

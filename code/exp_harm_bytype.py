@@ -8,7 +8,7 @@ import numpy as np, pandas as pd, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.linear_model import LogisticRegression
-from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong
+from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong, quy_gan_chuan_hoa
 from data import BASE
 
 K = 5
@@ -37,8 +37,8 @@ def load_typed(name):
     return Xs[:ntr], y[:ntr], Xs[ntr:], y[ntr:], types[ntr:]
 
 
-def attr(m, X):
-    a = saliency(m, X); return a / (np.abs(a).sum(1, keepdims=True) + 1e-9)
+# ⛔ MOT dinh nghia, o harness.quy_gan_chuan_hoa. Xem ghi chu o do.
+attr = quy_gan_chuan_hoa
 
 
 if __name__ == "__main__":

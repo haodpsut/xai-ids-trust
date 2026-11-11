@@ -22,15 +22,14 @@ import numpy as np, torch, csv, os, warnings
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong
+from harness import MLP, KAN, nparams, match_mlp, train, predict, saliency, flow_bao_dong, quy_gan_chuan_hoa
 from data import load, DATASETS
 
 K = 5
 
 
-def attr(model, X):
-    a = saliency(model, X)
-    return a / (np.abs(a).sum(1, keepdims=True) + 1e-9)
+# ⛔ MOT dinh nghia, o harness.quy_gan_chuan_hoa. Xem ghi chu o do.
+attr = quy_gan_chuan_hoa
 
 
 def run(ds, auditor="logistic"):
