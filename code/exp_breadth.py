@@ -17,7 +17,15 @@ from harness import (MLP, KAN, nparams, match_mlp, train, predict, saliency,
 from data import load, DATASETS
 
 TOPK = 5
-NSAMP = 120          # SHAP/LIME are slow; modest sample
+# ⛔⛔ 11/11/2026, doc ngoai vong 3 diem 2(b). Ban cu lay NSAMP=120 luong, MOT hat,
+# khong khoang tin cay. Ba thu do deu doc tu day: Bang A.15, Hinh 4, va cot eps_det
+# cua bang do dung sai. Ma eps_det la `1 - min` tren MUOI uoc luong cap, nen voi n
+# nho no bi CHECH XUONG mot cach co he thong: min cua muoi so nhieu thi thap hon min
+# that. Tuc con so 0,86 co the mot phan la hien vat cua co mau.
+# ⇒ [[feedback-so-cuc-tri-la-dau-hieu-bo-do-hong]] · [[feedback-tap-kiem-thien-lech]]
+NSAMP = 1000         # SHAP/LIME van cham; day la muc doc ngoai vong 3 doi
+SEEDS = (0, 1, 2)    # ba bo do doc lap, de tach nhieu lay mau khoi nhieu mo hinh
+NBOOT = 2000         # so lan lay lai mau de dung khoang tin cay
 
 
 def _jac(a, b):
@@ -52,11 +60,11 @@ def lime_topk(model, Xtr, Xm, feats):
     return out
 
 
-def run(ds):
-    np.random.seed(0); torch.manual_seed(0)             # determinism for SHAP/LIME sampling
-    Xtr, ytr, Xte, yte, feats = load(ds)
+def mot_hat(ds, Xtr, ytr, Xte, yte, feats, hat):
+    """Tra ve {cap: vector Jaccard TUNG LUONG} cho mot bo do duoc gieo bang `hat`."""
+    np.random.seed(hat); torch.manual_seed(hat)      # determinism for SHAP/LIME sampling
     din = Xtr.shape[1]
-    mlp = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, 0)
+    mlp = train(MLP(din, match_mlp(din, nparams(KAN(din, 16, 4)))), Xtr, ytr, hat)
     idx = flow_bao_dong(mlp, Xte, yte, NSAMP)
     Xm = Xte[idx]
     tk = {
@@ -67,26 +75,66 @@ def run(ds):
         "lime": lime_topk(mlp, Xtr[:1500], Xm, feats),
     }
     names = list(tk)
-    ov = {}
+    tung_luong = {}
     for a in range(len(names)):
         for b in range(a + 1, len(names)):
             key = f"{names[a]}_vs_{names[b]}"
-            ov[key] = float(np.mean([_jac(tk[names[a]][r], tk[names[b]][r]) for r in range(len(Xm))]))
-    allpairs = float(np.mean(list(ov.values())))
-    return dict(dataset=ds, mean_all_pairs=round(allpairs, 3),
-                **{k: round(v, 3) for k, v in ov.items()})
+            tung_luong[key] = np.array(
+                [_jac(tk[names[a]][r], tk[names[b]][r]) for r in range(len(Xm))])
+    return tung_luong, len(Xm)
+
+
+def run(ds):
+    Xtr, ytr, Xte, yte, feats = load(ds)
+    gom, n_luong = {}, []
+    for h in SEEDS:
+        tung, n = mot_hat(ds, Xtr, ytr, Xte, yte, feats, h)
+        n_luong.append(n)
+        for k, v in tung.items():
+            gom.setdefault(k, []).append(v)
+        print(f"    {ds} hat {h}: {n} luong", flush=True)
+    cap = sorted(gom)
+
+    # Trung binh tren CA ba bo do: noi hai truc nhieu lai roi lay trung binh.
+    tb = {k: float(np.mean(np.concatenate(gom[k]))) for k in cap}
+
+    # ⛔ Khoang tin cay cua `min tren cac cap`, khong phai cua tung cap roi lay min
+    # cua cac can duoi: dai luong bai dung la CHINH cai min, nen phai lay lai mau
+    # roi tinh lai min moi lan. ⇒ [[feedback-so-cuc-tri-la-dau-hieu-bo-do-hong]]
+    rng = np.random.default_rng(0)
+    noi = {k: np.concatenate(gom[k]) for k in cap}
+    N = len(noi[cap[0]])
+    mins = np.empty(NBOOT)
+    for b in range(NBOOT):
+        j = rng.integers(0, N, N)                   # lay lai mau THEO LUONG
+        mins[b] = min(float(noi[k][j].mean()) for k in cap)
+    lo, hi = (float(x) for x in np.percentile(mins, [2.5, 97.5]))
+    cap_min = min(cap, key=lambda k: tb[k])
+
+    hang = dict(dataset=ds, mean_all_pairs=round(float(np.mean(list(tb.values()))), 3),
+                **{k: round(v, 3) for k, v in tb.items()})
+    ci = dict(dataset=ds, n_flows=int(np.sum(n_luong)), n_seeds=len(SEEDS),
+              min_pair=cap_min, min_mean=round(tb[cap_min], 3),
+              min_lo=round(lo, 3), min_hi=round(hi, 3),
+              eps_det=round(1 - tb[cap_min], 3),
+              eps_det_lo=round(1 - hi, 3), eps_det_hi=round(1 - lo, 3))
+    return hang, ci
 
 
 if __name__ == "__main__":
     os.makedirs("results", exist_ok=True)
-    rows = []
+    rows, cis = [], []
     for ds in DATASETS:
-        r = run(ds); rows.append(r)
-        print(f"{ds}: mean 5-explainer agreement={r['mean_all_pairs']} | SHAP-vs-LIME={r.get('shap_vs_lime')} "
-              f"| grad-vs-SHAP={r.get('grad_vs_shap')}")
+        r, ci = run(ds); rows.append(r); cis.append(ci)
+        print(f"{ds}: mean 5-explainer agreement={r['mean_all_pairs']} | worst pair "
+              f"{ci['min_pair']}={ci['min_mean']} [{ci['min_lo']}, {ci['min_hi']}] "
+              f"=> eps_det={ci['eps_det']} [{ci['eps_det_lo']}, {ci['eps_det_hi']}]", flush=True)
     keys = sorted(set().union(*[set(r) for r in rows]), key=lambda k: (k != "dataset", k))
     with open("results/breadth.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=keys); w.writeheader()
         for r in rows:
             w.writerow({k: r.get(k, "") for k in keys})
-    print("wrote results/breadth.csv")
+    with open("results/breadth_ci.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=list(cis[0].keys())); w.writeheader()
+        w.writerows(cis)
+    print("wrote results/breadth.csv va results/breadth_ci.csv")

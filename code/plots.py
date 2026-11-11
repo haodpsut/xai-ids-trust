@@ -103,27 +103,31 @@ def fig_trust():
 
 
 def fig_fidelity():
-    """The interpretable surrogate's detection F1 vs the deployed KAN-IDS, per dataset:
-    interpretability is bought by giving up detection, most starkly on CICIDS2017."""
-    d = row()
+    """Detection F1 the KAN-IDS gives up when its first layer is replaced by a cubic
+    per-edge rendering, per dataset, mean and spread over seeds.
+
+    ⛔⛔ Truoc 11/11/2026 ham nay ve HAI cot F1 doc tu `trust.csv` (MOT hat), trong
+    khi Bang 5 in do TUT trung binh tren cac hat tu `multiseed.csv`. Hai cho noi ve
+    cung mot thu ma lech nhau: TON-IoT tut 0,363 o hinh vs 0,599 o bang. Day la DUNG
+    benh da chua cho `fig_trust`, nhung o day cong F3 khong phu toi vi hai ben ve
+    danh nghia la hai dai luong khac (F1 vs do tut). Nay hinh ve DUNG dai luong cua
+    bang, co thanh sai so, nen khong con hai con so cho mot ten.
+    ⇒ [[feedback-so-headline-mot-cho-o]] · [[feedback-cong-cham-mot-hien-vat-khi-co-nhieu]]
+    """
+    d = row("multiseed.csv")
     ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
-    full = [(ve_so("fig_fidelity", "kan_full_f1", k, d[k]["kan_full_f1"],
-                        "trust.csv", "kan_full_f1")) for k in ds]
-    sym = [(ve_so("fig_fidelity", "kan_symbolic_f1", k, d[k]["kan_symbolic_f1"],
-                       "trust.csv", "kan_symbolic_f1")) for k in ds]
-    x = np.arange(len(ds)); w = 0.36
-    fig, ax = plt.subplots(figsize=(3.5, 2.5))
-    ax.bar(x - w / 2, full, w, facecolor="white", edgecolor=ap.INK, linewidth=1.0,
-           hatch="///", label="deployed model")
-    ax.bar(x + w / 2, sym, w, facecolor="white", edgecolor=ap.WARM, linewidth=1.0,
-           hatch="...", label="interpretable surrogate")
-    for i in range(len(ds)):
-        ax.annotate("", xy=(x[i] + w / 2, sym[i]), xytext=(x[i] - w / 2, full[i]),
-                    arrowprops=dict(arrowstyle="->", color=ap.GRAY, lw=0.7))
+    drop = [ve_so("fig_fidelity", "P1", k, d[k]["p1_fidelity_drop_mean"],
+                  "multiseed.csv", "p1_fidelity_drop_mean") for k in ds]
+    sd = [float(d[k]["p1_fidelity_drop_std"]) for k in ds]
+    x = np.arange(len(ds))
+    fig, ax = plt.subplots(figsize=(3.50, 2.45))
+    ax.bar(x, drop, 0.52, facecolor="white", edgecolor=ap.WARM, linewidth=1.0, hatch="...")
+    ax.errorbar(x, drop, yerr=sd, fmt="none", ecolor=ap.INK, elinewidth=0.8, capsize=2.5)
     ax.set_xticks(x); ax.set_xticklabels(sl(ds))
-    ax.set_ylabel("detection $F_1$"); ax.set_ylim(0, 1.08)
-    ax.legend(fontsize=7, ncol=2, loc="lower center", bbox_to_anchor=(0.5, 1.02), frameon=False)
-    fig.tight_layout(rect=[0,0,1,0.93]); ap.save(fig, os.path.join(FIG, "fig_fidelity"))
+    ax.set_ylabel("detection $F_1$ given up")
+    ax.set_ylim(0, max(a + b for a, b in zip(drop, sd)) * 1.25)
+    ap.headline(ax, f"worst on {sl([ds[int(np.argmax(drop))]])[0]}", loc="upper right")
+    fig.tight_layout(pad=0.9); ap.save(fig, os.path.join(FIG, "fig_fidelity"))
 
 
 def fig_defense():

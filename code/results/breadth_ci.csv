@@ -1,0 +1,6 @@
+dataset,n_flows,n_seeds,min_pair,min_mean,min_lo,min_hi,eps_det,eps_det_lo,eps_det_hi
+UNSW,3000,3,ig_vs_lime,0.152,0.148,0.155,0.848,0.845,0.852
+CICIDS,3000,3,grad_vs_shap,0.171,0.167,0.174,0.829,0.826,0.833
+5G-NIDD,3000,3,grad_vs_shap,0.361,0.354,0.369,0.639,0.631,0.646
+TON-IoT,3000,3,grad_vs_shap,0.18,0.176,0.184,0.82,0.816,0.824
+CIC-IoT-2023,3000,3,ixg_vs_lime,0.213,0.208,0.217,0.787,0.783,0.792

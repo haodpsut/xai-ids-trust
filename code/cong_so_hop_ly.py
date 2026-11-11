@@ -101,6 +101,11 @@ O_RONG_CHO_PHEP = {
     ("leakage.csv", "f1_trung"): "nua tap co ban sao duoi 200 hang: khong do duoc",
     ("leakage.csv", "p2_trung"): "nhu tren",
     ("leakage.csv", "p3_trung"): "nhu tren",
+    ("reader_controls.csv", "p_self"): "hang `consensus_topk` khong phai phep do ty le "
+                                       "dap, no bao cao kich thuoc tap dong thuan o cot "
+                                       "`extra`; de trong chu khong dien so gia",
+    ("reader_controls.csv", "p_cross"): "nhu tren",
+    ("reader_controls.csv", "p_excess"): "nhu tren",
     ("pooled_reader.csv", "p_rand"): "doi chung nhieu chi co nghia o che do `pooled` "
                                      "(co sibling bi giu lai de thu); hang `single` "
                                      "de trong, khong dien so gia vao",
