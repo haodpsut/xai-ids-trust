@@ -11,6 +11,13 @@ ASSETS = os.environ.get("AGENTRA_PLOT_ASSETS", os.path.join(
     os.path.dirname(__file__), "vendor", "plot-assets"))
 sys.path.insert(0, os.path.abspath(ASSETS))
 import agentra_plot as ap  # noqa: E402
+import matplotlib  # noqa: E402
+
+# ⛔⛔ GHIM backend. Khong ghim thi hinh sinh o may co man hinh (backend MacOSX) va
+# hinh sinh trong cong (ep Agg) khac nhau TUNG DIEM ANH du cung du lieu, va
+# `cong_hinh.py` bao MOI hinh deu cu. Backend la mot phan cua hien vat.
+# ⇒ [[feedback-moi-truong-chay-la-phan-cua-hien-vat]]
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
 def hai_chu_so(v):
@@ -27,27 +34,56 @@ def hai_chu_so(v):
 
 ap.use_style()
 HERE = os.path.dirname(__file__)
-FIG = os.path.abspath(os.path.join(HERE, "..", "paper", "figs"))
+# `XAI_FIG_OUT` cho `cong_hinh.py` dung lai toan bo hinh vao thu muc tam roi so voi
+# ban dang nam trong bai, ma khong dam vao ban that. Khong co bien nay thi ghi dung cho.
+FIG = os.path.abspath(os.environ.get("XAI_FIG_OUT",
+                                     os.path.join(HERE, "..", "paper", "figs")))
 os.makedirs(FIG, exist_ok=True)
+
+# ⛔⛔ So ghi cua hinh. Ngay 11/11/2026 doc ngoai vong 2 bat duoc Hinh 2 va Bang 4 in
+# HAI con so khac nhau cho cung mot tinh chat (TON P2: 0,379 vs 0,468), vi hinh doc
+# `trust.csv` con bang doc `multiseed.csv`. Khong cong nao thay, vi khong cong nao doc
+# duoc thu mot hinh VE RA. Nay moi hinh ghi lai tung so cung XUAT XU vao
+# `code/_fig-values.csv`, va `cong_hinh.py` doi chieu no voi kho claim cua bang.
+# ⇒ [[feedback-doi-hien-vat-cho-may-doc-duoc]] · [[feedback-cong-khong-so-hai-nguon]]
+SO_GHI = []
+
+
+def ve_so(hinh, nhan, tap, gt, nguon_csv, cot):
+    """Ghi lai mot con so hinh thuc su ve ra, kem tep va cot no den tu."""
+    SO_GHI.append(dict(hinh=hinh, nhan=nhan, dataset=tap, gia_tri=f"{float(gt):.6f}",
+                       nguon_csv=nguon_csv, cot=cot))
+    return float(gt)
+
 
 SHORT = {"5G-NIDD": "5G", "TON-IoT": "TON", "CIC-IoT-2023": "CIC23"}      # compact x-tick labels
 def sl(ds):
     return [SHORT.get(k, k) for k in ds]
 
 
-def row():
-    with open(os.path.join(HERE, "results", "trust.csv")) as f:
+def row(tep="trust.csv"):
+    with open(os.path.join(HERE, "results", tep)) as f:
         return {r["dataset"]: r for r in csv.DictReader(f)}
 
 
 def fig_trust():
-    d = row()
+    # ⛔⛔ DOC `multiseed.csv`, DUNG ba cot ma Bang 4 doc. Truoc 11/11/2026 ham nay doc
+    # `trust.csv` (mot hat, va P2 la trung binh ba cap TRONG HO gradient), nen hinh va
+    # bang in hai con so khac nhau cho cung mot ten tinh chat: TON P2 0,379 vs 0,468,
+    # 5G P3 0,620 vs 0,527. Moi con so phai co DUNG MOT cho o.
+    # ⇒ [[feedback-so-headline-mot-cho-o]]
+    d = row("multiseed.csv")
     ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
     # Three panels: P1 fidelity retention, P2 method-agreement, P3 seed-agreement.
     # For a trust signal, each SHOULD be ~1.0 (perfect). We plot the achieved value vs the 1.0 line.
-    p1 = [1 - float(d[k]["fidelity_drop"]) for k in ds]       # fidelity retention of interpretable form
-    p2 = [(float(d[k]["p2_grad_vs_ixg"]) + float(d[k]["p2_grad_vs_ig"]) + float(d[k]["p2_ixg_vs_ig"])) / 3 for k in ds]
-    p3 = [float(d[k]["p3_topk_jaccard"]) for k in ds]
+    p1, p2, p3 = [], [], []
+    for k in ds:
+        p1.append(1 - ve_so("fig_trust", "P1", k, d[k]["p1_fidelity_drop_mean"],
+                            "multiseed.csv", "p1_fidelity_drop_mean"))
+        p2.append(ve_so("fig_trust", "P2", k, d[k]["p2_method_agree_mean"],
+                        "multiseed.csv", "p2_method_agree_mean"))
+        p3.append(ve_so("fig_trust", "P3", k, d[k]["p3_seed_agree_mean"],
+                        "multiseed.csv", "p3_seed_agree_mean"))
     labels = ["P1 fidelity\n(surrogate=model?)", "P2 determinacy\n(method-agnostic?)", "P3 groundedness\n(model-agnostic?)"]
     series = [p1, p2, p3]
     x = np.arange(len(labels)); w = 0.2
@@ -71,8 +107,10 @@ def fig_fidelity():
     interpretability is bought by giving up detection, most starkly on CICIDS2017."""
     d = row()
     ds = ["UNSW", "CICIDS", "5G-NIDD", "TON-IoT", "CIC-IoT-2023"]
-    full = [float(d[k]["kan_full_f1"]) for k in ds]
-    sym = [float(d[k]["kan_symbolic_f1"]) for k in ds]
+    full = [(ve_so("fig_fidelity", "kan_full_f1", k, d[k]["kan_full_f1"],
+                        "trust.csv", "kan_full_f1")) for k in ds]
+    sym = [(ve_so("fig_fidelity", "kan_symbolic_f1", k, d[k]["kan_symbolic_f1"],
+                       "trust.csv", "kan_symbolic_f1")) for k in ds]
     x = np.arange(len(ds)); w = 0.36
     fig, ax = plt.subplots(figsize=(3.5, 2.5))
     ax.bar(x - w / 2, full, w, facecolor="white", edgecolor=ap.INK, linewidth=1.0,
@@ -191,14 +229,22 @@ def fig_harmtype():
     with open(_os.path.join(HERE, "results", "harm_bytype.csv")) as f:
         rows = [r for r in csv.DictReader(f) if r["dataset"] == "CICIDS"]
     rows.sort(key=lambda r: float(r["action_divergence"]))
-    labs = [r["attack_type"] for r in rows]; vals = [float(r["action_divergence"]) for r in rows]
+    labs = [r["attack_type"] for r in rows]
+    vals = [(ve_so("fig_harmtype", "action_divergence", "CICIDS:" + r["attack_type"],
+                        r["action_divergence"], "harm_bytype.csv", "action_divergence"))
+            for r in rows]
     fig, ax = plt.subplots(figsize=(3.5, 2.6))
     for i, v in enumerate(vals):
         c = ap.WARM if v >= 0.5 else ap.GRAY
         ax.barh(i, v, color="white", edgecolor=c, linewidth=1.0, hatch="///" if v >= 0.5 else "...")
     ax.set_yticks(range(len(labs))); ax.set_yticklabels(labs, fontsize=7)
     ax.set_xlabel("action divergence"); ax.set_xlim(0, 1.05)
-    ap.headline(ax, "high-volume DoS and\nport scanning worst", loc="lower right")
+    # ⛔⛔ Chu thich nay truoc day ghim cung chu "high-volume DoS and port scanning
+    # worst". Du lieu doi thu tu (nay Brute Force dan dau) ma dong chu o nguyen, nen
+    # hinh TU NOI NGUOC chinh cac cot cua no. Mot cau chu ve so lieu phai duoc SINH tu
+    # so lieu. ⇒ [[feedback-bang-hinh-go-tay-khong-cap-nhat]]
+    hai = [labs[-1], labs[-2]]
+    ap.headline(ax, f"{hai[0]} and\n{hai[1]} worst", loc="lower right")
     fig.tight_layout(); ap.save(fig, os.path.join(FIG, "fig_harmtype"))
 
 
@@ -210,3 +256,8 @@ if __name__ == "__main__":
     fig_pairwise_heat(); print("fig_pairwise_heat ok")
     fig_robust(); print("fig_robust ok")
     fig_harmtype(); print("fig_harmtype ok")
+    with open(os.path.join(HERE, "_fig-values.csv"), "w", newline="",
+              encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=list(SO_GHI[0].keys()))
+        w.writeheader(); w.writerows(SO_GHI)
+    print(f"wrote code/_fig-values.csv ({len(SO_GHI)} so)")

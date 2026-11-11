@@ -46,3 +46,6 @@ paper/*.truoc-*
 _local/
 review/
 submit-*/
+
+# So ghi cua hinh: hien vat trung gian cho code/cong_hinh.py, sinh lai bang plots.py
+code/_fig-values.csv

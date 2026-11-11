@@ -50,6 +50,7 @@ MAP = {
     "rerun.csv": "exp_rerun.py",
     "leakage.csv": "exp_leakage.py",
     "prop2_topk.csv": "exp_prop2_topk.py",
+    "pooled_reader.csv": "exp_pooled_reader.py",
     "redundancy.csv": "exp_redundancy.py",
     "sparse_bydesign.csv": "exp_sparse_bydesign.py",
     "tree.csv": "exp_tree.py",

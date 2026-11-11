@@ -30,12 +30,19 @@ import os
 
 import numpy as np
 import torch
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 from data import DATASETS, load
 from harness import (KAN, MLP, flow_bao_dong, match_mlp, nparams, predict,
                      quy_gan_chuan_hoa, saliency, topk_features, train)
 
+# ⛔⛔ 11/11/2026, doc ngoai vong 2 diem 2(a). Ban dau script nay CHI dung
+# LogisticRegression, trong khi con so headline cua bai (0,028 -> 0,539 tren CICIDS2017)
+# la cua bo doc RandomForest. Doan van trong bai lai viet "The simulated analyst of
+# Section 6" va "held fixed". Tuc la: doi chung cho mot tuyen bo da chay tren MOT BO DOC
+# KHAC voi bo doc mang tuyen bo ay, va khong cho nao noi ra. Nay chay CA HAI.
+# ⇒ [[feedback-nhan-tap-A-khong-chung-nhan-tap-B]] · [[feedback-do-thay-the-khong-co-doi-chung]]
 K = 5           # so mo hinh em, trung voi exp_auditor_control.py
 TOPK = 5        # cung k voi moi phep do top-k khac cua du an
 
@@ -76,10 +83,13 @@ def run(ds):
     Xtp = Xte[tp]
 
     ra = []
-    for nhan, bieu_dien in (("cont", attr_cont), ("topk", attr_topk)):
+    for bo, nhan, bieu_dien in [(bo, n, b)
+                                for bo in ("logistic", "rf")
+                                for n, b in (("cont", attr_cont), ("topk", attr_topk))]:
         A0tr = bieu_dien(models[0], Xtr)
         Atp = [bieu_dien(m, Xtp) for m in models]
-        g = LogisticRegression(max_iter=300).fit(A0tr, ytr)
+        g = (LogisticRegression(max_iter=300) if bo == "logistic" else
+             RandomForestClassifier(n_estimators=80, max_depth=8, random_state=0)).fit(A0tr, ytr)
         acc = float((g.predict(bieu_dien(models[0], Xte)) == yte).mean())
         act = np.stack([g.predict(a) for a in Atp], 1)
         p_self = float((act[:, 0] == 0).mean())
@@ -96,7 +106,7 @@ def run(ds):
             nh = nhieu / (np.abs(nhieu).sum(1, keepdims=True) + 1e-9)
         p_rand = float((g.predict(nh) == 0).mean())
 
-        ra.append(dict(dataset=ds, reader=nhan, n_flows=int(tp.sum()),
+        ra.append(dict(dataset=ds, auditor=bo, reader=nhan, n_flows=int(tp.sum()),
                        auditor_acc=round(acc, 3),
                        p_self=round(p_self, 3), p_cross=round(p_cross, 3),
                        p_excess=round(p_cross - p_self, 3),
@@ -110,7 +120,7 @@ if __name__ == "__main__":
     for ds in DATASETS:
         for r in run(ds):
             rows.append(r)
-            print(f"{r['dataset']:14s} [{r['reader']:4s}] acc={r['auditor_acc']:.3f} | "
+            print(f"{r['dataset']:14s} [{r['auditor']:8s}/{r['reader']:4s}] acc={r['auditor_acc']:.3f} | "
                   f"p_self={r['p_self']:.3f} p_cross={r['p_cross']:.3f} "
                   f"(excess {r['p_excess']:+.3f}) | p_rand={r['p_rand_attr']:.3f}")
     with open("results/prop2_topk.csv", "w", newline="") as f:

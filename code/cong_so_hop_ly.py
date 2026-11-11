@@ -101,6 +101,9 @@ O_RONG_CHO_PHEP = {
     ("leakage.csv", "f1_trung"): "nua tap co ban sao duoi 200 hang: khong do duoc",
     ("leakage.csv", "p2_trung"): "nhu tren",
     ("leakage.csv", "p3_trung"): "nhu tren",
+    ("pooled_reader.csv", "p_rand"): "doi chung nhieu chi co nghia o che do `pooled` "
+                                     "(co sibling bi giu lai de thu); hang `single` "
+                                     "de trong, khong dien so gia vao",
 }
 
 
