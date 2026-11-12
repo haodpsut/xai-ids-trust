@@ -1,5 +1,6 @@
 # Moi truong da sinh ra moi so trong bai. Ban ghim o day PHAI khop nguyen van
-# khoi "Environment" trong paper/main.tex; cong code/cong_moi_truong.py kiem dieu do.
+# khoi "Environment" cua bai; mot cong ben tac gia kiem hai ben khop nhau (cong ay doc
+# ban thao nen no khong o goi cong khai nay).
 #
 # Python 3.9.6
 #

@@ -58,3 +58,16 @@ code/_fig-values.csv
 paper/CLAIM-SHEET.md
 paper/CLAIMS-SSOT.md
 paper/paper-flow-state.md
+
+# ⛔ Rac dich LaTeX va PNG cu, go khoi kho 12/11/2026. Bai dung 8 hinh PDF; 14 tep PNG
+# o day KHONG do `plots.py` sinh ra (da do: plots.py khong he ghi .png), chung la ban
+# cu con lai. Con .log/.aux la san pham dich, khong phai hien vat tai lap.
+paper/figs/*.log
+paper/figs/*.aux
+paper/figs/*.png
+
+# ⛔⛔ `cong_moi_truong.py` doc `paper/main.tex`, la tep nha CO Y khong cong khai, nen
+# tren kho cong khai no VO voi FileNotFoundError chu khong phai bao do. Mot cong khong
+# bao gio chay noi tren hien vat cong khai thi te hon la khong co. Do tu clone sach
+# 12/11/2026. Canh cho: N8 cua code/cong_noi_dung_kho.py.
+code/cong_moi_truong.py

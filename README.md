@@ -50,14 +50,37 @@ The scripts behind the paper's headline numbers:
 | `exp_dataset_profile.py` | dataset profile table |
 | `check_freshness.py` | asserts every results CSV is newer than the script that wrote it |
 
-Committed outputs live in `code/results/` (24 CSV files). `check_freshness.py` returns 0 on
-the committed set.
+Committed outputs live in `code/results/` (32 CSV files); the table above lists the
+scripts behind the headline numbers, and there are 29 `exp_*.py` in all, including the
+controls and ablations. `check_freshness.py` returns 0 on the committed set and reports
+32/32.
 
-## Known limitation in this repository
+## Figures
 
-`plots.py` imports `agentra_plot`, an in-house plotting style module that is **not included
-here**, so figure regeneration does not work from a clean clone. Every numeric result does
-reproduce; only the figure rendering step is unavailable. This is open work.
+`python code/plots.py` rebuilds the seven generated figures from `code/results/` alone, with no
+raw data needed. The plotting style module it imports is vendored at
+`code/vendor/plot-assets/`, and `plots.py` puts that directory on `sys.path` itself, so a clean
+clone can render without further setup; set `AGENTRA_PLOT_ASSETS` to render against a different
+copy. Checked on 2026-11-12 from a fresh `git clone` of this repository: all seven figures
+rendered, exit status 0, and the 24 plotted values written to `code/_fig-values.csv` were
+identical to the ones behind the submitted figures. The rendered PDFs are not byte-identical to
+the committed ones, because a PDF records its creation time; the plotted values are what
+reproduces.
+
+The two schematic figures (`fig_framework`, `fig_threat`) are TikZ, not Python; their sources
+are `paper/figs/*.tex` and they share `paper/figs/palette.tex`.
+
+## What needs the raw data
+
+Two checks read the five datasets, so from a clean clone without `data/` they report red, and
+that red is the expected "you do not have the data" signal rather than a defect:
+
+| Check | Without `data/` |
+|---|---|
+| `cong_du_lieu.py` | D1, D2, D4 red: 0/5 files present, so nothing to digest or read |
+| `cong_tien_dinh.py` | T4 red: the three re-run scripts raise `FileNotFoundError` |
+
+Everything else in this repository runs from the committed CSVs.
 
 ## Reproduction status
 
