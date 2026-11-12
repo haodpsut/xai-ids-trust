@@ -49,3 +49,12 @@ submit-*/
 
 # So ghi cua hinh: hien vat trung gian cho code/cong_hinh.py, sinh lai bang plots.py
 code/_fig-values.csv
+
+# ⛔⛔ Ba so ghi chu NOI BO, go khoi kho cong khai 12/11/2026 sau khi do duoc 39 con
+# so trong chung KHONG CO trong bai da nop EAAI, trong do 0.018 va 0.433 la cap so
+# headline CU (bai nay noi 0.028 va 0.539). Chung la so GO TAY, khong bo sinh nao
+# ghi ra, nen chung muc ra theo thoi gian. Giu tren dia de tra cuu, khong day len.
+# Canh cho: N2 cua code/cong_noi_dung_kho.py.
+paper/CLAIM-SHEET.md
+paper/CLAIMS-SSOT.md
+paper/paper-flow-state.md

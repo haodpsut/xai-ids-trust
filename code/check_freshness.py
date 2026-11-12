@@ -103,7 +103,11 @@ def main():
         print("{} CSV cu hon data.py. Xac nhan bang `git diff code/data.py`: neu thay doi la"
               .format(len(dep)))
         print("THUAN CONG THEM (them nhanh dataset moi) thi ket qua cu VAN HOP LE.")
-        print("Ghi nhan 10/08/2026: da xac nhan, thuan cong them. Xem paper/paper-flow-state.md.")
+        print("Ghi nhan 10/08/2026: da xac nhan, thuan cong them.")
+        # ⛔ Cau nay tung tro toi `paper/paper-flow-state.md`. So ay la GHI CHU
+        # NOI BO, da go khoi kho cong khai 12/11/2026 vi chua 50 so khong con
+        # khop bai. Mot tep tren kho tro toi tep khong co tren kho la con tro
+        # treo duoi mat nguoi ngoai. N7 cua `cong_noi_dung_kho.py` canh cho nay.
     if bad:
         print("BLOCK: {} CSV that su oi hoac khong khai producer.".format(len(bad)))
         return 2
