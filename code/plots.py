@@ -20,6 +20,40 @@ import matplotlib  # noqa: E402
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
+
+def phong_that():
+    """In ra PHONG THAT se duoc dung, vi matplotlib tut phong trong IM LANG.
+
+    ⛔⛔⛔ Bat duoc 13/11/2026 khi chay cong tren sol1. Bo style nha doi
+    `font.serif: Times New Roman, DejaVu Serif`. Mac CO Times New Roman, sol1 thi
+    KHONG, nen sol1 ve bang DejaVu Serif. Hinh trong bai DA NOP nhung
+    `TimesNewRomanPSMT` (do bang `pdffonts`), tuc hinh ay ve tren Mac va KHONG dung
+    lai duoc tren chinh may ma bai khai la moi truong chay.
+
+    Matplotlib KHONG in mot dong canh bao nao cho lan tut ay: da thu `-W all`, 0
+    dong. Nen F1 cua `cong_hinh.py` bao do voi loi "CU (khac ban vua ve)", doc nhu
+    la hinh cu, va nguoi doc se di tim sai cho hoan toan.
+
+    Ghim backend da duoc lam tu truoc vi dung ly do nay. PHONG cung la phan cua
+    hien vat y het backend, va no bi bo sot.
+    ⇒ [[feedback-moi-truong-chay-la-phan-cua-hien-vat]]
+    ⇒ [[feedback-khai-may-chay-truoc-khi-bao-so]]
+    """
+    from matplotlib import font_manager as fm
+    muon = [x.strip() for x in plt.rcParams.get("font.serif", []) if x.strip()]
+    if not muon:
+        return None
+    co = {f.name for f in fm.fontManager.ttflist}
+    that = next((x for x in muon if x in co), None)
+    if that != muon[0]:
+        print(f"  ⛔ PHONG TUT: style doi {muon[0]!r} nhung may nay KHONG co; "
+              f"se ve bang {that!r}. Hinh ve ra se KHAC hinh trong bai, va khac o "
+              f"chu chu khong o so. Day la mot khac biet MOI TRUONG, khong phai "
+              f"hinh cu.")
+    else:
+        print(f"  phong: {that!r} (dung cai style doi, khong tut)")
+    return that
+
 def hai_chu_so(v):
     """Round half up, exactly as the paper's tables do.
 
@@ -253,6 +287,7 @@ def fig_harmtype():
 
 
 if __name__ == "__main__":
+    phong_that()          # ⛔ in TRUOC khi ve: tut phong thi phai biet ngay
     fig_trust(); print("fig_trust ok")
     fig_fidelity(); print("fig_fidelity ok")
     fig_defense(); print("fig_defense ok")
