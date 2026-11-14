@@ -71,3 +71,8 @@ paper/figs/*.png
 # bao gio chay noi tren hien vat cong khai thi te hon la khong co. Do tu clone sach
 # 12/11/2026. Canh cho: N8 cua code/cong_noi_dung_kho.py.
 code/cong_moi_truong.py
+
+# Goi luu 26 tep cong + bo sinh KHONG cong khai (ban an danh, cong noi bo).
+# Chan o day vi noi dung goi dung la nhung thu `KHONG_DAY` khai la khong day len.
+code/_luu-cong-*.tar.gz
+code/_luu-cong-*.sha256
